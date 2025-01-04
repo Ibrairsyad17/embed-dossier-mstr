@@ -1,4 +1,6 @@
-import { Button } from "@acme/core";
+"use client";
+
+import { Button } from "embed-dossier-mstr-react";
 
 export default function Page() {
   return (
