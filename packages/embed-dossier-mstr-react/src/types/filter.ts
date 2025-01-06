@@ -1,7 +1,11 @@
-export interface FilterItems {
+export interface GeneralFilterItems {
   value: string;
   name: string;
   selected: boolean;
+}
+
+interface QualType {
+  type: "highest" | "lowest" | "highest percent" | "lowest percent";
 }
 
 export interface FilterSelection {
@@ -9,15 +13,86 @@ export interface FilterSelection {
 }
 
 export interface FilterTypeInfo {
-  items: FilterItems[];
+  items: GeneralFilterItems[];
   supportMultiple: boolean;
+}
+
+export interface FilterTypeInfoSlider extends FilterTypeInfo {
+  indexInfo: {
+    itemsLength: number;
+    from: number;
+    to: number;
+  };
+}
+
+export interface FilterTypeInfoCalendar {
+  from: string;
+  to: string;
+  maxDate: string;
+  minDate: string;
+}
+
+export interface FilterTypeInfoMetricQualByValue {
+  operator:
+    | "equals"
+    | "not equals"
+    | "greater"
+    | "greater equal"
+    | "less"
+    | "less equal"
+    | "between"
+    | "not between"
+    | "in"
+    | "not in"
+    | "is null"
+    | "is not null";
+  from?: string;
+  to?: string;
+  value?: string;
+}
+
+export interface FilterTypeInfoMetricQualByRank {
+  qualType: QualType;
+  value: string;
+}
+
+export interface FilterTypeInfoMetricSliderByValue {
+  indexInfo: {
+    itemsLength: number;
+    itemsStep: number;
+    from: number;
+    to: number;
+  };
+  min: number;
+  max: number;
+  from: number;
+  to: number;
+}
+
+export interface FilterTypeInfoMetricSliderByRank {
+  indexInfo: {
+    itemsLength: number;
+    itemsStep: number;
+    value: number;
+  };
+  min: number;
+  max: number;
+  qualType: QualType;
+  value: number;
 }
 
 export interface FilterListType {
   filterKey: string;
   filterName: string;
-  filterType: string;
-  filterDetail: FilterTypeInfo;
+  filterType: "attributeSelector" | "attributeSearchSelector";
+  filterDetail:
+    | FilterTypeInfo
+    | FilterTypeInfoSlider
+    | FilterTypeInfoCalendar
+    | FilterTypeInfoMetricQualByValue
+    | FilterTypeInfoMetricQualByRank
+    | FilterTypeInfoMetricSliderByValue
+    | FilterTypeInfoMetricSliderByRank;
   isExclude: boolean;
 }
 
