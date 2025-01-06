@@ -1,6 +1,7 @@
 import { EVENT_TYPE } from "../constants/eventType";
 import { Filter, FilterListType, FilterSelection } from "./filter";
 import {
+  CurrentPage,
   CustomUi,
   DockedCommentAndFilter,
   DockedTheme,
@@ -8,6 +9,8 @@ import {
   OptionsFeature,
   ShareFeature,
 } from "./utils";
+import { EventTypes, EventHandler } from "./events";
+import { DossierChapter, DossierPage, TableOfContents } from "./navigation";
 
 /**
  * MicroStrategy SDK
@@ -143,6 +146,11 @@ interface MicroStrategyDossierConfig {
     dossier: boolean;
     notification: boolean;
   };
+  dossierRenderingMode?: "consumption" | "authoring";
+  // TODO: Add more properties such as:
+  // - authoring
+  // - sessionErrorHandler
+  // - errorHandler
 }
 
 /**
@@ -162,11 +170,37 @@ interface MicroStrategyDossierConfigCustomAuthenticationType {
   IDENTITY_TOKEN: string;
 }
 
+/**
+ * Interface for MicroStrategy Dossier
+ *
+ * This interface is used to declare the MicroStrategy Dossier that will be viewed on the web page.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
 interface MicroStrategyDossier {
   close: () => void;
   refresh: () => void;
   resize: (width: string, height: string) => void;
+
+  /**
+   * Instance
+   *
+   * Get the instance ID of the dossier
+   * @returns Promise<string>
+   */
+
   getDossierInstanceId: () => Promise<string>;
+
+  /**
+   * Filter
+   *
+   * Get the filter list
+   * @returns Promise<FilterListType[]>
+   */
+
   getFilterList: () => Promise<FilterListType[]>;
   filterSelectMultiAttributes: (params: {
     filterInfo: { key: string };
@@ -179,13 +213,115 @@ interface MicroStrategyDossier {
     holdSubmit: boolean;
   }) => void;
   filterClearAll: () => void;
+
+  /**
+   * Switch to Mode
+   *
+   * Switch to the mode of the dossier
+   * @param mode "consumption" | "authoring"
+   * @returns Promise<void>
+   */
+
+  switchToMode?: (mode: "consumption" | "authoring") => Promise<void>;
+
+  /**
+   * Navigation
+   *
+   * Once you have embedded a dashboard, you can use helper methods in the Embedding SDK to let users navigate within the dashboard.
+   *
+   * For example, you can add code to get the table of contents for the dashboard, go to the previous or next page, navigate to a specific page, get the current page or chapter, get a specific page, or get a list of pages, chapters and visualizations.
+   *
+   * For more information, please refer to the MicroStrategy SDK documentation.
+   * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/add-nav
+   */
+
+  getTableOfContents: () => TableOfContents;
+  goToPrevPage: () => Promise<{ valid: boolean; message: string } | void>;
+  goToNextPage: () => Promise<{ valid: boolean; message: string } | void>;
+  navigateToPage: (
+    page: DossierPage
+  ) => Promise<{ valid: boolean; message: string } | void>;
+  getCurrentChapter: () => DossierChapter;
+  getCurrentPage: () => DossierPage;
+  getPageByNodeKey: (nodeKey: string) => DossierPage;
+  getChapterList: () => DossierChapter[];
+  getCurrentPageVisualizationList: () => Promise<
+    [{ key: string; name: string }]
+  >;
+  openFilterSummaryBar: () => void | null;
+  closeFilterSummaryBar: () => void | null;
+  getPageList: () => DossierPage[];
+
+  /**
+   * Event Handlers
+   *
+   * You could use these methods to customize the behavior of the dossier.
+   *
+   * For more information, please refer to the MicroStrategy SDK documentation.
+   * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/add-event#registereventhandlerevtname-handler
+   */
+
+  registerEventHandler: (event: EventTypes, handler: EventHandler) => void;
+  removeEventHandler: (event: EventTypes, handler: EventHandler) => void;
+
+  /**
+   * Wrapper Functions for Event Handlers
+   *
+   * The following wrapper functions make it easy to register event handlers for specific events.
+   *
+   * For more information, please refer to the MicroStrategy SDK documentation.
+   * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/add-event#wrapper-functions
+   */
+
+  registerGraphicsSelectEventHandlerToViz: (
+    vizKey: string,
+    handler: EventHandler
+  ) => void;
+  registerFilterUpdateHandler: (handler: EventHandler) => void;
+  registerPageSwitchHandler: (handler: EventHandler) => void;
+  registerDossierInstanceIDChangeHandler: (handler: EventHandler) => void;
 }
 
-interface EmbedLibraryPageConfig {}
+/**
+ * Interface for Embed Library Page Config
+ *
+ * This interface is used to declare the Embed Library Page Config.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+interface EmbedLibraryPageConfig {
+  placeholder: HTMLElement | null;
+  serverUrl: string;
+  containerHeight?: string;
+  containerWidth?: string;
+  customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
+  getLoginToken?: () => Promise<string | void>;
+  disableCustomErrorHandlerOnCreate?: boolean;
+  // errorHandler
+  // sessionErrorHandler() => void
+  customUi?: CustomUi;
+  libraryItemSelectMode?: "single" | "multiple";
+  currentPage?: CurrentPage;
+}
 
 interface EmbedLibraryPage {}
 
-interface EmbedDossierConsumptionPageConfig {}
+/**
+ * Interface for Embed Dossier Consumption Page Config
+ *
+ * This interface is used to declare the Embed Dossier Consumption Page Config.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+interface EmbedDossierConsumptionPageConfig {
+  placeholder: HTMLElement | null;
+}
 
 interface EmbedDossierConsumptionPage {}
 
