@@ -1,3 +1,10 @@
+/**
+ * This file contains the types for the filter that we use for applying filters to the dossier.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/filters
+ */
+
 export interface GeneralFilterItems {
   value: string;
   name: string;

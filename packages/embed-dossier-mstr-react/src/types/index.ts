@@ -65,6 +65,7 @@ interface MicroStrategySDK {
     embedLibraryPage: (
       config: EmbedLibraryPageConfig
     ) => Promise<EmbedLibraryPage>;
+
     embedDossierConsumptionPage: (
       config: EmbedDossierConsumptionPageConfig
     ) => Promise<EmbedDossierConsumptionPage>;
@@ -204,6 +205,16 @@ interface MicroStrategyDossier {
    */
 
   getFilterList: () => Promise<FilterListType[]>;
+  /**
+   * Filter
+   *
+   * Filter methods
+   *
+   * @params FilterJson (most of the methods are using this type)
+   * For more information, please refer to the MicroStrategy SDK documentation.
+   * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/filters
+   */
+
   filterSelectAllAttributes: (params: FilterJson) => void;
   filterDeselectAllAttributes: (params: FilterJson) => void;
   filterSelectSingleAttribute: (params: FilterJson) => void;
