@@ -196,3 +196,11 @@ export interface CurrentPage {
     name: string;
   };
 }
+
+export interface PageInfo {
+  applicationId?: string;
+  projectId?: string;
+  objectId?: string;
+  pageKey?: string;
+  isAuthoring?: boolean;
+}

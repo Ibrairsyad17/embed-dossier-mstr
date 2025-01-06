@@ -9,7 +9,8 @@ interface QualType {
 }
 
 export interface FilterSelection {
-  value: string;
+  value?: string;
+  name?: string;
 }
 
 export interface FilterTypeInfo {
@@ -104,4 +105,36 @@ export interface Filter {
 export interface SelectionFilter {
   id: string;
   name: string;
+}
+
+export interface FilterJson {
+  filterInfo: {
+    key: string;
+  };
+  selections?: FilterSelection[] | FilterSelection | number | number[];
+  date?: {
+    from: string;
+    to: string;
+  };
+  exp?: {
+    operator:
+      | "equals"
+      | "not equals"
+      | "greater"
+      | "greater equal"
+      | "less"
+      | "less equal"
+      | "between"
+      | "not between"
+      | "in"
+      | "not in"
+      | "is null"
+      | "is not null";
+    firstValue?: string;
+    lastValue?: string;
+    qualType?: "highest" | "lowest" | "highest percent" | "lowest percent";
+    range?: number[];
+    value?: number;
+  };
+  holdSubmit?: boolean;
 }
