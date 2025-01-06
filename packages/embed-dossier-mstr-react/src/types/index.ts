@@ -465,4 +465,5 @@ export {
   EmbedReportPage,
   EmbedDossierConsumptionPage,
   EmbedBotConsumptionPage,
+  Settings,
 };
