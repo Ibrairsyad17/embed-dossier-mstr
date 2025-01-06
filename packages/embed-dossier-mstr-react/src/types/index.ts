@@ -1,5 +1,5 @@
 import { EVENT_TYPE } from "../constants/eventType";
-import { Filter, FilterListType, FilterSelection } from "./filter";
+import { Filter, FilterJson, FilterListType } from "./filter";
 import {
   CurrentPage,
   CustomUi,
@@ -7,10 +7,12 @@ import {
   DockedTheme,
   NavigationBar,
   OptionsFeature,
+  PageInfo,
   ShareFeature,
 } from "./utils";
 import { EventTypes, EventHandler } from "./events";
 import { DossierChapter, DossierPage, TableOfContents } from "./navigation";
+import { Settings } from "./settings";
 
 /**
  * MicroStrategy SDK
@@ -171,9 +173,9 @@ interface MicroStrategyDossierConfigCustomAuthenticationType {
 }
 
 /**
- * Interface for MicroStrategy Dossier
+ * Interface for MicroStrategy Dossier Dashboard APIs
  *
- * This interface is used to declare the MicroStrategy Dossier that will be viewed on the web page.
+ * This interface is used to declare the MicroStrategy Dossier Dashboard that will be viewed on the web page.
  *
  * For more information, please refer to the MicroStrategy SDK documentation.
  * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
@@ -202,17 +204,24 @@ interface MicroStrategyDossier {
    */
 
   getFilterList: () => Promise<FilterListType[]>;
-  filterSelectMultiAttributes: (params: {
-    filterInfo: { key: string };
-    selections: FilterSelection[];
-    holdSubmit: boolean;
-  }) => void;
-  filterSelectSingleAttribute: (params: {
-    filterInfo: { key: string };
-    selection: FilterSelection;
-    holdSubmit: boolean;
-  }) => void;
+  filterSelectAllAttributes: (params: FilterJson) => void;
+  filterDeselectAllAttributes: (params: FilterJson) => void;
+  filterSelectSingleAttribute: (params: FilterJson) => void;
+  filterSelectMultiAttributes: (params: FilterJson) => void;
+  filterSearchSingleAttribute: (params: FilterJson) => void;
+  filterSearchMultiAttributes: (params: FilterJson) => void;
+  filterAttributeSingleSlider: (params: FilterJson) => void;
+  filterAttributeMultiSlider: (params: FilterJson) => void;
+  filterSetDateRange: (params: FilterJson) => void;
+  filterSetMetricQualByValue: (params: FilterJson) => void;
+  filterSetMetricQualByRank: (params: FilterJson) => void;
+  filterSetMetricSliderByValue: (params: FilterJson) => void;
+  filterSetMetricSliderByRank: (params: FilterJson) => void;
   filterClearAll: () => void;
+  filterClear: (params: FilterJson) => void;
+  filterSetInclude: (params: FilterJson) => void;
+  filterSetExclude: (params: FilterJson) => void;
+  filterApplyAll: () => void;
 
   /**
    * Switch to Mode
@@ -283,6 +292,37 @@ interface MicroStrategyDossier {
 }
 
 /**
+ * Interface for Embedding Contexts APIs
+ *
+ * This interface is used to declare the Embedding Contexts APIs.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+interface EmbeddingContexts {
+  embedLibraryPage: (
+    params: EmbedLibraryPageConfig
+  ) => Promise<EmbedLibraryPage>;
+  embedDossierConsumptionPage: (
+    params: EmbedDossierConsumptionPageConfig
+  ) => Promise<EmbedDossierConsumptionPage>;
+  embedBotConsumptionPage: (
+    params: EmbedBotConsumptionPageConfig
+  ) => Promise<EmbedBotConsumptionPage>;
+  embedReportPage: (params: EmbedReportPageConfig) => Promise<EmbedReportPage>;
+  registerEventHandler: (event: EventTypes, handler: EventHandler) => void;
+  removeEventHandler: (event: EventTypes, handler: EventHandler) => void;
+  removeCustomErrorHandler: () => void;
+  removeSessionErrorHandler: () => void;
+  goToPage: (pageInfo: PageInfo) => Promise<{ redirect: boolean }>;
+  // TODO: Add more properties such as:
+  // - addCustomErrorHandler(handler, showErrorPopup)
+  // - addSessionErrorHandler(handler)
+}
+
+/**
  * Interface for Embed Library Page Config
  *
  * This interface is used to declare the Embed Library Page Config.
@@ -300,6 +340,7 @@ interface EmbedLibraryPageConfig {
   customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
   getLoginToken?: () => Promise<string | void>;
   disableCustomErrorHandlerOnCreate?: boolean;
+  // TODO: Add more properties such as:
   // errorHandler
   // sessionErrorHandler() => void
   customUi?: CustomUi;
@@ -307,7 +348,22 @@ interface EmbedLibraryPageConfig {
   currentPage?: CurrentPage;
 }
 
-interface EmbedLibraryPage {}
+/**
+ * Interface for EmbedLibraryPage APIs
+ *
+ * The LibraryPage object is the manipulator of the MicroStrategy Library home page. It could be got by embeddingContext.libraryPage.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+interface EmbedLibraryPage {
+  getAllMyGroups: () => Promise<{ id: string; name: string }[]>;
+  getAllDefaultGroups: () => Promise<{ id: string; name: string }[]>;
+  setNavigationBarEnabled: (enabled: boolean) => void;
+  setSidebarVisibility: (shown: boolean) => void;
+}
 
 /**
  * Interface for Embed Dossier Consumption Page Config
@@ -321,16 +377,92 @@ interface EmbedLibraryPage {}
 
 interface EmbedDossierConsumptionPageConfig {
   placeholder: HTMLElement | null;
+  serverUrl: string;
+  projectId: string;
+  objectId: string;
+  customApplicationId?: string;
+  pageKey?: string;
+  containerHeight?: string;
+  containerWidth?: string;
+  customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
+  getLoginToken?: () => Promise<string | void>;
+  disableCustomErrorHandlerOnCreate?: boolean;
+  // errorHandler
+  // sessionErrorHandler() => void
+  customUi?: CustomUi;
+  settings?:
+    | Pick<Settings, "dossierConsumption">
+    | Pick<Settings, "botConsumption">;
 }
 
+// TODO: DO MORE RESEARCH ON THIS
 interface EmbedDossierConsumptionPage {}
 
-interface EmbedBotConsumptionPageConfig {}
+/**
+ * Interface for Embed Bot Consumption Page Config
+ *
+ * This interface is used to declare the Embed Bot Consumption Page Config.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
 
+interface EmbedBotConsumptionPageConfig
+  extends EmbedDossierConsumptionPageConfig {
+  disableHyper?: boolean;
+  permissions?: {
+    allowClipboardWrite?: boolean;
+  };
+}
+
+/**
+ * Interface for Embed Bot Consumption Page APIs
+ *
+ * This interface is used to declare the Embed Bot Consumption Page APIs.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+// TODO: DO MORE RESEARCH ON THIS
 interface EmbedBotConsumptionPage {}
 
-interface EmbedReportPageConfig {}
+/**
+ * Interface for Embed Report Page Config
+ *
+ * This interface is used to declare the Embed Report Page Config.
+ *
+ */
 
+interface EmbedReportPageConfig extends EmbedDossierConsumptionPageConfig {}
+
+/**
+ * Interface for Embed Report Page APIs
+ *
+ * This interface is used to declare the Embed Report Page APIs.
+ *
+ * For more information, please refer to the MicroStrategy SDK documentation.
+ * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/methods-and-properties
+ *
+ */
+
+// TODO: DO MORE RESEARCH ON THIS
 interface EmbedReportPage {}
 
-export {};
+export {
+  MicroStrategySDK,
+  MicroStrategyDossierConfig,
+  MicroStrategyDossierConfigCustomAuthenticationType,
+  MicroStrategyDossier,
+  EmbeddingContexts,
+  EmbedLibraryPageConfig,
+  EmbedLibraryPage,
+  EmbedDossierConsumptionPageConfig,
+  EmbedBotConsumptionPageConfig,
+  EmbedReportPageConfig,
+  EmbedReportPage,
+  EmbedDossierConsumptionPage,
+  EmbedBotConsumptionPage,
+};
