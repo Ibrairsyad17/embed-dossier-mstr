@@ -47,3 +47,9 @@ export type {
   CurrentPage,
   PageInfo,
 } from "./types/utils";
+
+export { DashboardEmbed } from "./components/DashboardEmbed";
+
+export { useCounter } from "./hooks/useCounter";
+export { useLoadMstrSDK } from "./hooks/useLoadMstrSDK";
+export { useCreateDashboard } from "./hooks/useCreateDashboard";

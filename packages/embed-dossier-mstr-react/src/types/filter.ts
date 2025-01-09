@@ -114,6 +114,12 @@ export interface SelectionFilter {
   name: string;
 }
 
+export interface FilterCreation {
+  key: string;
+  name: string;
+  selections: SelectionFilter[];
+}
+
 export interface FilterJson {
   filterInfo: {
     key: string;
