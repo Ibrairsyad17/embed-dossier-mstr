@@ -24,7 +24,10 @@ const useLoadMstrSDK = ({ serverUrlLibrary }: { serverUrlLibrary: string }) => {
    */
 
   const [isSdkLoaded, setIsSdkLoaded] = useState(false);
-  const [isSdkError, setIsSdkError] = useState(false);
+  const [isSdkError, setIsSdkError] = useState({
+    isError: false,
+    message: "",
+  });
 
   /**
    * Effect Information
@@ -36,13 +39,15 @@ const useLoadMstrSDK = ({ serverUrlLibrary }: { serverUrlLibrary: string }) => {
       if (!window.microstrategy) {
         const script = document.createElement("script");
         script.type = "text/javascript";
-        script.src =
-          serverUrlLibrary + "/MicroStrategyLibrary/javascript/embeddinglib.js";
+        script.src = serverUrlLibrary + "/javascript/embeddinglib.js";
         script.onload = () => {
           setIsSdkLoaded(true);
         };
         script.onerror = () => {
-          setIsSdkError(true);
+          setIsSdkError({
+            isError: true,
+            message: "Error loading the SDK",
+          });
         };
         document.head.appendChild(script);
       }

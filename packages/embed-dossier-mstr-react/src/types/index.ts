@@ -1,5 +1,5 @@
 import { EVENT_TYPE } from "../constants/eventType";
-import { Filter, FilterJson, FilterListType } from "./filter";
+import { Filter, FilterCreation, FilterJson, FilterListType } from "./filter";
 import {
   CurrentPage,
   CustomUi,
@@ -102,7 +102,7 @@ interface MicroStrategySDK {
  */
 
 interface MicroStrategyDossierConfig {
-  placeholder: HTMLElement | null; // Required
+  placeholder: HTMLDivElement | null; // Required
   url: string; // Required
   containerHeight?: string; // Optional
   containerWidth?: string; // Optional
@@ -123,7 +123,7 @@ interface MicroStrategyDossierConfig {
     edit?: boolean;
     summary?: boolean;
   };
-  filters?: Filter[]; // Optional
+  filters?: FilterCreation[]; // Optional
   getLoginToken?: () => Promise<string | void>; // Optional
   instance?: {
     mid?: string;
