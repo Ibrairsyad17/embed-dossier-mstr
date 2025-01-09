@@ -4,7 +4,7 @@ import { useLoadMstrSDK } from "./useLoadMstrSDK";
 
 interface UseCreateDashboardProps {
   serverUrlLibrary: string;
-  config: MicroStrategyDossierConfig;
+  config: Omit<MicroStrategyDossierConfig, "placeholder">;
 }
 
 const useCreateDashboard = ({
