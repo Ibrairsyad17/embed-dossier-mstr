@@ -1,5 +1,5 @@
 import { EVENT_TYPE } from "../constants/eventType";
-import { Filter, FilterCreation, FilterJson, FilterListType } from "./filter";
+import { FilterCreation, FilterJson, FilterListType } from "./filter";
 import {
   CurrentPage,
   CustomUi,

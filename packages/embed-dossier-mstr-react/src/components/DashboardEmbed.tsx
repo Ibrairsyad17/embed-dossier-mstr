@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { useCreateDashboard } from "../hooks/useCreateDashboard";
 import { getInfoFromUrl } from "../utils";
 import cn from "classnames";
@@ -17,13 +16,11 @@ const DashboardEmbed = ({
   style,
   config,
 }: DashboardEmbedProps) => {
-  const dashboardRef = useRef<HTMLDivElement>(null);
   const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
 
   const { containerRef } = useCreateDashboard({
     serverUrlLibrary,
     config: {
-      placeholder: dashboardRef.current,
       url: dossierUrl,
       ...config,
     },
