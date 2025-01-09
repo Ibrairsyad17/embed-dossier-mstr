@@ -1,4 +1,14 @@
-export { Button } from "./components/Button";
+/**
+ * This file is use for exporting all the types and components from the package.
+ */
+
+/**
+ * Types from MicroStrategy Embedding SDK
+ *
+ * These are the Types from MicroStrategy Embedding SDK that is exported from the package.
+ *
+ * @see https://microstrategy.github.io/embedding-sdk-docs/
+ */
 
 export {
   MicroStrategySDK,
@@ -48,8 +58,24 @@ export type {
   PageInfo,
 } from "./types/utils";
 
+/**
+ * Components
+ *
+ * This is all the components that are exported from the package.
+ */
+
 export { DashboardEmbed } from "./components/DashboardEmbed";
+export { LibraryPageEmbed } from "./components/LibraryPageEmbed";
+export { BotConsumptionPage } from "./components/BotConsumptionPage";
+
+/**
+ * Hooks
+ *
+ * This is all the hooks that are exported from the package.
+ */
 
 export { useCounter } from "./hooks/useCounter";
 export { useLoadMstrSDK } from "./hooks/useLoadMstrSDK";
 export { useCreateDashboard } from "./hooks/useCreateDashboard";
+export { useCreateLibraryPage } from "./hooks/useCreateLibraryPage";
+export { useCreateBotConsumptionPage } from "./hooks/useCreateBotConsumptionPage";

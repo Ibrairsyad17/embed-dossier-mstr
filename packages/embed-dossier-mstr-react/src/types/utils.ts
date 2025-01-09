@@ -47,6 +47,10 @@ export interface CustomUi {
         enabled?: boolean;
       };
     };
+    sidebar?: {
+      enabled?: boolean;
+      show?: boolean;
+    };
   };
   reportConsumption?: {
     enabled?: boolean;
@@ -83,6 +87,30 @@ export interface CustomUi {
         isOpen?: boolean;
         isDocked?: boolean;
       };
+    };
+  };
+  botConsumption?: {
+    aiBot?: {
+      titleBar?: {
+        enabled?: boolean;
+      };
+      snapshotPanel?: {
+        enabled?: boolean;
+      };
+      topicsPanel?: {
+        enabled?: boolean;
+      };
+      chatPanel?: {
+        showClearHistory?: boolean;
+        showGiveTopics?: boolean;
+        showWelcomePageBotImg?: boolean;
+        showCopyBtn?: boolean;
+        shouldLoadHistory?: boolean;
+        shouldSaveToHistory?: boolean;
+      };
+    };
+    navigationBar?: {
+      enabled?: boolean;
     };
   };
   dossierAuthoring?: {
@@ -191,9 +219,9 @@ export interface ShareFeature {
 
 export interface CurrentPage {
   key: string;
-  targetGroup: {
-    id: string;
-    name: string;
+  targetGroup?: {
+    id?: string;
+    name?: string;
   };
 }
 
