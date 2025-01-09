@@ -387,7 +387,7 @@ interface EmbedLibraryPage {
  */
 
 interface EmbedDossierConsumptionPageConfig {
-  placeholder: HTMLElement | null;
+  placeholder: HTMLDivElement | null;
   serverUrl: string;
   projectId: string;
   objectId: string;
