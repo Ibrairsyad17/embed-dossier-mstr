@@ -232,3 +232,13 @@ export interface PageInfo {
   pageKey?: string;
   isAuthoring?: boolean;
 }
+
+export interface ErrorHandlerInterface {
+  title: string;
+  message: string;
+  desc: string;
+  statusCode: string | number;
+  errorCode: string | number;
+  isServerErrorCode: boolean;
+  ticketId: string;
+}

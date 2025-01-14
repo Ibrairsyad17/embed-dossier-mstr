@@ -5,6 +5,7 @@ import {
   CustomUi,
   DockedCommentAndFilter,
   DockedTheme,
+  ErrorHandlerInterface,
   NavigationBar,
   OptionsFeature,
   PageInfo,
@@ -150,10 +151,115 @@ interface MicroStrategyDossierConfig {
     notification: boolean;
   };
   dossierRenderingMode?: "consumption" | "authoring";
-  // TODO: Add more properties such as:
-  // - authoring
-  // - sessionErrorHandler
-  // - errorHandler
+
+  /**
+   *
+   * The authoring props managed tools or features that are available in the authoring mode.
+   *
+   * For more information, please refer to the MicroStrategy SDK documentation.
+   * @see https://microstrategy.github.io/embedding-sdk-docs/add-functionality/authoring-library
+   *
+   * The following properties are available:
+   * - menubar
+   * - toolbar
+   * - panelVisibility
+   */
+
+  authoring?: {
+    menubar?: {
+      library?: {
+        visible?: boolean;
+      };
+    };
+    toolbar?: {
+      tableOfContents?: {
+        visible?: boolean;
+      };
+      undo?: {
+        visible?: boolean;
+      };
+      redo?: {
+        visible?: boolean;
+      };
+      refresh?: {
+        visible?: boolean;
+      };
+      pauseDataRetrieval?: {
+        visible?: boolean;
+      };
+      reprompt?: {
+        visible?: boolean;
+      };
+      dividerLeft?: {
+        visible?: boolean;
+      };
+      addData?: {
+        visible?: boolean;
+      };
+      addChapter?: {
+        visible?: boolean;
+      };
+      addPage?: {
+        visible?: boolean;
+      };
+      insertVisualization?: {
+        visible?: boolean;
+      };
+      insertFilter?: {
+        visible?: boolean;
+      };
+      insertText?: {
+        visible?: boolean;
+      };
+      insertImage?: {
+        visible?: boolean;
+      };
+      insertHtml?: {
+        visible?: boolean;
+      };
+      insertShape?: {
+        visible?: boolean;
+      };
+      insertPanelStack?: {
+        visible?: boolean;
+      };
+      insertInfoWindow?: {
+        visible?: boolean;
+      };
+      save?: {
+        visible?: boolean;
+      };
+      dividerRight?: {
+        visible?: boolean;
+      };
+      more?: {
+        visible?: boolean;
+      };
+      freeformLayout?: {
+        visible?: boolean;
+      };
+      nlp?: {
+        visible?: boolean;
+      };
+      responsiveViewEditor?: {
+        visible?: boolean;
+      };
+      responsivePreview?: {
+        visible?: boolean;
+      };
+    };
+    panelVisibility?: {
+      contents?: boolean;
+      datasets?: boolean;
+      editor?: boolean;
+      filter?: boolean;
+      format?: boolean;
+      layers?: boolean;
+    };
+  };
+  disableCustomErrorHandlerOnCreate?: boolean; // Optional
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void;
+  errorHandler?: (error: ErrorHandlerInterface) => void;
 }
 
 /**
@@ -300,6 +406,28 @@ interface MicroStrategyDossier {
   registerFilterUpdateHandler: (handler: EventHandler) => void;
   registerPageSwitchHandler: (handler: EventHandler) => void;
   registerDossierInstanceIDChangeHandler: (handler: EventHandler) => void;
+  removeCustomErrorHandler: (error: ErrorHandlerInterface) => void;
+  removeSessionHandler: () => void;
+  /**
+   *
+   * The following methods are used to handle errors.
+   * These methods are used to handle errors that occur during the creation of the dossier.
+   *
+   * @param error
+   * About the params itself would be return ErrorHandlerInterface
+   *
+   * @returns
+   * Return could be any void
+   */
+
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
 }
 
 /**
@@ -328,9 +456,14 @@ interface EmbeddingContexts {
   removeCustomErrorHandler: () => void;
   removeSessionErrorHandler: () => void;
   goToPage: (pageInfo: PageInfo) => Promise<{ redirect: boolean }>;
-  // TODO: Add more properties such as:
-  // - addCustomErrorHandler(handler, showErrorPopup)
-  // - addSessionErrorHandler(handler)
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
 }
 
 /**
@@ -351,9 +484,8 @@ interface EmbedLibraryPageConfig {
   customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
   getLoginToken?: () => Promise<string | void>;
   disableCustomErrorHandlerOnCreate?: boolean;
-  // TODO: Add more properties such as:
-  // errorHandler
-  // sessionErrorHandler() => void
+  errorHandler: (error: ErrorHandlerInterface) => void;
+  sessionErrorHandler: (error: ErrorHandlerInterface) => void;
   customUi?: CustomUi;
   libraryItemSelectMode?: "single" | "multiple";
   currentPage?: CurrentPage;
@@ -374,6 +506,14 @@ interface EmbedLibraryPage {
   getAllDefaultGroups: () => Promise<{ id: string; name: string }[]>;
   setNavigationBarEnabled: (enabled: boolean) => void;
   setSidebarVisibility: (shown: boolean) => void;
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
 }
 
 /**
@@ -398,8 +538,8 @@ interface EmbedDossierConsumptionPageConfig {
   customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
   getLoginToken?: () => Promise<string | void>;
   disableCustomErrorHandlerOnCreate?: boolean;
-  // errorHandler
-  // sessionErrorHandler() => void
+  errorHandler: (error: ErrorHandlerInterface) => void;
+  sessionErrorHandler: (error: ErrorHandlerInterface) => void;
   customUi?: CustomUi;
   settings?:
     | Pick<Settings, "dossierConsumption">
@@ -407,7 +547,16 @@ interface EmbedDossierConsumptionPageConfig {
 }
 
 // TODO: DO MORE RESEARCH ON THIS
-interface EmbedDossierConsumptionPage {}
+interface EmbedDossierConsumptionPage {
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void;
+}
 
 /**
  * Interface for Embed Bot Consumption Page Config
