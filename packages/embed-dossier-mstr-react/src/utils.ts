@@ -118,4 +118,8 @@ const login = async ({
   });
 };
 
-export { getInfoFromUrl, getAuthToken, createAuthToken };
+const getServerUrl = (url: string) => {
+  return url.split("/app/")[0];
+};
+
+export { getInfoFromUrl, getAuthToken, createAuthToken, getServerUrl };

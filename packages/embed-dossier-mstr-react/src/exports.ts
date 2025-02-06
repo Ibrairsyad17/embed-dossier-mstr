@@ -67,6 +67,7 @@ export type {
 export { DashboardEmbed } from "./components/DashboardEmbed";
 export { LibraryPageEmbed } from "./components/LibraryPageEmbed";
 export { BotConsumptionPage } from "./components/BotConsumptionPage";
+export { DashboardEmbedWithAuth } from "./components/DashboardEmbedWithAuth";
 
 /**
  * Hooks
@@ -79,3 +80,4 @@ export { useLoadMstrSDK } from "./hooks/useLoadMstrSDK";
 export { useCreateDashboard } from "./hooks/useCreateDashboard";
 export { useCreateLibraryPage } from "./hooks/useCreateLibraryPage";
 export { useCreateBotConsumptionPage } from "./hooks/useCreateBotConsumptionPage";
+export { useCreateDashboardWithAuth } from "./hooks/useCreateDashboardWithAuth";
