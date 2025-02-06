@@ -1,23 +1,15 @@
 "use client";
 
-import { BotConsumptionPage } from "embed-dossier-mstr-react";
+import { StandardAuthDemo } from "./StandardAuthDemo";
+
+const DEMO_DOSSIER_URL =
+  "https://demo.microstrategy.com/MicroStrategyLibrary/app/38328E048D427571975C388F7C402AD8/FF81504CEA4C3C51198F2CB1A9062FEE/W396501--K396454";
 
 export default function Page() {
-  const config = {
-    customApplicationId: "C2B2023642F6753A2EF159A75E0CFF29",
-    customUi: {
-      botConsumption: {},
-    },
-  };
   return (
-    <>
-      <h1>Example for Embed Dossier MSTR React</h1>
-      <BotConsumptionPage
-        serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
-        projectId="38328E048D427571975C388F7C402AD8"
-        objectId="A81721DEC24012C1C40522B8A8EC36DE"
-        config={config}
-      />
-    </>
+    <div className="p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+      <h1 className="text-2xl font-bold mb-6">Standard Authentication Demo</h1>
+      <StandardAuthDemo dossierUrl={DEMO_DOSSIER_URL} />
+    </div>
   );
 }

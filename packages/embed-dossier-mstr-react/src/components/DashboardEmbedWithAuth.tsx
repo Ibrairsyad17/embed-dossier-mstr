@@ -2,7 +2,7 @@ import { useCreateDashboardWithAuth } from "../hooks/useCreateDashboardWithAuth"
 import { getInfoFromUrl } from "../utils";
 import cn from "classnames";
 import { MicroStrategyDossierConfig } from "../types";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface DashboardEmbedWithAuthProps {
   dossierUrl: string; // https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
@@ -48,16 +48,32 @@ const DashboardEmbedWithAuth = ({
 }: DashboardEmbedWithAuthProps) => {
   const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
 
-  const { containerRef, isAuthenticating, error } = useCreateDashboardWithAuth({
-    serverUrlLibrary,
-    config: {
-      url: dossierUrl,
-      ...config,
-    },
-    loginMode,
-    username,
-    password,
-  });
+  const { containerRef, isAuthenticating, error, dashboard, isAuthenticated } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary,
+      config: {
+        url: dossierUrl,
+        enableCustomAuthentication: true,
+        customAuthenticationType: "AUTH_TOKEN",
+        ...config,
+      },
+      loginMode,
+      username,
+      password,
+    });
+
+  // Debug logging
+  useEffect(() => {
+    if (error) {
+      console.error("Dashboard auth error:", error);
+    }
+    if (isAuthenticated) {
+      console.log("Dashboard authenticated successfully");
+    }
+    if (dashboard) {
+      console.log("Dashboard instance created");
+    }
+  }, [error, isAuthenticated, dashboard]);
 
   if (isAuthenticating) {
     return <>{loadingComponent}</>;
