@@ -17,10 +17,9 @@
  * @see https://microstrategy.github.io/embedding-sdk-docs/support-for-different-authentication-environments/
  */
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { MicroStrategyDossier, MicroStrategyDossierConfig } from "../types";
 import { useLoadMstrSDK } from "./useLoadMstrSDK";
-import { getServerUrl } from "../utils";
 
 /**
  * Props interface for useCreateDashboardWithAuth hook
@@ -111,7 +110,7 @@ const useCreateDashboardWithAuth = ({
         // Handle different auth modes
         switch (loginMode) {
           case "standard":
-          case "ldap":
+          case "ldap": {
             if (!username || !password) {
               throw new Error(
                 "Username and password are required for standard/LDAP authentication"
@@ -130,8 +129,9 @@ const useCreateDashboardWithAuth = ({
             };
             await fetch(`${serverUrlLibrary}/api/auth/login`, standardOptions);
             break;
+          }
 
-          case "guest":
+          case "guest": {
             const guestOptions: RequestInit = {
               method: "POST",
               credentials: "include" as RequestCredentials,
@@ -141,6 +141,7 @@ const useCreateDashboardWithAuth = ({
             };
             await fetch(`${serverUrlLibrary}/api/auth/login`, guestOptions);
             break;
+          }
 
           case "saml":
             try {
