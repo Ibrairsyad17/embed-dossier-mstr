@@ -107,7 +107,9 @@ interface MicroStrategyDossierConfig {
   url: string; // Required
   containerHeight?: string; // Optional
   containerWidth?: string; // Optional
-  customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType; // Optional
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string; // Optional
   disableNotification?: boolean; // Optional
   disableErrorPopupWindow?: boolean; // Optional
   dockedComment?: DockedCommentAndFilter; // Optional
@@ -125,7 +127,7 @@ interface MicroStrategyDossierConfig {
     summary?: boolean;
   };
   filters?: FilterCreation[]; // Optional
-  getLoginToken?: () => Promise<string | void>; // Optional
+  getLoginToken?: () => Promise<string | void | null>; // Optional
   instance?: {
     mid?: string;
     id?: string;
@@ -406,7 +408,7 @@ interface MicroStrategyDossier {
   registerFilterUpdateHandler: (handler: EventHandler) => void;
   registerPageSwitchHandler: (handler: EventHandler) => void;
   registerDossierInstanceIDChangeHandler: (handler: EventHandler) => void;
-  removeCustomErrorHandler: (error: ErrorHandlerInterface) => void;
+  removeCustomErrorHandler?: (error: ErrorHandlerInterface) => void;
   removeSessionHandler: () => void;
   /**
    *
@@ -481,11 +483,13 @@ interface EmbedLibraryPageConfig {
   serverUrl: string;
   containerHeight?: string;
   containerWidth?: string;
-  customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string;
   getLoginToken?: () => Promise<string | void>;
   disableCustomErrorHandlerOnCreate?: boolean;
-  errorHandler: (error: ErrorHandlerInterface) => void;
-  sessionErrorHandler: (error: ErrorHandlerInterface) => void;
+  errorHandler?: (error: ErrorHandlerInterface) => void;
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void;
   customUi?: CustomUi;
   libraryItemSelectMode?: "single" | "multiple";
   currentPage?: CurrentPage;
@@ -535,11 +539,13 @@ interface EmbedDossierConsumptionPageConfig {
   pageKey?: string;
   containerHeight?: string;
   containerWidth?: string;
-  customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType;
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string;
   getLoginToken?: () => Promise<string | void>;
   disableCustomErrorHandlerOnCreate?: boolean;
-  errorHandler: (error: ErrorHandlerInterface) => void;
-  sessionErrorHandler: (error: ErrorHandlerInterface) => void;
+  errorHandler?: (error: ErrorHandlerInterface) => void;
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void;
   customUi?: CustomUi;
   settings?:
     | Pick<Settings, "dossierConsumption">
