@@ -19,8 +19,8 @@ const dashboardConfig = {
 
 export function StandardAuthDemo({ dossierUrl }: { dossierUrl: string }) {
   const [credentials, setCredentials] = useState({
-    username: "ibrairsyad17@student.ub.ac.id",
-    password: "Ibrahim145",
+    username: "",
+    password: "",
   });
 
   return (
