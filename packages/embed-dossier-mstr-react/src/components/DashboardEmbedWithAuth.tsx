@@ -2,7 +2,7 @@ import { useCreateDashboardWithAuth } from "../hooks/useCreateDashboardWithAuth"
 import { getInfoFromUrl } from "../utils";
 import cn from "classnames";
 import { MicroStrategyDossierConfig } from "../types";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 interface DashboardEmbedWithAuthProps {
   dossierUrl: string; // https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
@@ -44,36 +44,32 @@ const DashboardEmbedWithAuth = ({
   username,
   password,
   loadingComponent = <div>Loading...</div>,
-  errorComponent = (error: string) => <div>Error: {error}</div>,
+  errorComponent = (error: string) => (
+    <div className="text-center text-red-500 p-4 max-w-md">
+      <h3 className="text-lg font-semibold mb-2">Authentication Error</h3>
+      <p>{error}</p>
+    </div>
+  ),
 }: DashboardEmbedWithAuthProps) => {
   const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
+  const divRef = useRef<HTMLDivElement>(null);
 
-  const { containerRef, isAuthenticating, error, dashboard, isAuthenticated } =
+  const { isAuthenticating, error, isAuthenticated } =
     useCreateDashboardWithAuth({
       serverUrlLibrary,
+      placeholder: divRef.current,
       config: {
         url: dossierUrl,
+        enableResponsive: true,
         enableCustomAuthentication: true,
-        customAuthenticationType: "AUTH_TOKEN",
+        containerHeight: "600px",
+        containerWidth: "100%",
         ...config,
       },
       loginMode,
       username,
       password,
     });
-
-  // Debug logging
-  useEffect(() => {
-    if (error) {
-      console.error("Dashboard auth error:", error);
-    }
-    if (isAuthenticated) {
-      console.log("Dashboard authenticated successfully");
-    }
-    if (dashboard) {
-      console.log("Dashboard instance created");
-    }
-  }, [error, isAuthenticated, dashboard]);
 
   if (isAuthenticating) {
     return <>{loadingComponent}</>;
@@ -89,7 +85,13 @@ const DashboardEmbedWithAuth = ({
     );
   }
 
-  return <div ref={containerRef} className={cn(className)} style={style} />;
+  return (
+    <div
+      ref={divRef}
+      className={cn("w-full h-[600px]", className)}
+      style={style}
+    />
+  );
 };
 
 export { DashboardEmbedWithAuth };

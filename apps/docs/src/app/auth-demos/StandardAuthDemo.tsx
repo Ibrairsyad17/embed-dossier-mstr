@@ -19,21 +19,24 @@ const dashboardConfig = {
 
 export function StandardAuthDemo({ dossierUrl }: { dossierUrl: string }) {
   const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
+    username: "ibrairsyad17@student.ub.ac.id",
+    password: "Ibrahim145",
   });
 
   return (
     <div className="space-y-8">
-      {/* Credentials Form */}
       <div className="bg-white p-6 rounded-lg border">
         <h2 className="text-lg font-semibold mb-4">Enter Credentials</h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Username
             </label>
             <input
+              id="username"
               type="text"
               value={credentials.username}
               onChange={(e) =>
@@ -42,14 +45,19 @@ export function StandardAuthDemo({ dossierUrl }: { dossierUrl: string }) {
                   username: e.target.value,
                 }))
               }
+              placeholder="Enter your username"
               className="block w-full p-2 border rounded"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
+              id="password"
               type="password"
               value={credentials.password}
               onChange={(e) =>
@@ -58,13 +66,13 @@ export function StandardAuthDemo({ dossierUrl }: { dossierUrl: string }) {
                   password: e.target.value,
                 }))
               }
+              placeholder="Enter your password"
               className="block w-full p-2 border rounded"
             />
           </div>
         </div>
       </div>
 
-      {/* Dashboard */}
       <div className="border rounded-lg overflow-hidden bg-white">
         <DashboardEmbedWithAuth
           dossierUrl={dossierUrl}

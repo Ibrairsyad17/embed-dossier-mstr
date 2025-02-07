@@ -20,6 +20,7 @@ import { getServerUrl } from "../utils";
  * Props interface for useCreateDashboardWithAuth
  *
  * @property serverUrlLibrary - Base URL for the MicroStrategy Library
+ * @property placeholder - Placeholder element for the dashboard
  * @property config - Dashboard configuration excluding placeholder
  * @property loginMode - Authentication method to use
  * @property username - Optional username for standard/LDAP auth
@@ -27,6 +28,7 @@ import { getServerUrl } from "../utils";
  */
 interface UseCreateDashboardWithAuthProps {
   serverUrlLibrary: string;
+  placeholder: HTMLDivElement | null;
   config: Omit<MicroStrategyDossierConfig, "placeholder">;
   loginMode: "guest" | "standard" | "saml" | "oidc" | "ldap";
   username?: string;
@@ -48,12 +50,12 @@ interface AuthState {
 
 const useCreateDashboardWithAuth = ({
   serverUrlLibrary,
+  placeholder,
   config,
   loginMode,
   username,
   password,
 }: UseCreateDashboardWithAuthProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [dashboard, setDashboard] = useState<MicroStrategyDossier | null>(null);
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
@@ -62,73 +64,9 @@ const useCreateDashboardWithAuth = ({
   });
 
   const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary });
-  const serverUrl = useMemo(() => getServerUrl(config.url), [config.url]);
-
-  // Memoize authentication functions
-  const authHandlers = useMemo(
-    () => ({
-      async getAuthToken(): Promise<string | null> {
-        const options: RequestInit = {
-          method: "GET",
-          credentials: "include",
-          mode: "cors",
-          headers: { "content-type": "application/json" },
-        };
-
-        try {
-          const response = await fetch(`${serverUrl}/api/auth/token`, options);
-          return response.ok ? response.headers.get("x-mstr-authtoken") : null;
-        } catch (error) {
-          console.error("Failed to get auth token:", error);
-          return null;
-        }
-      },
-
-      async createAuthToken(): Promise<string | null> {
-        if (!["standard", "ldap", "guest"].includes(loginMode)) return null;
-
-        const body =
-          loginMode === "guest"
-            ? { loginMode: 8 }
-            : { loginMode: 1, username, password };
-
-        const options: RequestInit = {
-          method: "POST",
-          credentials: "include",
-          mode: "cors",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(body),
-        };
-
-        const response = await fetch(`${serverUrl}/api/auth/login`, options);
-        if (!response.ok) throw new Error("Authentication failed");
-        return response.headers.get("x-mstr-authtoken");
-      },
-
-      async login(): Promise<string | null> {
-        const existingToken = await this.getAuthToken();
-        return existingToken || this.createAuthToken();
-      },
-    }),
-    [serverUrl, loginMode, username, password]
-  );
-
-  // Memoize dashboard configuration
-  const dashboardConfig = useMemo(
-    () => ({
-      ...config,
-      enableCustomAuthentication: true,
-      customAuthenticationType:
-        window.microstrategy?.dossier?.CustomAuthenticationType?.AUTH_TOKEN,
-      getLoginToken: () => authHandlers.login(),
-      containerHeight: config.containerHeight || "600px",
-      containerWidth: config.containerWidth || "100%",
-    }),
-    [config, authHandlers]
-  );
 
   useEffect(() => {
-    if (!isSdkLoaded || !containerRef.current) return;
+    if (!isSdkLoaded || !placeholder) return;
 
     let mounted = true;
     const initializeDashboard = async () => {
@@ -140,15 +78,95 @@ const useCreateDashboardWithAuth = ({
       }));
 
       try {
-        if (loginMode === "saml") {
-          await window.microstrategy.auth.samlLogin(serverUrl);
-        } else if (loginMode === "oidc") {
-          await window.microstrategy.auth.oidcLogin(serverUrl);
+        // Handle different auth modes
+        switch (loginMode) {
+          case "standard":
+          case "ldap":
+            if (!username || !password) {
+              throw new Error(
+                "Username and password are required for standard/LDAP authentication"
+              );
+            }
+            const standardOptions: RequestInit = {
+              method: "POST",
+              credentials: "include" as RequestCredentials,
+              mode: "cors" as RequestMode,
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({
+                loginMode: 1,
+                username,
+                password,
+              }),
+            };
+            await fetch(`${serverUrlLibrary}/api/auth/login`, standardOptions);
+            break;
+
+          case "guest":
+            const guestOptions: RequestInit = {
+              method: "POST",
+              credentials: "include" as RequestCredentials,
+              mode: "cors" as RequestMode,
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ loginMode: 8 }),
+            };
+            await fetch(`${serverUrlLibrary}/api/auth/login`, guestOptions);
+            break;
+
+          case "saml":
+            try {
+              await window.microstrategy.auth.samlLogin(serverUrlLibrary);
+            } catch (e) {
+              if (
+                e instanceof Error &&
+                e.message.includes("Failed to open a new tab")
+              ) {
+                throw new Error(
+                  "Please enable popups to be directed to the SAML login site"
+                );
+              }
+              throw e;
+            }
+            break;
+
+          case "oidc":
+            try {
+              await window.microstrategy.auth.oidcLogin(serverUrlLibrary);
+            } catch (e) {
+              if (
+                e instanceof Error &&
+                e.message.includes("Failed to open a new tab")
+              ) {
+                throw new Error(
+                  "Please enable popups to be directed to the OIDC login site"
+                );
+              }
+              throw e;
+            }
+            break;
         }
 
+        // Create dashboard with auth configuration
         const dossier = await window.microstrategy.dossier.create({
-          ...dashboardConfig,
-          placeholder: containerRef.current,
+          ...config,
+          placeholder,
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          getLoginToken: async () => {
+            const options: RequestInit = {
+              method: "GET",
+              credentials: "include" as RequestCredentials,
+              mode: "cors" as RequestMode,
+              headers: { "content-type": "application/json" },
+            };
+            const response = await fetch(
+              `${serverUrlLibrary}/api/auth/token`,
+              options
+            );
+            return response.ok
+              ? response.headers.get("x-mstr-authtoken")
+              : null;
+          },
         });
 
         if (mounted) {
@@ -157,6 +175,7 @@ const useCreateDashboardWithAuth = ({
         }
       } catch (error) {
         if (mounted) {
+          console.error("Dashboard auth error:", error);
           setAuthState((prev) => ({
             ...prev,
             error:
@@ -177,11 +196,18 @@ const useCreateDashboardWithAuth = ({
     return () => {
       mounted = false;
     };
-  }, [isSdkLoaded, loginMode, serverUrl, dashboardConfig]);
+  }, [
+    isSdkLoaded,
+    placeholder,
+    loginMode,
+    serverUrlLibrary,
+    config,
+    username,
+    password,
+  ]);
 
   return {
     dashboard,
-    containerRef,
     ...authState,
   };
 };

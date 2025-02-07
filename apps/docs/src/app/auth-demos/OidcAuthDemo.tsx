@@ -1,5 +1,21 @@
 import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react";
 
+const dashboardConfig = {
+  enableResponsive: true,
+  enableCustomAuthentication: true,
+  navigationBar: {
+    enabled: true,
+    gotoLibrary: false,
+    title: true,
+    toc: true,
+  },
+  filterFeature: {
+    enabled: true,
+    edit: true,
+    summary: true,
+  },
+};
+
 export function OidcAuthDemo({ dossierUrl }: { dossierUrl: string }) {
   return (
     <div className="border rounded-lg overflow-hidden bg-white">
@@ -7,10 +23,7 @@ export function OidcAuthDemo({ dossierUrl }: { dossierUrl: string }) {
         dossierUrl={dossierUrl}
         loginMode="oidc"
         className="w-full h-[600px]"
-        config={{
-          enableResponsive: true,
-          enableCustomAuthentication: true,
-        }}
+        config={dashboardConfig}
         loadingComponent={
           <div className="flex items-center justify-center h-[600px] bg-gray-50">
             <div className="text-center">
