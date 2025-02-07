@@ -1,13 +1,19 @@
 /**
- * Custom hook for creating a MicroStrategy dashboard with authentication
+ * Custom hook for creating and managing authenticated MicroStrategy dashboards
  *
- * This hook handles different authentication methods and dashboard creation:
- * - Guest authentication
- * - Standard/LDAP authentication
- * - SAML authentication
- * - OIDC authentication
+ * This hook handles the complete lifecycle of dashboard authentication and creation:
+ * - Multiple authentication methods support
+ * - Token management
+ * - Dashboard initialization
+ * - Error handling
  *
- * For more information about authentication methods, see:
+ * Supported authentication methods:
+ * - Guest authentication (no credentials required)
+ * - Standard authentication (username/password)
+ * - LDAP authentication (username/password)
+ * - SAML authentication (redirect to identity provider)
+ * - OIDC authentication (OpenID Connect flow)
+ *
  * @see https://microstrategy.github.io/embedding-sdk-docs/support-for-different-authentication-environments/
  */
 
@@ -17,10 +23,10 @@ import { useLoadMstrSDK } from "./useLoadMstrSDK";
 import { getServerUrl } from "../utils";
 
 /**
- * Props interface for useCreateDashboardWithAuth
+ * Props interface for useCreateDashboardWithAuth hook
  *
- * @property serverUrlLibrary - Base URL for the MicroStrategy Library
- * @property placeholder - Placeholder element for the dashboard
+ * @property serverUrlLibrary - Base URL for the MicroStrategy Library server
+ * @property placeholder - DOM element where the dashboard will be rendered
  * @property config - Dashboard configuration excluding placeholder
  * @property loginMode - Authentication method to use
  * @property username - Optional username for standard/LDAP auth
@@ -48,6 +54,30 @@ interface AuthState {
   error: string | null;
 }
 
+/**
+ * Custom hook for creating authenticated MicroStrategy dashboards
+ *
+ * This hook manages the complete lifecycle of an authenticated dashboard:
+ * 1. Loads the MicroStrategy SDK
+ * 2. Handles authentication based on the specified login mode
+ * 3. Creates and initializes the dashboard
+ * 4. Manages authentication state and errors
+ *
+ * @param props - Hook configuration of type UseCreateDashboardWithAuthProps
+ * @returns Object containing dashboard instance and authentication state
+ *
+ * @example
+ * ```tsx
+ * const { dashboard, isAuthenticating, error } = useCreateDashboardWithAuth({
+ *   serverUrlLibrary: "https://your-mstr-server",
+ *   placeholder: divRef.current,
+ *   config: { url: "dashboard-url", ... },
+ *   loginMode: "standard",
+ *   username: "user",
+ *   password: "pass"
+ * });
+ * ```
+ */
 const useCreateDashboardWithAuth = ({
   serverUrlLibrary,
   placeholder,

@@ -2,10 +2,24 @@ import { useCreateDashboardWithAuth } from "../hooks/useCreateDashboardWithAuth"
 import { getInfoFromUrl } from "../utils";
 import cn from "classnames";
 import { MicroStrategyDossierConfig } from "../types";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useRef } from "react";
 
+/**
+ * Props interface for the DashboardEmbedWithAuth component
+ *
+ * @property dossierUrl - The full URL of the MicroStrategy dossier to embed
+ *                        Format: https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
+ * @property className - Optional CSS class names to apply to the container
+ * @property style - Optional inline styles to apply to the container
+ * @property config - Dashboard configuration options excluding placeholder and URL
+ * @property loginMode - Authentication method to use (guest/standard/saml/oidc/ldap)
+ * @property username - Username for standard/LDAP authentication
+ * @property password - Password for standard/LDAP authentication
+ * @property loadingComponent - Custom component to show during authentication/loading
+ * @property errorComponent - Custom component or function to render error states
+ */
 interface DashboardEmbedWithAuthProps {
-  dossierUrl: string; // https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
+  dossierUrl: string;
   className?: string;
   style?: React.CSSProperties;
   config?: Omit<MicroStrategyDossierConfig, "placeholder" | "url">;
@@ -19,10 +33,17 @@ interface DashboardEmbedWithAuthProps {
 /**
  * DashboardEmbedWithAuth Component
  *
- * A component that handles both authentication and embedding of MicroStrategy dashboards.
- * Supports multiple authentication methods and provides loading/error states.
+ * A React component that handles authentication and embedding of MicroStrategy dashboards.
+ * This component supports multiple authentication methods and provides customizable
+ * loading and error states.
  *
- * @example
+ * Features:
+ * - Multiple authentication methods (Guest, Standard, SAML, OIDC, LDAP)
+ * - Customizable loading and error states
+ * - Responsive design support
+ * - Custom styling options
+ *
+ * Usage example:
  * ```tsx
  * <DashboardEmbedWithAuth
  *   dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/..."
@@ -34,6 +55,9 @@ interface DashboardEmbedWithAuthProps {
  *   errorComponent={(error) => <ErrorAlert message={error} />}
  * />
  * ```
+ *
+ * @param props - Component props of type DashboardEmbedWithAuthProps
+ * @returns React component that renders the authenticated dashboard
  */
 const DashboardEmbedWithAuth = ({
   dossierUrl,
@@ -51,30 +75,35 @@ const DashboardEmbedWithAuth = ({
     </div>
   ),
 }: DashboardEmbedWithAuthProps) => {
+  // Extract server URL from the full dossier URL
   const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
+
+  // Create a ref for the dashboard container
   const divRef = useRef<HTMLDivElement>(null);
 
-  const { isAuthenticating, error, isAuthenticated } =
-    useCreateDashboardWithAuth({
-      serverUrlLibrary,
-      placeholder: divRef.current,
-      config: {
-        url: dossierUrl,
-        enableResponsive: true,
-        enableCustomAuthentication: true,
-        containerHeight: "600px",
-        containerWidth: "100%",
-        ...config,
-      },
-      loginMode,
-      username,
-      password,
-    });
+  // Initialize dashboard with authentication
+  const { isAuthenticating, error } = useCreateDashboardWithAuth({
+    serverUrlLibrary,
+    placeholder: divRef.current,
+    config: {
+      url: dossierUrl,
+      enableResponsive: true,
+      enableCustomAuthentication: true,
+      containerHeight: "600px",
+      containerWidth: "100%",
+      ...config,
+    },
+    loginMode,
+    username,
+    password,
+  });
 
+  // Show loading state while authenticating
   if (isAuthenticating) {
     return <>{loadingComponent}</>;
   }
 
+  // Show error state if authentication failed
   if (error) {
     return (
       <>
@@ -85,6 +114,7 @@ const DashboardEmbedWithAuth = ({
     );
   }
 
+  // Render the dashboard container
   return (
     <div
       ref={divRef}
