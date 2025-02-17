@@ -1,9 +1,10 @@
 {
   "exclude": ["node_modules"],
-  "extends": "@acme/tsconfig/nextjs.json",
   "compilerOptions": {
     "outDir": "dist",
     "incremental": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
     "plugins": [
       {
         "name": "next"
