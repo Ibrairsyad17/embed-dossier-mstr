@@ -114,7 +114,14 @@ interface MicroStrategyDossierConfig {
   disableErrorPopupWindow?: boolean; // Optional
   dockedComment?: DockedCommentAndFilter; // Optional
   dockedFilter?: DockedCommentAndFilter; // Optional
-  dockedTheme?: DockedTheme;
+  dockedTheme?: DockedTheme; // Optional
+  dockedToc?: {
+    dockedPosition?: "left" | "right";
+    theme?: "light" | "dark";
+    canClose?: boolean;
+    dockChangeable?: boolean;
+    isDocked?: boolean;
+  }; // Optional
   dossierFeature?: {
     readonly?: boolean;
   };

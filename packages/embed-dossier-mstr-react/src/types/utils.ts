@@ -82,6 +82,7 @@ export interface CustomUi {
       options?: boolean;
       bookmark?: boolean;
       undoRedo?: boolean;
+      search?: boolean;
       edit?: boolean;
       dockedToc?: {
         isOpen?: boolean;
