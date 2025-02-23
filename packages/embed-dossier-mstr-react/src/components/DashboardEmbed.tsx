@@ -16,7 +16,14 @@ const DashboardEmbed = ({
   style,
   config,
 }: DashboardEmbedProps) => {
-  const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
+  let serverUrlLibrary = "";
+
+  try {
+    const urlInfo = getInfoFromUrl(dossierUrl);
+    serverUrlLibrary = urlInfo.serverUrlLibrary;
+  } catch (error) {
+    console.error("Failed to parse dossier URL:", error);
+  }
 
   const { containerRef } = useCreateDashboard({
     serverUrlLibrary,
@@ -25,7 +32,8 @@ const DashboardEmbed = ({
       ...config,
     },
   });
-  return <div ref={containerRef} className={cn(className)} style={style}></div>;
+
+  return <div ref={containerRef} className={cn(className)} style={style} />;
 };
 
 export { DashboardEmbed };

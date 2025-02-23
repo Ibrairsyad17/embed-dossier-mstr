@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MicroStrategyDossier, MicroStrategyDossierConfig } from "../types";
 import { useLoadMstrSDK } from "./useLoadMstrSDK";
 
-interface UseCreateDashboardProps {
+export interface UseCreateDashboardProps {
   serverUrlLibrary: string;
   config: Omit<MicroStrategyDossierConfig, "placeholder">;
 }
