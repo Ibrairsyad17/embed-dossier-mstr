@@ -75,7 +75,6 @@ export { DashboardEmbedWithAuth } from "./components/DashboardEmbedWithAuth";
  * This is all the hooks that are exported from the package.
  */
 
-export { useCounter } from "./hooks/useCounter";
 export { useLoadMstrSDK } from "./hooks/useLoadMstrSDK";
 export { useCreateDashboard } from "./hooks/useCreateDashboard";
 export { useCreateLibraryPage } from "./hooks/useCreateLibraryPage";
