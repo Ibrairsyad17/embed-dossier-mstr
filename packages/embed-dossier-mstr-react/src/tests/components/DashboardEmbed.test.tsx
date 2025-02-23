@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { DashboardEmbed } from "../../components/DashboardEmbed";
 import { UseCreateDashboardProps } from "../../hooks/useCreateDashboard";
 
-// Create mock element and useCreateDashboard implementation
 const mockElement = document.createElement("div");
 const mockUseCreateDashboard = vi.fn().mockImplementation((props) => ({
   containerRef: { current: mockElement },
@@ -12,7 +11,6 @@ const mockUseCreateDashboard = vi.fn().mockImplementation((props) => ({
   isSdkLoaded: true,
 }));
 
-// Mock both the hook and utils
 vi.mock("../../hooks/useCreateDashboard", () => ({
   useCreateDashboard: (props: UseCreateDashboardProps) =>
     mockUseCreateDashboard(props),
