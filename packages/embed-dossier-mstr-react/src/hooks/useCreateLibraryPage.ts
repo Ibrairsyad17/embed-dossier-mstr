@@ -33,54 +33,68 @@ const useCreateLibraryPage = ({
 
   const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary });
 
-  useEffect(() => {
-    if (!isSdkLoaded || !libraryPageRef.current) return;
+  const prevConfigRef = useRef(config);
 
-    const createLibraryPage = async () => {
+  useEffect(() => {
+    if (!isSdkLoaded) return;
+    if (!libraryPage && !libraryPageState.isLoading) {
+      createLibraryPage();
+    }
+  }, [isSdkLoaded]);
+
+  useEffect(() => {
+    const configChanged =
+      JSON.stringify(config) !== JSON.stringify(prevConfigRef.current);
+
+    if (libraryPage && configChanged) {
+      createLibraryPage();
+    }
+
+    prevConfigRef.current = config;
+  }, [config]);
+
+  const createLibraryPage = async () => {
+    setLibraryPageState((prev) => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+    }));
+
+    try {
+      const embeddingContext =
+        await window.microstrategy.embeddingContexts.embedLibraryPage({
+          placeholder: libraryPageRef.current,
+          serverUrl: serverUrlLibrary,
+          errorHandler: (error) => {
+            console.error("Library page error:", error);
+            setLibraryPageState((prev) => ({
+              ...prev,
+              error: error.message || "Failed to load library page",
+            }));
+          },
+          sessionErrorHandler: (error) => {
+            console.error("Session error:", error);
+            setLibraryPageState((prev) => ({
+              ...prev,
+              error: "Session expired. Please refresh the page.",
+            }));
+          },
+          ...config,
+        });
+
+      setLibraryPage(embeddingContext);
+    } catch (error) {
       setLibraryPageState((prev) => ({
         ...prev,
-        isLoading: true,
-        error: null,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to create library page",
       }));
-
-      try {
-        const embeddingContext =
-          await window.microstrategy.embeddingContexts.embedLibraryPage({
-            placeholder: libraryPageRef.current,
-            serverUrl: serverUrlLibrary,
-            errorHandler: (error) => {
-              console.error("Library page error:", error);
-              setLibraryPageState((prev) => ({
-                ...prev,
-                error: error.message || "Failed to load library page",
-              }));
-            },
-            sessionErrorHandler: (error) => {
-              console.error("Session error:", error);
-              setLibraryPageState((prev) => ({
-                ...prev,
-                error: "Session expired. Please refresh the page.",
-              }));
-            },
-            ...config,
-          });
-
-        setLibraryPage(embeddingContext);
-      } catch (error) {
-        setLibraryPageState((prev) => ({
-          ...prev,
-          error:
-            error instanceof Error
-              ? error.message
-              : "Failed to create library page",
-        }));
-      } finally {
-        setLibraryPageState((prev) => ({ ...prev, isLoading: false }));
-      }
-    };
-
-    createLibraryPage();
-  }, [isSdkLoaded, serverUrlLibrary, config]);
+    } finally {
+      setLibraryPageState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
 
   return {
     libraryPage,
