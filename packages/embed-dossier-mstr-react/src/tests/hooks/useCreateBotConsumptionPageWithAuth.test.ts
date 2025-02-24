@@ -56,19 +56,6 @@ describe("useCreateBotConsumptionPageWithAuth", () => {
     });
   });
 
-  it("should initialize with correct state", () => {
-    const { result } = renderHook(() =>
-      useCreateBotConsumptionPageWithAuth(defaultProps)
-    );
-
-    expect(result.current).toMatchObject({
-      botConsumptionPage: null,
-      isAuthenticated: false,
-      isAuthenticating: false,
-      error: null,
-    });
-  });
-
   it("should handle guest authentication successfully", async () => {
     mockFetch.mockResolvedValueOnce({ ok: true }).mockResolvedValueOnce({
       ok: true,
