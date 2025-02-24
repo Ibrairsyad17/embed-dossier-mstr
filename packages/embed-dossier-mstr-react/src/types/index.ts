@@ -493,7 +493,7 @@ interface EmbedLibraryPageConfig {
   customAuthenticationType?:
     | MicroStrategyDossierConfigCustomAuthenticationType
     | string;
-  getLoginToken?: () => Promise<string | void>;
+  getLoginToken?: () => Promise<string | void | null>;
   disableCustomErrorHandlerOnCreate?: boolean;
   errorHandler?: (error: ErrorHandlerInterface) => void;
   sessionErrorHandler?: (error: ErrorHandlerInterface) => void;
@@ -543,13 +543,14 @@ interface EmbedDossierConsumptionPageConfig {
   projectId: string;
   objectId: string;
   customApplicationId?: string;
+  enableCustomAuthentication?: boolean;
   pageKey?: string;
   containerHeight?: string;
   containerWidth?: string;
   customAuthenticationType?:
     | MicroStrategyDossierConfigCustomAuthenticationType
     | string;
-  getLoginToken?: () => Promise<string | void>;
+  getLoginToken?: () => Promise<string | void | null>;
   disableCustomErrorHandlerOnCreate?: boolean;
   errorHandler?: (error: ErrorHandlerInterface) => void;
   sessionErrorHandler?: (error: ErrorHandlerInterface) => void;

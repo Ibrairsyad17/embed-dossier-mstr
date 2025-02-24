@@ -4,8 +4,6 @@ import { useCreateBotConsumptionPage } from "../../hooks/useCreateBotConsumption
 import { useLoadMstrSDK } from "../../exports";
 import { MicroStrategySDK } from "../../types";
 
-// ...existing code if any...
-
 vi.mock("../../exports", () => ({
   useLoadMstrSDK: vi.fn(),
 }));
@@ -33,20 +31,24 @@ describe("useCreateBotConsumptionPage", () => {
     mockEmbedBotConsumptionPage.mockResolvedValueOnce({});
     const { result } = renderHook(() =>
       useCreateBotConsumptionPage({
-        serverUrlLibrary: "test-server",
-        projectId: "test-project",
-        objectId: "test-object",
-        config: { containerHeight: "500px" },
+        serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+        projectId: "38328E048D427571975C388F7C402AD8",
+        objectId: "A81721DEC24012C1C40522B8A8EC36DE",
+        config: {
+          containerHeight: "500px",
+          customApplicationId: "C2B2023642F6753A2EF159A75E0CFF29",
+        },
       })
     );
 
     await vi.waitFor(() => {
       expect(mockEmbedBotConsumptionPage).toHaveBeenCalledWith(
         expect.objectContaining({
-          serverUrl: "test-server",
-          projectId: "test-project",
-          objectId: "test-object",
+          serverUrl: "https://demo.microstrategy.com/MicroStrategyLibrary",
+          projectId: "38328E048D427571975C388F7C402AD8",
+          objectId: "A81721DEC24012C1C40522B8A8EC36DE",
           containerHeight: "500px",
+          customApplicationId: "C2B2023642F6753A2EF159A75E0CFF29",
         })
       );
       expect(result.current.botConsumptionPage).not.toBeNull();
@@ -60,9 +62,9 @@ describe("useCreateBotConsumptionPage", () => {
     });
     renderHook(() =>
       useCreateBotConsumptionPage({
-        serverUrlLibrary: "test-server",
-        projectId: "test-project",
-        objectId: "test-object",
+        serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+        projectId: "38328E048D427571975C388F7C402AD8",
+        objectId: "A81721DEC24012C1C40522B8A8EC36DE",
         config: { containerHeight: "500px" },
       })
     );
@@ -75,9 +77,9 @@ describe("useCreateBotConsumptionPage", () => {
 
     const { result } = renderHook(() =>
       useCreateBotConsumptionPage({
-        serverUrlLibrary: "test-server",
-        projectId: "test-project",
-        objectId: "test-object",
+        serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+        projectId: "38328E048D427571975C388F7C402AD8",
+        objectId: "A81721DEC24012C1C40522B8A8EC36DE",
         config: { containerHeight: "500px" },
       })
     );
