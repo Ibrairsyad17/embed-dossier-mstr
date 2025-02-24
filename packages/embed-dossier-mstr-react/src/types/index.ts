@@ -490,6 +490,7 @@ interface EmbedLibraryPageConfig {
   serverUrl: string;
   containerHeight?: string;
   containerWidth?: string;
+  enableCustomAuthentication?: boolean;
   customAuthenticationType?:
     | MicroStrategyDossierConfigCustomAuthenticationType
     | string;
