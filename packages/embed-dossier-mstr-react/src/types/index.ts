@@ -514,15 +514,15 @@ interface EmbedLibraryPageConfig {
  */
 
 interface EmbedLibraryPage {
-  getAllMyGroups: () => Promise<{ id: string; name: string }[]>;
-  getAllDefaultGroups: () => Promise<{ id: string; name: string }[]>;
-  setNavigationBarEnabled: (enabled: boolean) => void;
-  setSidebarVisibility: (shown: boolean) => void;
-  addCustomErrorHandler: (
+  getAllMyGroups?: () => Promise<{ id: string; name: string }[]>;
+  getAllDefaultGroups?: () => Promise<{ id: string; name: string }[]>;
+  setNavigationBarEnabled?: (enabled: boolean) => void;
+  setSidebarVisibility?: (shown: boolean) => void;
+  addCustomErrorHandler?: (
     handler: (error: ErrorHandlerInterface) => void,
     showErrorPopup: boolean
   ) => void;
-  addSessionErrorHandler: (
+  addSessionErrorHandler?: (
     handler: (error: ErrorHandlerInterface) => void,
     showErrorPopup: boolean
   ) => void;
