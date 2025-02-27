@@ -4,21 +4,23 @@ export const siteicon = "/icon.png"
 export const gtm = "GTM-XXXXXXX"
 export const gtmconnected = true
 
-export const sitename = "Documents"
+export const sitename = "EmbedYourDossier"
 export const description =
   "This comprehensive documentation template, crafted with Next.js and available as open-source, delivers a sleek and responsive design, tailored to meet all your project documentation requirements."
 export const keywords = [
   "Next.js",
   "documentation",
-  "Rubix Studios",
+  "MicroStrategy",
   "open source",
   "SEO",
+  "React",
+  "MicroStrategy Embedding SDK",
 ]
 export const urlimage = "/images/og-image.png"
 export const imagealt = "Rubix Studios Documentation"
-export const twitterhandle = "@RubixStudios"
+export const twitterhandle = "@EmbedYourDossier"
 
-export const companyname = "Rubix Studios"
+export const companyname = "embed-dossier-mstr"
 export const companylink = "https://www.rubixstudios.com.au"
 
 export const branding = true
