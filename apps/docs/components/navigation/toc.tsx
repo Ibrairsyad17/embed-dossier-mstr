@@ -36,7 +36,7 @@ export default function Toc({ tocs }: TocProps) {
             <Link
               key={href}
               href={href}
-              scroll={false}
+              scroll={true}
               onClick={(e) => handleSmoothScroll(e, href)}
               className={clsx({
                 "pl-0": level == 2,
