@@ -6,12 +6,12 @@ export const Navigations = [
     href: `/docs${PageRoutes[0].href}`,
   },
   {
-    title: "Home",
-    href: "https://www.rubixstudios.com.au/",
+    title: "Package",
+    href: "https://www.npmjs.com/package/embed-dossier-mstr-react",
     external: true,
   },
 ]
 
 export const GitHubLink = {
-  href: "https://github.com/rubixvi/rubix-documents",
+  href: "https://github.com/Ibrairsyad17/embed-dossier-mstr/",
 }

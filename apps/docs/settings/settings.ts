@@ -1,12 +1,12 @@
 export const url = "https://rubix-documents.vercel.app"
 export const siteicon = "/embed-logo-icon.svg"
 
-export const gtm = "GTM-XXXXXXX"
+export const gtm = "GT-M34QK8LC"
 export const gtmconnected = true
 
 export const sitename = "EmbedYourDossier"
 export const description =
-  "This comprehensive documentation template, crafted with Next.js and available as open-source, delivers a sleek and responsive design, tailored to meet all your project documentation requirements."
+  "Comprehensive documentation for EmbedYourDossier - a powerful React component that simplifies MicroStrategy Embedding SDK integration into your React applications."
 export const keywords = [
   "Next.js",
   "documentation",
@@ -17,10 +17,10 @@ export const keywords = [
   "MicroStrategy Embedding SDK",
 ]
 export const urlimage = "/images/og-image.png"
-export const imagealt = "Rubix Studios Documentation"
+export const imagealt = "EmbedYourDossier for React Documentation"
 export const twitterhandle = "@EmbedYourDossier"
 
-export const companyname = "embed-dossier-mstr"
+export const companyname = "EmbedYourDossier"
 export const companylink = "https://www.rubixstudios.com.au"
 
 export const branding = true

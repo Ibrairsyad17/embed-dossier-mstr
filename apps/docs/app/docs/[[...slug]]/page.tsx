@@ -43,7 +43,7 @@ export default async function Pages({ params }: PageProps) {
             <Feedback slug={pathName} title={frontmatter.title} />
           )}
           {Settings.totop && (
-            <BackToTop className="mt-6 self-start text-sm text-orange-500" />
+            <BackToTop className="mt-6 self-start text-sm text-blue-500" />
           )}
         </div>
       )}
