@@ -44,7 +44,7 @@ export default function Card({
       )}
     >
       {external && href && variant !== "image" && (
-        <div className="absolute top-2 right-2 text-orange-500 dark:text-orange-400 group-hover:text-black dark:group-hover:text-white transform transition-transform duration-300 ease-in-out group-hover:translate-x-1 group-hover:-translate-y-1">
+        <div className="absolute top-2 right-2 text-blue-500 dark:text-blue-400 group-hover:text-black dark:group-hover:text-white transform transition-transform duration-300 ease-in-out group-hover:translate-x-1 group-hover:-translate-y-1">
           <ExternalIcon
             className="w-4 h-4 group-hover:stroke-[4]"
             strokeWidth={3}
