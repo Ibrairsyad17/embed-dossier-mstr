@@ -13,5 +13,5 @@ export const Navigations = [
 ]
 
 export const GitHubLink = {
-  href: "https://github.com/Ibrairsyad17/embed-dossier-mstr/",
+  href: "https://github.com/Ibrairsyad17/embed-dossier-mstr",
 }

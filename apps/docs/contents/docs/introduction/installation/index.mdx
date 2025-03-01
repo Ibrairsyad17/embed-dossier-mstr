@@ -1,11 +1,20 @@
 ---
 title: Installation
-description: This guide covers the installation of Documents and how to edit your new project.
-keywords: ["installation", "github", "node", "guide", "nextjs", "documents"]
+description: This guide covers the installation of embed-dossier-mstr-react.
+keywords:
+  [
+    "installation",
+    "node",
+    "guide",
+    "nextjs",
+    "microstrategy",
+    "react",
+    "embed-dossier-mstr-react",
+    "embedding sdk ",
+  ]
 ---
 
-To install and edit the Documents, you need to have several prerequisites in place. Here's a list of all the essential pre-requisites
-for setting up and working on this project.
+To install this `embed-dossier-mstr-react` package, you need to have several prerequisites in place. Here's a list of all the essential pre-requisites you need to have before installing the package:
 
 ## Prerequisites
 
@@ -23,14 +32,6 @@ npm -v
 ```
 
 </StepItem>
-<StepItem title="Git">
-You need to have Git installed to clone the repository. Download Git from [here](https://git-scm.com/).
-
-```bash
-git --version
-```
-
-</StepItem>
 <StepItem title="Code Editor">
 You’ll need a code editor to work on the project. Common options include:
 
@@ -43,102 +44,61 @@ You’ll need a code editor to work on the project. Common options include:
 - **Next.js:** Since this is a Next.js project, you should be familiar with Next.js basics.
 - **React:** The project uses React, so understanding React's component structure and hooks will help.
 - **TypeScript:** The project is written in TypeScript, so you should have a basic understanding of it.
-- **Tailwind:** The project uses Tailwind CSS for styling.
-- **MDX:** Markdown + JSX (MDX) is used for writing documentation.
 
 </StepItem>
 </Step>
 
 ## Installation
 
-<Step>
-<StepItem title="Clone the Repository">
-First, clone the repository to your local machine using Git:
+To install the package, you can use npm or yarn. Run the following command to install the package:
 
-```bash
-git clone https://github.com/rubixvi/rubix-documents.git
+<Tabs defaultValue="npm" className="pb-1 pt-5">
+  <TabsList className="">
+    <TabsTrigger value="npm">npm</TabsTrigger>
+    <TabsTrigger value="yarn">yarn</TabsTrigger>
+    <TabsTrigger value="pnpm">pnpm</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash
+    npm install embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash
+    yarn add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash
+    pnpm add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+</Tabs>
+
+## Simple Usage
+
+To use the package in simply way, you need to import the `DashboardEmbed` component from the package and use it in your project. Here's a simple example of how you can use the package:
+
+```tsx {11} showLineNumbers
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+const MinimalTemplateEmbed = () => {
+  return (
+    <>
+      <DashboardEmbed
+        dossierUrl="your-dossier-url"
+        style={{
+          width: "1000px",
+          height: "1200px",
+        }}
+      />
+    </>
+  )
+}
+
+export default MinimalTemplateEmbed
 ```
-
-Change the directory to the project folder:
-
-```bash
-cd rubix-documents
-```
-
-</StepItem>
-<StepItem title="Install Dependencies">
-Use npm to install all the required dependencies:
-
-```bash
-npm install
-```
-
-This will install all the dependencies listed in the package.json file, including:
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- MDX components
-- Other dependencies like ESLint, PostCSS, Husky, etc.
-
-</StepItem>
-
-<StepItem title="Running the Development Server">
-Start the development server by running:
-
-```bash
-npm run dev
-```
-
-This will start the local server, and you can open your browser at:
-
-```arduino
-http://localhost:3000
-```
-
-</StepItem>
-
-<StepItem title="Editing the Project">
-  - **MDX Files:** Documentation content is stored in `contents/docs`.
-  - **Components:** You can edit React components in the `components/` directory.
-  - **Tailwind:** Tailwind styling are managed in `tailwind.config.ts` and `app/globals.css`.
-
-To make any changes to the project, open the files in your editor and modify them as needed.
-
-<Note title="Required" type="danger">
-  The project's search functionality relies on the Husky's automation to build
-  `search-data/documents.json` ensure git commit is performed to generate this
-  file.
-</Note>
-
-</StepItem>
-<StepItem title="Building for Production">
-Once you’ve made your changes and want to build the project for production:
-
-```bash
-npm run build
-```
-
-This will generate a production-ready build of the app.
-
-</StepItem>
-<StepItem title="Running Production Server">
-To run the production server:
-
-```bash
-npm run start
-```
-
-The production app will be available at:
-
-```arduino
-http://localhost:3000
-```
-
-</StepItem>
-</Step>
 
 ## Important Information
 
-The project's search functionality relies on the Husky's automation to build `search-data/documents.json` ensure git commit is performed to generate this file.
+**Configuration:** You need to configure the package with your MicroStrategy environment details. Refer to the package documentation for more information.
