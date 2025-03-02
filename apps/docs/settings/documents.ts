@@ -11,8 +11,12 @@ export const Documents: Paths[] = [
         href: "/installation",
       },
       {
-        title: "Setup & Configure Library Server",
-        href: "/setup",
+        title: "Configure Library Server",
+        href: "/configure-library-server",
+      },
+      {
+        title: "Quick Start",
+        href: "/quick-start",
       },
       {
         title: "Changelog",

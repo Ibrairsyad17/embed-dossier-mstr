@@ -1,0 +1,243 @@
+---
+title: "Quick Start"
+description: "Quick start guide to integrate your Bot, Dashboard, Library Page, and Visualization with MicroStrategy Embedding SDK using embed-dossier-mstr-react in your React application."
+keywords:
+  [
+    "quick start",
+    "integration",
+    "Bot",
+    "Dashboard",
+    "Library Page",
+    "Visualization",
+    "Embedding SDK",
+    "embed-dossier-mstr-react",
+    "React",
+  ]
+---
+
+The Embedding SDK allows you to quickly integrate a MicroStrategy dashboard into a web application in a responsive manner. This guide will walk you through the process of integrating your Bot, Dashboard, Library Page, and Visualization with MicroStrategy Embedding SDK using `embed-dossier-mstr-react` in your React application.
+
+## Install The Package
+
+In this section we will show you how to embed a simple dashboard in your React application. Start by installing the `embed-dossier-mstr-react` package. Run the following command to install the package:
+
+<Tabs defaultValue="npm" className="pb-1 pt-5">
+  <TabsList className="">
+    <TabsTrigger value="npm">npm</TabsTrigger>
+    <TabsTrigger value="yarn">yarn</TabsTrigger>
+    <TabsTrigger value="pnpm">pnpm</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash
+	npm install embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash
+	yarn add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash
+	pnpm add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+</Tabs>
+
+## Simple Usage
+
+Next, import the `DashboardEmbed` component from the package and use it in your project. Here's a simple example of how you can use the package:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+const MinimalTemplateEmbed = () => {
+  return (
+    <>
+      <DashboardEmbed
+        dossierUrl="your-dossier-url"
+        style={{
+          width: "1000px",
+          height: "1200px",
+        }}
+      />
+    </>
+  )
+}
+
+export default MinimalTemplateEmbed
+```
+
+That's it! You have successfully embedded a simple dashboard in your React application using a DashboardEmbed component from the `embed-dossier-mstr-react` package.
+
+## Usage With Configuration
+
+You can also customize the Dashboard properties when embedding it in your React application. Here's an example with detailed configuration options:
+
+```tsx {6-79} showLineNumbers
+import {
+  DashboardEmbed,
+  MicroStrategyDossierConfig,
+} from "embed-dossier-mstr-react"
+
+const dossierConfig: Omit<MicroStrategyDossierConfig, "placeholder" | "url"> = {
+  customUi: {},
+  disableNotification: true,
+  dockedComment: {
+    dockedPosition: "left",
+    canClose: true,
+    dockChangeable: false,
+    isDocked: false,
+  },
+  dockedFilter: {
+    dockedPosition: "left",
+    canClose: true,
+    dockChangeable: false,
+    isDocked: false,
+  },
+  dossierFeature: {
+    readonly: false,
+  },
+  enableCollaboration: true,
+  enableCustomAuthentication: false,
+  enableResponsive: true,
+  filterFeature: {
+    enabled: true,
+    edit: true,
+    summary: true,
+  },
+  filters: [],
+  navigationBar: {
+    enabled: true,
+    gotoLibrary: true,
+    title: true,
+    toc: true,
+    reset: true,
+    reprompt: true,
+    share: true,
+    comment: true,
+    notification: true,
+    filter: true,
+    options: true,
+    bookmark: true,
+    edit: false,
+  },
+  optionsFeature: {
+    enabled: true,
+    help: false,
+    logout: true,
+    manage: false,
+    showTutorials: false,
+  },
+  shareFeature: {
+    enabled: true,
+    invite: false,
+    link: true,
+    email: false,
+    export: true,
+    download: false,
+    shareDossier: false,
+    subscribe: false,
+  },
+  smartBanner: false,
+  tocFeature: {
+    enabled: true,
+  },
+  uiMessage: {
+    enabled: true,
+    addToLibrary: false,
+  },
+  visibleTutorials: {
+    library: true,
+    welcome: false,
+    dossier: true,
+    notification: false,
+  },
+}
+
+const SimpleDashboardEmbed = () => {
+  return (
+    <>
+      <DashboardEmbed
+        dossierUrl="your-dossier-url" // Example: https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0
+        config={dossierConfig}
+        style={{
+          width: "1000px",
+          height: "1200px",
+        }}
+      />
+    </>
+  )
+}
+
+export default SimpleDashboardEmbed
+```
+
+And there you have it! You have successfully embedded a dashboard in your React application with detailed configuration options using the `embed-dossier-mstr-react` package.
+
+## Usage Using Hooks
+
+In `embed-dossier-mstr-react`, you can also use hooks to embed a dashboard in your React application. There's a lot of flexibility in using hooks to embed a dashboard. Here's an example of how you can use hooks to embed a dashboard:
+
+```tsx
+import cn from "classnames"
+import {
+  getInfoFromUrl,
+  MicroStrategyDossierConfig,
+  useCreateDashboard,
+} from "embed-dossier-mstr-react"
+
+interface EmbedWithHooksProps {
+  dossierUrl: string // https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
+  className?: string
+  style?: React.CSSProperties
+  config?: Omit<MicroStrategyDossierConfig, "placeholder" | "url">
+}
+
+const EmbedWithHooks = ({
+  dossierUrl,
+  className,
+  style,
+  config,
+}: EmbedWithHooksProps) => {
+  let serverUrlLibrary = ""
+
+  try {
+    const urlInfo = getInfoFromUrl(dossierUrl)
+    serverUrlLibrary = urlInfo.serverUrlLibrary
+  } catch (error) {
+    console.error("Failed to parse dossier URL:", error)
+  }
+
+  const { dashboard, containerRef, isSdkLoaded, isDashboardError } =
+    useCreateDashboard({
+      serverUrlLibrary,
+      config: {
+        url: dossierUrl,
+        ...config,
+      },
+    })
+
+  if (isDashboardError) {
+    return <div>Failed to load dashboard</div>
+  }
+
+  if (!isSdkLoaded) {
+    return <div>Loading...</div>
+  }
+
+  if (dashboard) {
+    console.log("Dashboard has created")
+  }
+
+  return <div ref={containerRef} className={cn(className)} style={style} />
+}
+
+export { EmbedWithHooks }
+```
+
+With this example, you have successfully embedded a dashboard in your React application using hooks from the `embed-dossier-mstr-react` package.
+
+## Information
+
+For more implementation examples you could see the [examples](/examples) section.
