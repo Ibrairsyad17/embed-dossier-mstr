@@ -25,9 +25,23 @@ export const Documents: Paths[] = [
     ],
   },
   {
-    title: "Navigation",
-    href: "/navigation",
-    heading: "Documents",
+    title: "Embedding Use Cases",
+    href: "/embedding-use-cases",
+    heading: "Use Cases",
+    items: [
+      {
+        title: "Dashboard Use Case",
+        href: "/dashboard-use-case",
+      },
+      {
+        title: "Library Page Use Case",
+        href: "/library-page-use-case",
+      },
+      {
+        title: "Bot Page Use Case",
+        href: "/bot-page-use-case",
+      },
+    ],
   },
   {
     title: "Markdown",
