@@ -65,4 +65,26 @@ export const Documents: Paths[] = [
       { title: "Error Handling", href: "/error-handling" },
     ],
   },
+  {
+    title: "About API Reference",
+    href: "/api-reference",
+    heading: "API Reference",
+    items: [
+      { title: "<DashboardEmbed />", href: "/dashboard-embed" },
+      {
+        title: "<DashboardEmbedWithAuth />",
+        href: "/dashboard-embed-with-auth",
+      },
+      { title: "<LibraryPageEmbed />", href: "/library-page-embed" },
+      {
+        title: "<LibraryPageEmbedWithAuth />",
+        href: "/library-page-embed-with-auth",
+      },
+      { title: "<BotConsumptionPage />", href: "/bot-consumption-page" },
+      {
+        title: "<BotConsumptionPageWithAuth />",
+        href: "/bot-consumption-page-with-auth",
+      },
+    ],
+  },
 ]
