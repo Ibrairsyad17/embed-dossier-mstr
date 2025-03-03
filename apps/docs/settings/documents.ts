@@ -113,6 +113,10 @@ export const Documents: Paths[] = [
         title: "useCreateBotConsumptionPageWithAuth()",
         href: "/use-create-bot-consumption-page-with-auth",
       },
+      {
+        title: "MicroStrategySDK",
+        href: "/microstrategy-sdk",
+      },
     ],
   },
 ]
