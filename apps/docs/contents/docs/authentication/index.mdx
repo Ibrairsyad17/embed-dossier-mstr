@@ -1,0 +1,70 @@
+---
+title: Authentication Environments
+description: An overview of authentication environments in MicroStrategy's Embedding SDK.
+keywords:
+  [
+    "MicroStrategy",
+    "Embedding",
+    "Authentication",
+    "Guest",
+    "Standard",
+    "SAML",
+    "OIDC",
+  ]
+---
+
+## Overview
+
+MicroStrategy's Embedding SDK provides multiple authentication methods to integrate content into your web applications seamlessly. This guide covers the available authentication options and their specific use cases.
+
+When embedding dashboards, the goal is to create a frictionless user experience. The implementation approach varies based on your MicroStrategy environment's authentication setup, whether you need passwordless access, single sign-on, or other authentication methods.
+
+The `embed-dossier-mstr-react` package supports these authentication environments:
+
+- **Guest**: No authentication required.
+- **Standard**: Username and password authentication.
+- **SAML**: Security Assertion Markup Language (SAML) authentication.
+- **OIDC**: OpenID Connect (OIDC) authentication.
+
+Each authentication environment has unique requirements and configurations. The Authentication section provides detailed guidance for integrating MicroStrategy's Embedding SDK with your React application across different authentication methods.
+
+Here's the cards to navigate to the specific authentication environment:
+
+<CardGrid>
+  <Card
+    subtitle="Guest"
+    title="Guest Authentication"
+    description="Learn how to embed MicroStrategy content in your React application without requiring authentication."
+    href="/docs/authentication/guest-authentication"
+  />
+  <Card
+    subtitle="Standard"
+    title="Standard Authentication"
+    description="Learn how to embed MicroStrategy content in your React application using standard username and password authentication."
+    href="/docs/authentication/standard-authentication"
+  />
+  <Card
+    subtitle="SAML"
+    title="SAML Authentication"
+    description="Learn how to embed MicroStrategy content in your React application using Security Assertion Markup Language (SAML) authentication."
+    href="/docs/authentication/saml-authentication"
+  />
+  <Card
+    subtitle="OIDC"
+    title="OIDC Authentication"
+    description="Learn how to embed MicroStrategy content in your React application using OpenID Connect (OIDC) authentication."
+    href="/docs/authentication/oidc-authentication"
+  />
+</CardGrid>
+
+## More Information
+
+<Note title="Tip" type="success">
+  If you plan to use Embedding SDK on a web page on a different domain from your MicroStrategy environment, please also meet the following requirements. More information in
+
+1. [Enable Cross-Origin Resource Sharing (CORS)](../introduction/configure-library-server/index.mdx#enable-cross-origin-resource-sharing-cors)
+2. [Allow SameSite cookies](../introduction/configure-library-server/index.mdx#allow-samesite-cookies)
+
+If you plan to use Embedding SDK on the same domain as your MicroStrategy, the above changes are not required.
+
+</Note>
