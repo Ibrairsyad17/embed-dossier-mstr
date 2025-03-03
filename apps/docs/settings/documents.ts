@@ -85,6 +85,34 @@ export const Documents: Paths[] = [
         title: "<BotConsumptionPageWithAuth />",
         href: "/bot-consumption-page-with-auth",
       },
+      {
+        title: "useLoadMstrSDK()",
+        href: "/use-load-mstr-sdk",
+      },
+      {
+        title: "useCreateDashboard()",
+        href: "/use-create-dashboard",
+      },
+      {
+        title: "useCreateDashboardWithAuth()",
+        href: "/use-create-dashboard-with-auth",
+      },
+      {
+        title: "useCreateLibraryPage()",
+        href: "/use-create-library-page",
+      },
+      {
+        title: "useCreateLibraryPageWithAuth()",
+        href: "/use-create-library-page-with-auth",
+      },
+      {
+        title: "useCreateBotConsumptionPage()",
+        href: "/use-create-bot-consumption-page",
+      },
+      {
+        title: "useCreateBotConsumptionPageWithAuth()",
+        href: "/use-create-bot-consumption-page-with-auth",
+      },
     ],
   },
 ]
