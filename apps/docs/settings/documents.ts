@@ -55,6 +55,17 @@ export const Documents: Paths[] = [
     ],
   },
   {
+    title: "Functionalities",
+    href: "/functionalities",
+    heading: "Functionalities",
+    items: [
+      { title: "Navigation", href: "/navigation" },
+      { title: "Filters", href: "/filters" },
+      { title: "Event Handling", href: "/event-handling" },
+      { title: "Error Handling", href: "/error-handling" },
+    ],
+  },
+  {
     title: "Markdown",
     href: "/markdown",
     heading: "Components",
