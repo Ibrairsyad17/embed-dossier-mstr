@@ -44,6 +44,17 @@ export const Documents: Paths[] = [
     ],
   },
   {
+    title: "Authentication Modes",
+    href: "/authentication",
+    heading: "Authentication",
+    items: [
+      { title: "Guest Authentication", href: "/guest-authentication" },
+      { title: "Standard Authentication", href: "/standard-authentication" },
+      { title: "SAML Authentication", href: "/saml-authentication" },
+      { title: "OIDC Authentication", href: "/oidc-authentication" },
+    ],
+  },
+  {
     title: "Markdown",
     href: "/markdown",
     heading: "Components",
