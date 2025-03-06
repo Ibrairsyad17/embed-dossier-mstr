@@ -114,9 +114,84 @@ export const Documents: Paths[] = [
         href: "/use-create-bot-consumption-page-with-auth",
       },
       {
-        title: "MicroStrategySDK",
-        href: "/microstrategy-sdk",
+        title: "Types and Interfaces",
+        href: "/types-and-interfaces",
+        items: [
+          { title: "MicroStrategy SDK", href: "/microstrategy-sdk" },
+          {
+            title: "MicroStrategyDossierConfig",
+            href: "/microstrategy-dossier-config",
+          },
+          {
+            title: "MicroStrategyDossierConfigCustomAuthenticationType",
+            href: "/microstrategy-dossier-config-custom-authentication-type",
+          },
+          { title: "MicroStrategyDossier", href: "/microstrategy-dossier" },
+          { title: "EmbeddingContexts", href: "/embedding-contexts" },
+          {
+            title: "EmbedLibraryPageConfig",
+            href: "/embed-library-page-config",
+          },
+          { title: "EmbedLibraryPage", href: "/embed-library-page" },
+          {
+            title: "EmbedDossierConsumptionPageConfig",
+            href: "/embed-dossier-consumption-page-config",
+          },
+          {
+            title: "EmbedBotConsumptionPageConfig",
+            href: "/embed-bot-consumption-page-config",
+          },
+          {
+            title: "EmbedBotConsumptionPage",
+            href: "/embed-bot-consumption-page",
+          },
+          { title: "EmbedReportPageConfig", href: "/embed-report-page-config" },
+          { title: "EmbedReportPage", href: "/embed-report-page" },
+          {
+            title: "EmbedDossierConsumptionPage",
+            href: "/embed-dossier-consumption-page",
+          },
+          { title: "Settings", href: "/settings" },
+          { title: "EventTypes", href: "/event-types" },
+          { title: "EventHandler", href: "/event-handler" },
+          { title: "EventHandlers", href: "/event-handlers" },
+          {
+            title: "FilterTypeInfoCalendar",
+            href: "/filter-type-info-calendar",
+          },
+          {
+            title: "FilterTypeInfoMetricQualByValue",
+            href: "/filter-type-info-metric",
+          },
+          { title: "TableOfContents", href: "/table-of-contents" },
+          { title: "DossierPage", href: "/dossier-page" },
+          { title: "DossierChapter", href: "/dossier-chapter" },
+          {
+            title: "DockedCommentAndFilter",
+            href: "/docked-comment-and-filter",
+          },
+          { title: "DockedTheme", href: "/docked-theme" },
+          { title: "NavigationBar", href: "/navigation-bar" },
+          { title: "CustomUi", href: "/custom-ui" },
+          { title: "OptionsFeature", href: "/options-feature" },
+          { title: "ShareFeature", href: "/share-feature" },
+          { title: "CurrentPage", href: "/current-page" },
+          { title: "PageInfo", href: "/page-info" },
+          {
+            title: "DossierConsumptionSettings",
+            href: "/dossier-consumption-settings",
+          },
+          {
+            title: "BotConsumptionSettings",
+            href: "/bot-consumption-settings",
+          },
+        ],
       },
     ],
+  },
+  {
+    title: "Examples Implementation",
+    href: "/examples-implementation",
+    heading: "Examples",
   },
 ]
