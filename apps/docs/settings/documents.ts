@@ -165,6 +165,7 @@ export const Documents: Paths[] = [
           },
           { title: "TableOfContents", href: "/table-of-contents" },
           { title: "DossierPage", href: "/dossier-page" },
+
           { title: "DossierChapter", href: "/dossier-chapter" },
           {
             title: "DockedCommentAndFilter",
