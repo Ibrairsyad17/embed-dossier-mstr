@@ -11,3 +11,483 @@ keywords:
     "Dashboard",
   ]
 ---
+
+# Embedding MicroStrategy Dashboard
+
+This guide demonstrates how to embed a MicroStrategy dashboard into your React application using the `embed-dossier-mstr-react` package.
+
+## Installation
+
+First, install the package. You could see the documentation about installing the package in [Installation Page](/docs/installation)
+
+## Basic Usage
+
+The simplest way to embed a dashboard is using the `DashboardEmbed` component:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+function MyDashboard() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbed` component accepts the following props:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier in the format:
+  `https://{env-url}/{libraryName}/app/{projectId}/{dossierId}`
+- `className` (optional): CSS class names to apply to the container
+- `style` (optional): React inline styles for the container
+- `config` (optional): Additional configuration options for the dashboard
+
+## Advanced Configuration
+
+You can customize the dashboard behavior using the `config` prop:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+function CustomizedDashboard() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      config={{
+        enableResponsive: true,
+        containerHeight: "800px",
+        containerWidth: "100%",
+        dockedFilter: {
+          enabled: true,
+          pinned: true,
+          position: "left",
+        },
+        filterFeature: {
+          enabled: true,
+          edit: true,
+          summary: true,
+        },
+        shareFeature: {
+          enabled: true,
+          export: true,
+          download: true,
+        },
+      }}
+    />
+  )
+}
+```
+
+## Using the useCreateDashboard Hook
+
+For more control over the dashboard embedding process, you can use the `useCreateDashboard` hook directly:
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+function CustomDashboard() {
+  const { containerRef, dashboard, isSdkLoaded, isDashboardError } =
+    useCreateDashboard({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (!isSdkLoaded) {
+    return <div>Loading MicroStrategy SDK...</div>
+  }
+
+  if (isDashboardError) {
+    return <div>Error loading dashboard</div>
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} className="dashboard-container" />
+      {dashboard && (
+        <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboard` hook returns an object with the following properties:
+
+- `containerRef`: React ref that must be attached to the container div
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isSdkLoaded`: Boolean indicating if the MicroStrategy SDK has loaded
+- `isDashboardError`: Boolean indicating if there was an error loading the dashboard
+
+## Error Handling
+
+The component and hook include built-in error handling:
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+function DashboardWithErrorHandling() {
+  const { containerRef, isSdkLoaded, isDashboardError } = useCreateDashboard({
+    serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+    config: {
+      url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+      disableErrorPopupWindow: true, // Handle errors manually
+      disableNotification: true,
+    },
+  })
+
+  if (!isSdkLoaded) {
+    return <div>Loading...</div>
+  }
+
+  if (isDashboardError) {
+    return <div>Failed to load dashboard. Please try again later.</div>
+  }
+
+  return <div ref={containerRef} className="dashboard-container" />
+}
+```
+
+## Best Practices
+
+1. **URL Handling**: Always validate the dossier URL format before passing it to the component
+2. **Responsive Design**: Enable responsive mode when embedding in responsive layouts
+3. **Error Handling**: Implement proper error handling for both SDK loading and dashboard creation
+4. **Performance**: Consider the container size and loading states to prevent layout shifts
+
+## Common Issues and Solutions
+
+### 1. Dashboard Not Loading
+
+#### Symptoms
+
+- Blank screen where dashboard should appear
+- Loading indicator that never completes
+- Console errors related to MicroStrategy SDK
+
+#### Common Causes and Solutions
+
+##### Invalid URL or Server Configuration
+
+```tsx
+// ❌ Incorrect URL format
+const BadExample = () => <DashboardEmbed dossierUrl="invalid-url" />
+
+// ✅ Correct URL format
+const GoodExample = () => (
+  <DashboardEmbed
+    dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/{projectId}/{dossierId}"
+    config={{
+      // Add error handling for URL issues
+      errorHandler: (error) => {
+        console.error("URL Error:", error)
+        // Implement your error handling logic
+      },
+    }}
+  />
+)
+```
+
+##### Authentication Issues
+
+```tsx
+// ✅ Proper authentication handling
+const DashboardWithAuth = () => (
+  <DashboardEmbed
+    dossierUrl="your-dossier-url"
+    config={{
+      enableCustomAuthentication: true,
+      customAuthenticationType: "AUTH_TOKEN",
+      getLoginToken: async () => {
+        try {
+          const token = await fetchAuthToken()
+          return token
+        } catch (error) {
+          console.error("Authentication failed:", error)
+          // Handle authentication failure
+          return null
+        }
+      },
+      // Handle session expiration
+      sessionErrorHandler: (error) => {
+        if (error.code === "TOKEN_EXPIRED") {
+          // Implement token refresh logic
+        }
+      },
+    }}
+  />
+)
+```
+
+### 2. Layout and Rendering Issues
+
+#### Symptoms
+
+- Dashboard appears too small or large
+- Content overflow or scrolling issues
+- Responsive layout not working
+- Visualization display problems
+
+#### Common Causes and Solutions
+
+##### Container Sizing Problems
+
+```tsx
+// ❌ Problematic container configuration
+const ProblematicLayout = () => (
+  <div style={{ height: "100%" }}>
+    {" "}
+    {/* Unreliable height */}
+    <DashboardEmbed
+      dossierUrl="your-dossier-url"
+      config={{ containerHeight: "100%" }}
+    />
+  </div>
+)
+
+// ✅ Proper container configuration
+const ProperLayout = () => (
+  <div style={{ height: "100vh", position: "relative" }}>
+    <DashboardEmbed
+      dossierUrl="your-dossier-url"
+      config={{
+        containerHeight: "800px",
+        containerWidth: "100%",
+        enableResponsive: true,
+      }}
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    />
+  </div>
+)
+```
+
+##### Responsive Design Issues
+
+```tsx
+// ✅ Comprehensive responsive configuration
+const ResponsiveDashboard = () => (
+  <DashboardEmbed
+    dossierUrl="your-dossier-url"
+    config={{
+      enableResponsive: true,
+      containerHeight: "100%",
+      containerWidth: "100%",
+      // Optimize for mobile viewing
+      dockedFilter: {
+        enabled: true,
+        pinned: false,
+        position: "top",
+      },
+      // Adjust TOC for better mobile experience
+      dockedToc: {
+        dockedPosition: "left",
+        canClose: true,
+        isDocked: false,
+      },
+    }}
+  />
+)
+```
+
+### 3. Performance Issues
+
+#### Symptoms
+
+- Slow initial loading
+- Delayed response to interactions
+- High memory usage
+- Browser freezing
+
+#### Common Causes and Solutions
+
+##### Optimization Configuration
+
+```tsx
+// ✅ Performance-optimized configuration
+const OptimizedDashboard = () => (
+  <DashboardEmbed
+    dossierUrl="your-dossier-url"
+    config={{
+      // Reduce initial load time
+      instance: {
+        partialManipulation: true,
+      },
+      // Disable non-essential features
+      disableNotification: true,
+      smartBanner: false,
+      // Optimize filter performance
+      filterFeature: {
+        enabled: true,
+        summary: false, // Disable summary for better performance
+      },
+      // Lazy load visualizations
+      dossierFeature: {
+        readonly: true, // Use readonly mode for better performance
+      },
+    }}
+  />
+)
+```
+
+##### Memory Management
+
+```tsx
+// ✅ Component with proper cleanup
+const ManagedDashboard = () => {
+  const { dashboard, containerRef } = useCreateDashboard({
+    serverUrlLibrary: "your-server",
+    config: {
+      url: "your-dossier-url",
+      // ... other config
+    },
+  })
+
+  useEffect(() => {
+    return () => {
+      // Cleanup when component unmounts
+      if (dashboard) {
+        dashboard.close()
+      }
+    }
+  }, [dashboard])
+
+  return <div ref={containerRef} />
+}
+```
+
+### 4. Filter and Interaction Issues
+
+#### Symptoms
+
+- Filters not applying correctly
+- Interaction events not firing
+- State synchronization problems
+
+#### Common Causes and Solutions
+
+##### Filter Handling
+
+```tsx
+// ✅ Robust filter configuration
+const DashboardWithFilters = () => (
+  <DashboardEmbed
+    dossierUrl="your-dossier-url"
+    config={{
+      filterFeature: {
+        enabled: true,
+        edit: true,
+        summary: true,
+      },
+      // Initialize with default filters
+      filters: [
+        {
+          key: "your-filter-key",
+          name: "Your Filter",
+          selections: ["value1", "value2"],
+        },
+      ],
+      // Handle filter changes
+      errorHandler: (error) => {
+        if (error.code === "FILTER_APPLY_ERROR") {
+          // Handle filter application errors
+          console.error("Filter error:", error)
+        }
+      },
+    }}
+  />
+)
+```
+
+##### Event Handling
+
+```tsx
+// ✅ Comprehensive event handling
+const InteractiveDashboard = () => {
+  const { dashboard, containerRef } = useCreateDashboard({
+    serverUrlLibrary: "your-server",
+    config: {
+      url: "your-dossier-url",
+    },
+  })
+
+  useEffect(() => {
+    if (dashboard) {
+      // Register event handlers
+      dashboard.registerFilterUpdateHandler((event) => {
+        console.log("Filter updated:", event)
+      })
+
+      dashboard.registerPageSwitchHandler((event) => {
+        console.log("Page switched:", event)
+      })
+
+      dashboard.registerDossierInstanceIDChangeHandler((event) => {
+        console.log("Instance changed:", event)
+      })
+    }
+  }, [dashboard])
+
+  return <div ref={containerRef} />
+}
+```
+
+### 5. Cross-Browser Compatibility
+
+#### Symptoms
+
+- Different behavior across browsers
+- Features working in some browsers but not others
+- Styling inconsistencies
+
+#### Solutions
+
+```tsx
+// ✅ Cross-browser compatible configuration
+const CrossBrowserDashboard = () => (
+  <DashboardEmbed
+    dossierUrl="your-dossier-url"
+    config={{
+      // Use standard features supported across browsers
+      enableResponsive: true,
+      // Avoid browser-specific CSS
+      containerHeight: "800px",
+      containerWidth: "100%",
+      // Handle browser-specific errors
+      errorHandler: (error) => {
+        if (error.code === "BROWSER_NOT_SUPPORTED") {
+          // Show browser compatibility message
+        }
+      },
+    }}
+    // Use cross-browser CSS
+    style={{
+      width: "100%",
+      height: "100%",
+      position: "relative",
+      overflow: "hidden",
+    }}
+  />
+)
+```
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).
