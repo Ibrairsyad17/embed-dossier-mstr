@@ -11,3 +11,226 @@ keywords:
     "Bot",
   ]
 ---
+
+# Embedding MicroStrategy Bot Consumption Page
+
+This guide demonstrates how to embed a MicroStrategy Bot Consumption Page into your React application using the `embed-dossier-mstr-react` package.
+
+## Installation
+
+First, install the package. You could see the documentation about installing the package in [Installation Page](/docs/installation)
+
+## Basic Usage
+
+The simplest way to embed a bot consumption page is using the `BotConsumptionPage` component:
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+
+function MyBotPage() {
+  return (
+    <BotConsumptionPage
+      serverUrlLibrary="https://your-mstr-server/MicroStrategyLibrary"
+      projectId="your-project-id"
+      objectId="your-bot-id"
+      className="bot-container"
+      style={{ height: "600px" }}
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+      }}
+    />
+  )
+}
+```
+
+### Props
+
+The `BotConsumptionPage` component accepts the following props:
+
+- `serverUrlLibrary` (required): The URL of your MicroStrategy Library server
+- `projectId` (required): The ID of the project containing the bot
+- `objectId` (required): The ID of the bot to embed
+- `className` (optional): CSS class names to apply to the container
+- `style` (optional): React inline styles for the container
+- `config` (optional): Additional configuration options for the bot page
+
+## Advanced Configuration
+
+You can customize the bot consumption page behavior using the `config` prop:
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+
+function CustomizedBotPage() {
+  return (
+    <BotConsumptionPage
+      serverUrlLibrary="https://your-mstr-server/MicroStrategyLibrary"
+      projectId="your-project-id"
+      objectId="your-bot-id"
+      config={{
+        // Authentication
+        enableCustomAuthentication: true,
+        customAuthenticationType: "AUTH_TOKEN",
+        getLoginToken: async () => "your-auth-token",
+
+        // Container settings
+        containerHeight: "800px",
+        containerWidth: "100%",
+
+        // Bot-specific settings
+        disableHyper: false,
+        permissions: {
+          allowClipboardWrite: true,
+        },
+
+        // Custom UI settings
+        customUi: {
+          library: {
+            toolbarEnabled: false,
+          },
+        },
+
+        // Error handling
+        errorHandler: (error) => {
+          console.error("Bot error:", error)
+        },
+        sessionErrorHandler: (error) => {
+          console.error("Session error:", error)
+        },
+      }}
+    />
+  )
+}
+```
+
+## Using the useCreateBotConsumptionPage Hook
+
+For more control over the bot page embedding process, you can use the `useCreateBotConsumptionPage` hook directly:
+
+```tsx
+import { useCreateBotConsumptionPage } from "embed-dossier-mstr-react"
+
+function CustomBotPage() {
+  const {
+    botConsumptionPage,
+    botConsumptionPageRef,
+    isBotConsumptionPageError,
+    isSdkError,
+    isSdkLoaded,
+  } = useCreateBotConsumptionPage({
+    serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+    projectId: "your-project-id",
+    objectId: "your-bot-id",
+    config: {
+      containerHeight: "600px",
+      containerWidth: "100%",
+      enableCustomAuthentication: true,
+    },
+  })
+
+  if (!isSdkLoaded) {
+    return <div>Loading MicroStrategy SDK...</div>
+  }
+
+  if (isSdkError || isBotConsumptionPageError) {
+    return <div>Error loading bot page</div>
+  }
+
+  return (
+    <div>
+      <div ref={botConsumptionPageRef} className="bot-container" />
+      {botConsumptionPage && <div>Bot page loaded successfully!</div>}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateBotConsumptionPage` hook returns an object with the following properties:
+
+- `botConsumptionPage`: The MicroStrategy bot page instance (null until loaded)
+- `botConsumptionPageRef`: React ref that must be attached to the container div
+- `isBotConsumptionPageError`: Boolean indicating if there was an error loading the bot page
+- `isSdkError`: Boolean indicating if there was an error loading the MicroStrategy SDK
+- `isSdkLoaded`: Boolean indicating if the MicroStrategy SDK has loaded
+
+## Error Handling
+
+The component and hook include built-in error handling:
+
+```tsx
+import { useCreateBotConsumptionPage } from "embed-dossier-mstr-react"
+
+function BotPageWithErrorHandling() {
+  const {
+    botConsumptionPageRef,
+    isSdkLoaded,
+    isSdkError,
+    isBotConsumptionPageError,
+  } = useCreateBotConsumptionPage({
+    serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+    projectId: "your-project-id",
+    objectId: "your-bot-id",
+    config: {
+      errorHandler: (error) => {
+        console.error("Bot error:", error)
+        // Handle bot-specific errors
+      },
+      sessionErrorHandler: (error) => {
+        console.error("Session error:", error)
+        // Handle session-related errors
+      },
+    },
+  })
+
+  if (!isSdkLoaded) {
+    return <div>Loading SDK...</div>
+  }
+
+  if (isSdkError) {
+    return <div>Failed to load MicroStrategy SDK</div>
+  }
+
+  if (isBotConsumptionPageError) {
+    return <div>Failed to load bot page</div>
+  }
+
+  return <div ref={botConsumptionPageRef} className="bot-container" />
+}
+```
+
+## Best Practices
+
+1. **Error Handling**
+
+   ```tsx
+   const config = {
+     errorHandler: (error) => {
+       if (error.code === "BOT_INITIALIZATION_ERROR") {
+         // Handle bot initialization errors
+       }
+     },
+     sessionErrorHandler: (error) => {
+       if (error.code === "SESSION_EXPIRED") {
+         // Handle session expiration
+       }
+     },
+   }
+   ```
+
+2. **Performance Optimization**
+   ```tsx
+   const config = {
+     // Optimize initial loading
+     disableHyper: true,
+     // Set appropriate container dimensions
+     containerHeight: "600px",
+     containerWidth: "100%",
+   }
+   ```
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).
