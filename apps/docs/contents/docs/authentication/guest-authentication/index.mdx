@@ -3,3 +3,588 @@ title: Guest Authentication
 description: Learn how to embed MicroStrategy's use cases in your React application with Guest Authentication.
 keywords: ["MicroStrategy", "Embedding", "Authentication", "Guest", "Use Cases"]
 ---
+
+# Guest Authentication
+
+This guide demonstrates how to implement guest authentication in your React application using the `embed-dossier-mstr-react` package.
+
+## Using DashboardEmbedWithAuth Component
+
+The simplest way to implement guest authentication is using the `DashboardEmbedWithAuth` component:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+function DashboardWithGuestAuth() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      loginMode="guest"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+      // Optional custom loading component
+      loadingComponent={<div>Authenticating...</div>}
+      // Optional custom error component
+      errorComponent={(error) => (
+        <div className="error-container">
+          <h3>Authentication Failed</h3>
+          <p>{error}</p>
+        </div>
+      )}
+      // Additional dashboard configuration
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+        enableResponsive: true,
+      }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbedWithAuth` component accepts the following props for guest authentication:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier
+- `loginMode` (required): Set to "guest" for guest authentication
+- `className` (optional): CSS class names for the container
+- `style` (optional): React inline styles for the container
+- `loadingComponent` (optional): Custom component to show during authentication
+- `errorComponent` (optional): Custom component or function to render error states
+- `config` (optional): Additional dashboard configuration options
+
+## Using useCreateDashboardWithAuth Hook
+
+For more control over the authentication process, you can use the `useCreateDashboardWithAuth` hook directly:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+function CustomDashboardWithGuestAuth() {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "guest",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (isAuthenticating) {
+    return <div>Authenticating as guest...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3>Authentication Failed</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div ref={divRef} className="dashboard-container" />
+      {isAuthenticated && dashboard && (
+        <div className="controls">
+          <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboardWithAuth` hook returns an object with the following properties:
+
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isAuthenticating`: Boolean indicating if authentication is in progress
+- `isAuthenticated`: Boolean indicating if authentication was successful
+- `error`: Error message if authentication failed
+
+### Advanced Hook Usage
+
+Here are some advanced patterns for using the `useCreateDashboardWithAuth` hook:
+
+#### 1. Custom Authentication Flow
+
+```tsx
+import { useEffect } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+function DashboardWithCustomAuth() {
+  const divRef = useRef<HTMLDivElement>(null)
+  const [retryCount, setRetryCount] = useState(0)
+  const maxRetries = 3
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "guest",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableCustomAuthentication: true,
+      },
+    })
+
+  // Handle authentication retry
+  useEffect(() => {
+    if (error && retryCount < maxRetries) {
+      const timer = setTimeout(
+        () => {
+          setRetryCount((prev) => prev + 1)
+          // Trigger re-authentication
+          window.location.reload()
+        },
+        2000 * Math.pow(2, retryCount)
+      ) // Exponential backoff
+      return () => clearTimeout(timer)
+    }
+  }, [error, retryCount])
+
+  // Track authentication status
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log("Guest authentication successful")
+      // Additional setup after successful auth
+      setupDashboardFeatures()
+    }
+  }, [isAuthenticated])
+
+  // Custom dashboard methods
+  const setupDashboardFeatures = () => {
+    if (dashboard) {
+      // Register event handlers
+      dashboard.registerEventHandler("onLoad", () => {
+        console.log("Dashboard loaded")
+      })
+
+      // Configure dashboard settings
+      dashboard.setFeatureFlag("enableExport", false)
+    }
+  }
+
+  if (error && retryCount >= maxRetries) {
+    return (
+      <div className="error-state">
+        <h3>Authentication Failed</h3>
+        <p>Maximum retry attempts reached</p>
+        <button onClick={() => setRetryCount(0)}>Reset and Try Again</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="dashboard-container">
+      {isAuthenticating && (
+        <div className="loading-overlay">
+          <Spinner />
+          <p>
+            Attempt {retryCount + 1} of {maxRetries}
+          </p>
+        </div>
+      )}
+      <div ref={divRef} className="dashboard-content" />
+      {isAuthenticated && dashboard && (
+        <DashboardControls dashboard={dashboard} />
+      )}
+    </div>
+  )
+}
+```
+
+#### 2. Multiple Dashboard Management
+
+```tsx
+function MultiDashboardManager() {
+  const [activeDashboardId, setActiveDashboardId] = useState<string | null>(
+    null
+  )
+  const dashboardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+
+  // Create multiple dashboard instances
+  const dashboards = useMemo(() => {
+    return DASHBOARD_IDS.map((id) => {
+      const { dashboard, isAuthenticating, isAuthenticated, error } =
+        useCreateDashboardWithAuth({
+          serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+          placeholder: dashboardRefs.current[id],
+          loginMode: "guest",
+          config: {
+            url: `https://your-mstr-server/MicroStrategyLibrary/app/${id}`,
+            enableResponsive: true,
+          },
+        })
+
+      return {
+        id,
+        dashboard,
+        isAuthenticating,
+        isAuthenticated,
+        error,
+      }
+    })
+  }, [])
+
+  // Handle dashboard switching
+  const switchDashboard = (id: string) => {
+    setActiveDashboardId(id)
+    const dashboard = dashboards.find((d) => d.id === id)?.dashboard
+    if (dashboard) {
+      dashboard.refresh()
+    }
+  }
+
+  return (
+    <div className="multi-dashboard-container">
+      <DashboardSelector
+        dashboards={dashboards}
+        activeDashboardId={activeDashboardId}
+        onSelect={switchDashboard}
+      />
+      <div className="dashboards-grid">
+        {dashboards.map(({ id, isAuthenticating, error }) => (
+          <div
+            key={id}
+            ref={(el) => (dashboardRefs.current[id] = el)}
+            className={`dashboard-wrapper ${id === activeDashboardId ? "active" : ""}`}
+          >
+            {isAuthenticating && <LoadingSpinner />}
+            {error && <ErrorMessage error={error} />}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+#### 3. Dashboard State Management
+
+```tsx
+import { create } from "zustand"
+
+// Define dashboard store
+interface DashboardStore {
+  currentDashboard: any | null
+  setDashboard: (dashboard: any) => void
+  refreshDashboard: () => void
+}
+
+const useDashboardStore = create<DashboardStore>((set, get) => ({
+  currentDashboard: null,
+  setDashboard: (dashboard) => set({ currentDashboard: dashboard }),
+  refreshDashboard: () => get().currentDashboard?.refresh(),
+}))
+
+// Dashboard component with state management
+function ManagedDashboard() {
+  const divRef = useRef<HTMLDivElement>(null)
+  const setDashboard = useDashboardStore((state) => state.setDashboard)
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "guest",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+      },
+    })
+
+  // Update store when dashboard is ready
+  useEffect(() => {
+    if (isAuthenticated && dashboard) {
+      setDashboard(dashboard)
+    }
+  }, [isAuthenticated, dashboard, setDashboard])
+
+  return (
+    <div className="managed-dashboard">
+      <DashboardControls />
+      <div ref={divRef} className="dashboard-content" />
+      <DashboardStatus isAuthenticating={isAuthenticating} error={error} />
+    </div>
+  )
+}
+
+// Separate controls component using store
+function DashboardControls() {
+  const refreshDashboard = useDashboardStore((state) => state.refreshDashboard)
+
+  return (
+    <div className="dashboard-controls">
+      <button onClick={refreshDashboard}>Refresh Dashboard</button>
+    </div>
+  )
+}
+```
+
+These advanced patterns demonstrate different ways to use the `useCreateDashboardWithAuth` hook for:
+
+- Custom authentication flows with retry logic
+- Managing multiple dashboard instances
+- Integration with state management solutions
+- Event handling and dashboard lifecycle management
+- Error handling and recovery strategies
+
+## Advanced Configuration
+
+You can customize the guest authentication behavior with additional configuration:
+
+```tsx
+function AdvancedGuestDashboard() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="guest"
+      config={{
+        // Error handling
+        errorHandler: (error) => {
+          console.error("Dashboard error:", error)
+          // Handle dashboard-specific errors
+        },
+        sessionErrorHandler: (error) => {
+          console.error("Session error:", error)
+          // Handle session-related errors
+        },
+
+        // Custom UI settings
+        customUi: {
+          library: {
+            toolbarEnabled: true,
+          },
+        },
+
+        // Feature configuration
+        filterFeature: {
+          enabled: true,
+          edit: false, // Restrict filter editing for guest users
+        },
+        shareFeature: {
+          enabled: false, // Disable sharing for guest users
+        },
+      }}
+    />
+  )
+}
+```
+
+## Error Handling
+
+Here's how to implement comprehensive error handling for guest authentication:
+
+```tsx
+function DashboardWithErrorHandling() {
+  const customErrorComponent = (error: string) => {
+    // Handle specific error cases
+    if (error.includes("Guest access not allowed")) {
+      return (
+        <div className="error-message">
+          <h3>Guest Access Denied</h3>
+          <p>Guest access is not enabled for this dashboard.</p>
+          <button onClick={() => window.location.reload()}>Try Again</button>
+        </div>
+      )
+    }
+
+    // Default error message
+    return (
+      <div className="error-message">
+        <h3>Authentication Error</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="guest"
+      errorComponent={customErrorComponent}
+      config={{
+        errorHandler: (error) => {
+          // Log errors for monitoring
+          console.error("Dashboard error:", error)
+          // Implement error tracking
+          trackError(error)
+        },
+        sessionErrorHandler: (error) => {
+          // Handle session timeouts
+          if (error.code === "SESSION_EXPIRED") {
+            window.location.reload()
+          }
+        },
+      }}
+    />
+  )
+}
+```
+
+## Best Practices
+
+1. **Error Handling**
+
+   ```tsx
+   const config = {
+     errorHandler: (error) => {
+       // Log errors
+       console.error("Guest auth error:", error)
+       // Implement retry logic if needed
+       if (error.code === "AUTH_FAILED") {
+         retryAuthentication()
+       }
+     },
+   }
+   ```
+
+2. **Loading States**
+
+   ```tsx
+   const loadingComponent = (
+     <div className="loading-container">
+       <Spinner />
+       <p>Connecting as guest user...</p>
+       {/* Add timeout handling */}
+       <TimeoutHandler duration={30000} onTimeout={handleTimeout} />
+     </div>
+   )
+   ```
+
+3. **Security Considerations**
+   ```tsx
+   const config = {
+     // Restrict features for guest users
+     filterFeature: {
+       enabled: true,
+       edit: false,
+     },
+     shareFeature: {
+       enabled: false,
+     },
+     // Disable potentially sensitive features
+     enableCollaboration: false,
+     dossierFeature: {
+       readonly: true,
+     },
+   }
+   ```
+
+## Example Implementation
+
+Here's a complete example showing a guest authentication implementation with error handling, loading states, and feature restrictions:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+import { ErrorAlert, Spinner } from "./components"
+
+function GuestDashboardExample() {
+  // Custom loading component
+  const LoadingState = () => (
+    <div className="flex items-center justify-center h-full">
+      <Spinner />
+      <p className="ml-2">Connecting as guest...</p>
+    </div>
+  )
+
+  // Custom error handling
+  const ErrorState = (error: string) => (
+    <ErrorAlert
+      title="Authentication Failed"
+      message={error}
+      action={{
+        label: "Try Again",
+        onClick: () => window.location.reload(),
+      }}
+    />
+  )
+
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="guest"
+      className="h-screen w-full"
+      loadingComponent={<LoadingState />}
+      errorComponent={ErrorState}
+      config={{
+        // Container configuration
+        containerHeight: "100%",
+        containerWidth: "100%",
+        enableResponsive: true,
+
+        // Feature restrictions
+        filterFeature: {
+          enabled: true,
+          edit: false,
+        },
+        shareFeature: {
+          enabled: false,
+        },
+        dossierFeature: {
+          readonly: true,
+        },
+
+        // Error handling
+        errorHandler: (error) => {
+          console.error("Dashboard error:", error)
+          // Implement error tracking
+          trackError(error)
+        },
+        sessionErrorHandler: (error) => {
+          if (error.code === "SESSION_EXPIRED") {
+            window.location.reload()
+          }
+        },
+
+        // UI customization
+        customUi: {
+          library: {
+            toolbarEnabled: true,
+          },
+        },
+      }}
+    />
+  )
+}
+
+export default GuestDashboardExample
+```
+
+Here's a live example of how to implement a bot consumption page in a real-world scenario using a BotConsumptionPage component:
+
+<iframe
+  src="https://stackblitz.com/edit/guest-authentication-mstr?file=src%2Fcomponents%2FGuestAuthentication.tsx"
+  width="100%"
+  height="500px"
+  style={{ border: "none" }}
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+And you can see the code on StackBlitz:
+
+<Card
+  title="See the code on StackBlitz"
+  href="https://stackblitz.com/edit/guest-authentication-mstr?file=src%2Fcomponents%2FGuestAuthentication.tsx"
+  icon="alignJustify"
+  external={true}
+  variant="small"
+/>
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).
