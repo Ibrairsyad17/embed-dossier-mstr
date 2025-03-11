@@ -4,3 +4,145 @@ description: Learn how to embed MicroStrategy use cases in your React applicatio
 keywords:
   ["MicroStrategy", "Embedding", "Authentication", "Standard", "Use Cases"]
 ---
+
+# Standard Authentication
+
+This guide demonstrates how to implement standard username/password authentication in your React application using the `embed-dossier-mstr-react` package.
+
+## Using DashboardEmbedWithAuth Component
+
+The simplest way to implement standard authentication is using the `DashboardEmbedWithAuth` component:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+function DashboardWithStandardAuth() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      loginMode="standard"
+      username="your-username"
+      password="your-password"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+      // Optional custom loading component
+      loadingComponent={<div>Authenticating...</div>}
+      // Optional custom error component
+      errorComponent={(error) => (
+        <div className="error-container">
+          <h3>Authentication Failed</h3>
+          <p>{error}</p>
+        </div>
+      )}
+      // Additional dashboard configuration
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+        enableResponsive: true,
+      }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbedWithAuth` component accepts the following props for standard authentication:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier
+- `loginMode` (required): Set to "standard" for username/password authentication
+- `username` (required): MicroStrategy username
+- `password` (required): MicroStrategy password
+- `className` (optional): CSS class names for the container
+- `style` (optional): React inline styles for the container
+- `loadingComponent` (optional): Custom component to show during authentication
+- `errorComponent` (optional): Custom component or function to render error states
+- `config` (optional): Additional dashboard configuration options
+
+## Using useCreateDashboardWithAuth Hook
+
+For more control over the authentication process, you can use the `useCreateDashboardWithAuth` hook directly:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+function CustomDashboardWithStandardAuth() {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "standard",
+      username: "your-username",
+      password: "your-password",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (isAuthenticating) {
+    return <div>Authenticating...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3>Authentication Failed</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div ref={divRef} className="dashboard-container" />
+      {isAuthenticated && dashboard && (
+        <div className="controls">
+          <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboardWithAuth` hook returns an object with the following properties:
+
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isAuthenticating`: Boolean indicating if authentication is in progress
+- `isAuthenticated`: Boolean indicating if authentication was successful
+- `error`: Error message if authentication failed
+
+## Example Use Case Implementation
+
+Here's a live example of how to implement standard authentication in a real-world scenario:
+
+<iframe
+  src="https://stackblitz.com/edit/vitejs-vite-sj693ihv?file=src%2Fcomponents%2FStandardAuthentication.tsx"
+  width="100%"
+  height="500px"
+  style={{ border: "none" }}
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+Or you can see the code on StackBlitz:
+
+<Card
+  title="See the code on StackBlitz"
+  href="https://stackblitz.com/edit/vitejs-vite-sj693ihv?file=src%2Fcomponents%2FStandardAuthentication.tsx"
+  icon="alignJustify"
+  external={true}
+  variant="small"
+/>
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).
