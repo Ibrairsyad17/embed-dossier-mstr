@@ -1,6 +1,6 @@
 ---
 title: useCreateLibraryPage()
-description: Learn about the useCreateLibraryPage() hook and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+description: Learn about the useCreateLibraryPage() hook and how to enhance your embedded library pages in your React applications using the `embed-dossier-mstr-react` package.
 keywords:
   [
     "embedding",
@@ -12,3 +12,274 @@ keywords:
     "hooks",
   ]
 ---
+
+## Import
+
+```tsx
+import { useCreateLibraryPage } from "embed-dossier-mstr-react"
+```
+
+## Parameters
+
+The hook accepts a single object parameter with the following properties:
+
+| Parameter          | Type                                                         | Required | Description                                                                                                                     |
+| ------------------ | ------------------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string`                                                     | Yes      | The base URL of the MicroStrategy Library server, used to load the MicroStrategy SDK and create the library page                |
+| `config`           | `Omit<EmbedLibraryPageConfig, "placeholder" \| "serverUrl">` | No       | Configuration options for the library page, excluding the `placeholder` and `serverUrl` properties which are handled internally |
+
+### Config Object Properties
+
+The `config` object accepts MicroStrategy library page configuration options, which include:
+
+| Property                    | Type                   | Required | Description                                                              |
+| --------------------------- | ---------------------- | -------- | ------------------------------------------------------------------------ |
+| `containerHeight`           | `string \| number`     | No       | The height of the library page container (e.g., "600px" or 600)          |
+| `containerWidth`            | `string \| number`     | No       | The width of the library page container (e.g., "100%" or 1200)           |
+| `enableResponsive`          | `boolean`              | No       | Whether to enable responsive design for the library page                 |
+| `customAuthenticationType`  | `number`               | No       | The authentication type to use (e.g., 0 for AUTH_NONE, 2 for AUTH_TOKEN) |
+| `currentPage`               | `string \| object`     | No       | Specific page ID or configuration to show initially                      |
+| `disableErrorPopupWindow`   | `boolean`              | No       | Whether to disable error popup windows                                   |
+| `disableNotificationCenter` | `boolean`              | No       | Whether to disable the notification center                               |
+| `enableFilterInfobar`       | `boolean`              | No       | Whether to show the filter info bar                                      |
+| `errorHandler`              | `(error: any) => void` | No       | Custom function to handle library page errors                            |
+| `sessionErrorHandler`       | `(error: any) => void` | No       | Custom function to handle session-related errors                         |
+
+## Return Values
+
+The hook returns an object with the following properties:
+
+| Return Value     | Type                              | Description                                                                                                                              |
+| ---------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `libraryPage`    | `EmbedLibraryPage \| null`        | The instantiated library page object, which can be used to interact with the library page programmatically, or `null` if not yet created |
+| `libraryPageRef` | `React.RefObject<HTMLDivElement>` | A React ref that should be attached to the container element where the library page will be rendered                                     |
+| `isSdkLoaded`    | `boolean`                         | A boolean flag indicating whether the MicroStrategy SDK has been successfully loaded                                                     |
+| `isLoading`      | `boolean`                         | A boolean flag indicating whether the library page is currently being loaded                                                             |
+| `error`          | `string \| null`                  | Error message if an error occurred during library page creation, or `null` if no error                                                   |
+
+## How It Works
+
+The `useCreateLibraryPage` hook:
+
+1. Uses the `useLoadMstrSDK` hook to load the MicroStrategy SDK
+2. Creates a ref that will be used as the container for the library page
+3. Waits for the SDK to load before attempting to create the library page
+4. Calls the MicroStrategy embedLibraryPage API to create the library page
+5. Handles and exposes loading states and errors
+6. Provides the library page instance for programmatic interaction
+
+## Basic Usage
+
+Here's a simple example of using the `useCreateLibraryPage` hook directly:
+
+```tsx
+import { useCreateLibraryPage } from "embed-dossier-mstr-react"
+
+const MyLibraryPage = () => {
+  const { libraryPageRef, isSdkLoaded, isLoading, error } =
+    useCreateLibraryPage({
+      serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+      config: {
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (!isSdkLoaded) {
+    return <div>Loading MicroStrategy SDK...</div>
+  }
+
+  if (isLoading) {
+    return <div>Loading library page...</div>
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>
+  }
+
+  return <div ref={libraryPageRef} style={{ height: "600px", width: "100%" }} />
+}
+```
+
+## Advanced Usage
+
+### Custom Error Handling
+
+```tsx
+import { useCreateLibraryPage } from "embed-dossier-mstr-react"
+
+const LibraryPageWithCustomErrorHandling = () => {
+  const { libraryPageRef, isSdkLoaded, isLoading, error } =
+    useCreateLibraryPage({
+      serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+      config: {
+        errorHandler: (error) => {
+          console.error("Library page error:", error)
+          // You can implement custom logging or error tracking here
+        },
+        sessionErrorHandler: (error) => {
+          console.error("Session error:", error)
+          // Handle session expiration or authentication issues
+        },
+      },
+    })
+
+  // Show appropriate UI based on loading and error states
+  if (!isSdkLoaded) {
+    return <div className="loading-indicator">Loading SDK...</div>
+  }
+
+  if (isLoading) {
+    return <div className="loading-indicator">Initializing library page...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3>Failed to load MicroStrategy Library</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    )
+  }
+
+  return <div ref={libraryPageRef} className="library-container" />
+}
+```
+
+### Interacting with the Library Page Instance
+
+```tsx
+import { useEffect } from "react"
+import { useCreateLibraryPage } from "embed-dossier-mstr-react"
+
+const InteractiveLibraryPage = () => {
+  const { libraryPage, libraryPageRef, isSdkLoaded } = useCreateLibraryPage({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    config: {
+      containerHeight: "700px",
+      containerWidth: "100%",
+    },
+  })
+
+  // Example of using library page methods when the instance is available
+  const handleToggleSidebar = () => {
+    if (libraryPage && libraryPage.setSidebarVisibility) {
+      libraryPage.setSidebarVisibility(true)
+    }
+  }
+
+  const handleHideNavBar = () => {
+    if (libraryPage && libraryPage.setNavigationBarEnabled) {
+      libraryPage.setNavigationBarEnabled(false)
+    }
+  }
+
+  return (
+    <div className="library-page-wrapper">
+      <div className="controls">
+        <button onClick={handleToggleSidebar} disabled={!libraryPage}>
+          Show Sidebar
+        </button>
+        <button onClick={handleHideNavBar} disabled={!libraryPage}>
+          Hide Navigation
+        </button>
+      </div>
+      <div ref={libraryPageRef} className="library-container" />
+    </div>
+  )
+}
+```
+
+### Advanced Configuration Options
+
+```tsx
+import { useCreateLibraryPage } from "embed-dossier-mstr-react"
+
+const FullyConfiguredLibraryPage = () => {
+  const { libraryPageRef, libraryPage } = useCreateLibraryPage({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    config: {
+      // Container settings
+      containerHeight: "800px",
+      containerWidth: "100%",
+
+      // Authentication
+      enableCustomAuthentication: true,
+      customAuthenticationType: 2, // AUTH_TOKEN
+      getLoginToken: async () => {
+        // Fetch authentication token from your backend
+        const response = await fetch("/api/mstr-auth-token")
+        const data = await response.json()
+        return data.token
+      },
+
+      // Library-specific settings
+      currentPage: {
+        name: "myFolders",
+        key: "personal",
+      },
+
+      // UI settings
+      enableResponsive: true,
+      disableErrorPopupWindow: true,
+      disableNotificationCenter: true,
+
+      // Event handlers
+      libraryLoaded: () => {
+        console.log("Library page loaded successfully")
+      },
+
+      // Error handlers
+      errorHandler: (error) => {
+        console.error("Library page error:", error)
+      },
+      sessionErrorHandler: (error) => {
+        console.error("Session error:", error)
+      },
+    },
+  })
+
+  return <div ref={libraryPageRef} className="library-container" />
+}
+```
+
+## Available Library Page Methods
+
+When the library page is successfully created, you can access various methods through the `libraryPage` object:
+
+```tsx
+// Example of common library page methods
+if (libraryPage) {
+  // Navigation methods
+  libraryPage.setSidebarVisibility(true) // Show/hide sidebar
+  libraryPage.setNavigationBarEnabled(false) // Show/hide navigation bar
+
+  // Content management
+  libraryPage.getAllMyGroups() // Get all user groups
+  libraryPage.getAllDefaultGroups() // Get all default groups
+
+  // Page operations
+  libraryPage.refresh() // Refresh the library page
+  libraryPage.close() // Close the library page
+}
+```
+
+## Error Handling
+
+The hook provides comprehensive error handling during library page creation:
+
+1. SDK loading errors are handled through the `useLoadMstrSDK` hook and exposed via `isSdkLoaded`
+2. Library page creation errors are captured and exposed through the `error` return value
+3. Custom error handlers can be provided via `config.errorHandler` and `config.sessionErrorHandler`
+4. Session-related errors are handled separately via `config.sessionErrorHandler`
+
+## Related Components
+
+- [`LibraryPageEmbed`](/docs/api-reference/library-page-embed) - A component built on top of this hook
+- [`LibraryPageEmbedWithAuth`](/docs/api-reference/library-page-embed-with-auth) - An enhanced version with authentication capabilities
+
+## Related Hooks
+
+- [`useLoadMstrSDK`](/docs/api-reference/use-load-mstr-sdk) - Used internally by this hook to load the MicroStrategy SDK
+- [`useCreateLibraryPageWithAuth`](/docs/api-reference/use-create-library-page-with-auth) - An enhanced version of this hook with authentication capabilities

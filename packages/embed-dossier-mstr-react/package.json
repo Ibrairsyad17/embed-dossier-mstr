@@ -16,7 +16,7 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "lint:fix": "eslint \"src/**/*.ts*\" --fix",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "vitest",
+    "test": "vitest run --reporter=json > report.json",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage"
   },

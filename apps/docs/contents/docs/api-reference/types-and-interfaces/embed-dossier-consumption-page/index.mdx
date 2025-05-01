@@ -10,3 +10,127 @@ keywords:
     "embed-dossier-consumption-page",
   ]
 ---
+
+## API Reference Table
+
+| Method                   | Description                                             | Parameters                                                                                                                                                                                                 | Return Type |
+| ------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `addCustomErrorHandler`  | Adds a custom error handler to the embedded dossier     | <ul><li>`handler`: `(error: ErrorHandlerInterface) => void` - Callback function called when an error occurs</li><li>`showErrorPopup`: `boolean` - Whether to show the default error popup</li></ul>        | `void`      |
+| `addSessionErrorHandler` | Adds a session error handler for session-related errors | <ul><li>`handler`: `(error: ErrorHandlerInterface) => void` - Callback function called when a session error occurs</li><li>`showErrorPopup`: `boolean` - Whether to show the default error popup</li></ul> | `void`      |
+
+## Interface Definition
+
+```typescript
+interface EmbedDossierConsumptionPage {
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+}
+```
+
+## Methods
+
+### addCustomErrorHandler
+
+```typescript
+addCustomErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void
+```
+
+Adds a custom error handler to the embedded dossier. This method allows you to define custom behavior when errors occur during dossier interactions.
+
+**Parameters:**
+
+- `handler`: `(error: ErrorHandlerInterface) => void` - A callback function that will be called when an error occurs. The function receives an [`ErrorHandlerInterface`](/docs/api-reference/types-and-interfaces/error-handler-interface) object containing details about the error.
+- `showErrorPopup`: `boolean` - Determines whether the default error popup should be shown in addition to calling your custom handler. Set to `true` to display the default error popup, or `false` to suppress it.
+
+**Returns:**
+
+- `void`
+
+**Example:**
+
+```typescript
+dossierPage.addCustomErrorHandler((error) => {
+  console.error("Dossier error:", error.getMessage())
+  // Perform custom error handling logic
+}, false) // Don't show the default error popup
+```
+
+### addSessionErrorHandler
+
+```typescript
+addSessionErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void
+```
+
+Adds a session error handler to the embedded dossier. This method allows you to define custom behavior specifically for session-related errors, such as session timeouts or authentication issues.
+
+**Parameters:**
+
+- `handler`: `(error: ErrorHandlerInterface) => void` - A callback function that will be called when a session error occurs. The function receives an [`ErrorHandlerInterface`](/docs/api-reference/types-and-interfaces/error-handler-interface) object containing details about the error.
+- `showErrorPopup`: `boolean` - Determines whether the default error popup should be shown in addition to calling your custom handler. Set to `true` to display the default error popup, or `false` to suppress it.
+
+**Returns:**
+
+- `void`
+
+**Example:**
+
+```typescript
+dossierPage.addSessionErrorHandler((error) => {
+  console.error("Session error:", error.getMessage())
+  // Handle session timeout, authentication issues, etc.
+  if (error.getCode() === "AUTH_REQUIRED") {
+    // Trigger re-authentication flow
+    promptUserLogin()
+  }
+}, true) // Show the default error popup as well
+```
+
+## Usage Example
+
+The following example demonstrates how to embed a dossier consumption page and set up error handlers:
+
+```typescript
+// Get the embedding contexts from the MicroStrategy SDK
+const { embeddingContexts } = window.microstrategy
+
+// Embed a dossier consumption page
+const dossierPage = await embeddingContexts.embedDossierConsumptionPage({
+  placeholder: document.getElementById("dossier-container"),
+  serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+  projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+  objectId: "D9AB3B4146C76C5FC8C51EB96647E687",
+  customApplicationId: "com.example.app",
+})
+
+// Add custom error handler
+dossierPage.addCustomErrorHandler((error) => {
+  console.error("Error in dossier:", error.getMessage())
+  // Implement custom error handling logic
+}, false)
+
+// Add session error handler
+dossierPage.addSessionErrorHandler((error) => {
+  if (error.getCode() === "SESSION_EXPIRED") {
+    console.log("Session expired, redirecting to login...")
+    window.location.href = "/login"
+  }
+}, true)
+```
+
+## Related Interfaces
+
+- [`EmbedDossierConsumptionPageConfig`](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config)
+- [`ErrorHandlerInterface`](/docs/api-reference/types-and-interfaces/error-handler-interface)
+- [`EmbeddingContexts`](/docs/api-reference/types-and-interfaces/embedding-contexts)

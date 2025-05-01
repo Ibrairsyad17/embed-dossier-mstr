@@ -10,3 +10,14 @@ keywords:
     "embed-library-page",
   ]
 ---
+
+## Methods
+
+| Method                  | Parameters                                                               | Return Type                               | Description                                               |
+| ----------------------- | ------------------------------------------------------------------------ | ----------------------------------------- | --------------------------------------------------------- |
+| getAllMyGroups          | none                                                                     | `Promise<{ id: string; name: string }[]>` | Returns a promise resolving to an array of user groups    |
+| getAllDefaultGroups     | none                                                                     | `Promise<{ id: string; name: string }[]>` | Returns a promise resolving to an array of default groups |
+| setNavigationBarEnabled | enabled: boolean                                                         | void                                      | Enables or disables the navigation bar                    |
+| setSidebarVisibility    | shown: boolean                                                           | void                                      | Shows or hides the sidebar                                |
+| addCustomErrorHandler   | handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean | void                                      | Adds a custom error handler                               |
+| addSessionErrorHandler  | handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean | void                                      | Adds a session error handler                              |

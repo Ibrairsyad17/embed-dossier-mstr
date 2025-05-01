@@ -11,3 +11,155 @@ keywords:
     embed-dossier-mstr,
   ]
 ---
+
+# DashboardEmbed Component
+
+The `DashboardEmbed` component is a simple yet powerful React component for embedding MicroStrategy dashboards in your application. It provides a straightforward way to display interactive dashboards with minimal configuration.
+
+## Import
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+```
+
+## Props
+
+| Prop         | Type                                                       | Required | Description                                                                                                                 |
+| ------------ | ---------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `dossierUrl` | `string`                                                   | Yes      | The complete URL of your MicroStrategy dossier in the format: `https://{env-url}/{libraryName}/app/{projectId}/{dossierId}` |
+| `className`  | `string`                                                   | No       | CSS class names to apply to the container element                                                                           |
+| `style`      | `React.CSSProperties`                                      | No       | Inline styles to apply to the container element                                                                             |
+| `config`     | `Omit<MicroStrategyDossierConfig, "placeholder" \| "url">` | No       | Additional configuration options for the dashboard                                                                          |
+
+## Basic Usage
+
+Here's a simple example of using the `DashboardEmbed` component:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+const MyDashboard = () => {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+      className="my-dashboard"
+      style={{ height: "600px" }}
+    />
+  )
+}
+```
+
+## How It Works
+
+The `DashboardEmbed` component:
+
+1. Extracts the server URL from the provided dossier URL using the `getInfoFromUrl` utility
+2. Uses the `useCreateDashboard` hook to initialize and create the dashboard
+3. Renders a div element with the provided styling that serves as the container for the embedded dashboard
+
+## Advanced Configuration
+
+You can customize the behavior and appearance of your dashboard by providing a `config` object:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+const MyCustomDashboard = () => {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+      config={{
+        enableResponsive: true,
+        disableNotification: true,
+        dockedFilter: {
+          dockedPosition: "left",
+          canClose: true,
+          dockChangeable: true,
+          isDocked: true,
+        },
+        navigationBar: {
+          enabled: true,
+          gotoLibrary: true,
+          title: true,
+          toc: true,
+        },
+        filterFeature: {
+          enabled: true,
+          edit: true,
+          summary: true,
+        },
+      }}
+      style={{ height: "800px", width: "100%" }}
+    />
+  )
+}
+```
+
+## Configuration Options
+
+The `config` prop accepts all MicroStrategy dossier configuration options except for `placeholder` and `url` (which are handled automatically). Some common configuration options include:
+
+| Option                | Type      | Description                                 |
+| --------------------- | --------- | ------------------------------------------- |
+| `enableResponsive`    | `boolean` | Enable responsive design for the dashboard  |
+| `disableNotification` | `boolean` | Hide notification popups                    |
+| `dockedFilter`        | `object`  | Configure the filter panel docking behavior |
+| `navigationBar`       | `object`  | Configure the navigation bar options        |
+| `filterFeature`       | `object`  | Configure the filter features               |
+| `shareFeature`        | `object`  | Configure sharing functionality             |
+| `customUi`            | `object`  | Customize UI elements                       |
+
+## Error Handling
+
+The component includes basic error handling for URL parsing. If the dossier URL cannot be parsed correctly, an error will be logged to the console, but the component will still attempt to render with an empty server URL.
+
+For more robust error handling, you may want to use the `useCreateDashboard` hook directly or use the `DashboardEmbedWithAuth` component which provides more comprehensive error handling.
+
+## Examples
+
+### Basic Dashboard
+
+```tsx
+<DashboardEmbed dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0" />
+```
+
+### Dashboard with Custom Styling
+
+```tsx
+<DashboardEmbed
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  className="rounded-lg shadow-lg"
+  style={{
+    height: "700px",
+    width: "100%",
+    border: "1px solid #e5e7eb",
+  }}
+/>
+```
+
+### Read-Only Dashboard
+
+```tsx
+<DashboardEmbed
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  config={{
+    dossierFeature: {
+      readonly: true,
+    },
+    navigationBar: {
+      enabled: true,
+      edit: false,
+    },
+  }}
+/>
+```
+
+## Related Components
+
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - Extends the `DashboardEmbed` component with authentication capabilities
+- [`LibraryPageEmbed`](/docs/api-reference/library-page-embed) - For embedding the MicroStrategy library page
+
+## Related Hooks
+
+- [`useCreateDashboard`](/docs/api-reference/use-create-dashboard) - The hook used internally by `DashboardEmbed`
+- [`useCreateDashboardWithAuth`](/docs/api-reference/use-create-dashboard-with-auth) - For more control over the authentication process
