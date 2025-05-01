@@ -10,3 +10,375 @@ keywords:
     "embedding-contexts",
   ]
 ---
+
+## Type Definition
+
+```typescript
+interface EmbeddingContexts {
+  embedLibraryPage: (
+    params: EmbedLibraryPageConfig
+  ) => Promise<EmbedLibraryPage>
+  embedDossierConsumptionPage: (
+    params: EmbedDossierConsumptionPageConfig
+  ) => Promise<EmbedDossierConsumptionPage>
+  embedBotConsumptionPage: (
+    params: EmbedBotConsumptionPageConfig
+  ) => Promise<EmbedBotConsumptionPage>
+  embedReportPage: (params: EmbedReportPageConfig) => Promise<EmbedReportPage>
+  registerEventHandler: (event: EventTypes, handler: EventHandler) => void
+  removeEventHandler: (event: EventTypes, handler: EventHandler) => void
+  removeCustomErrorHandler: () => void
+  removeSessionErrorHandler: () => void
+  goToPage: (pageInfo: PageInfo) => Promise<{ redirect: boolean }>
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+}
+```
+
+## Properties and Methods
+
+### embedLibraryPage
+
+```typescript
+embedLibraryPage: (params: EmbedLibraryPageConfig) => Promise<EmbedLibraryPage>
+```
+
+Embeds a MicroStrategy Library page into your application. This enables users to browse and access all available MicroStrategy content, including dossiers, documents, and reports.
+
+**Parameters:**
+
+- `params`: [EmbedLibraryPageConfig](/docs/api-reference/types-and-interfaces/embed-library-page-config) - Configuration options for the embedded library page
+
+**Returns:**
+
+- Promise resolving to an [EmbedLibraryPage](/docs/api-reference/types-and-interfaces/embed-library-page) object that provides methods for interacting with the embedded library page
+
+**Example:**
+
+```typescript
+const libraryPage =
+  await window.microstrategy.embeddingContexts.embedLibraryPage({
+    placeholder: document.getElementById("library-container"),
+    serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+    enableCustomAuthentication: true,
+    customAuthenticationType:
+      window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+    getLoginToken: async () => {
+      // Get authentication token
+      return "your-auth-token"
+    },
+  })
+```
+
+### embedDossierConsumptionPage
+
+```typescript
+embedDossierConsumptionPage: (params: EmbedDossierConsumptionPageConfig) =>
+  Promise<EmbedDossierConsumptionPage>
+```
+
+Embeds a MicroStrategy dossier in consumption mode. This allows users to view and interact with dashboards but not edit them.
+
+**Parameters:**
+
+- `params`: [EmbedDossierConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config) - Configuration options for the embedded dossier
+
+**Returns:**
+
+- Promise resolving to an [EmbedDossierConsumptionPage](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page) object that provides methods for interacting with the embedded dossier
+
+**Example:**
+
+```typescript
+const dossierPage =
+  await window.microstrategy.embeddingContexts.embedDossierConsumptionPage({
+    placeholder: document.getElementById("dossier-container"),
+    serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+    projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+    objectId: "54F3D26011D2896560009A8E67019608",
+    enableCustomAuthentication: true,
+    customAuthenticationType:
+      window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+    getLoginToken: async () => {
+      // Get authentication token
+      return "your-auth-token"
+    },
+  })
+```
+
+### embedBotConsumptionPage
+
+```typescript
+embedBotConsumptionPage: (params: EmbedBotConsumptionPageConfig) =>
+  Promise<EmbedBotConsumptionPage>
+```
+
+Embeds a MicroStrategy bot in consumption mode. Bots provide AI-powered analytics and natural language query capabilities.
+
+**Parameters:**
+
+- `params`: [EmbedBotConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page-config) - Configuration options for the embedded bot
+
+**Returns:**
+
+- Promise resolving to an [EmbedBotConsumptionPage](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page) object that provides methods for interacting with the embedded bot
+
+**Example:**
+
+```typescript
+const botPage =
+  await window.microstrategy.embeddingContexts.embedBotConsumptionPage({
+    placeholder: document.getElementById("bot-container"),
+    serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+    projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+    objectId: "D9AB3B1C44ED6F8CC0E4B39E7D4430F1",
+    disableHyper: false,
+    permissions: {
+      allowClipboardWrite: true,
+    },
+  })
+```
+
+### embedReportPage
+
+```typescript
+embedReportPage: (params: EmbedReportPageConfig) => Promise<EmbedReportPage>
+```
+
+Embeds a MicroStrategy report. This allows users to view and interact with traditional MicroStrategy reports.
+
+**Parameters:**
+
+- `params`: [EmbedReportPageConfig](/docs/api-reference/types-and-interfaces/embed-report-page-config) - Configuration options for the embedded report
+
+**Returns:**
+
+- Promise resolving to an [EmbedReportPage](/docs/api-reference/types-and-interfaces/embed-report-page) object that provides methods for interacting with the embedded report
+
+**Example:**
+
+```typescript
+const reportPage = await window.microstrategy.embeddingContexts.embedReportPage(
+  {
+    placeholder: document.getElementById("report-container"),
+    serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+    projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+    objectId: "4C0D31B611D5C49EC0000C881FDA1A4F",
+  }
+)
+```
+
+### registerEventHandler
+
+```typescript
+registerEventHandler: (event: EventTypes, handler: EventHandler) => void
+```
+
+Registers an event handler for embedding context events.
+
+**Parameters:**
+
+- `event`: EventTypes - The type of event to listen for
+- `handler`: EventHandler - The callback function to execute when the event occurs
+
+**Example:**
+
+```typescript
+window.microstrategy.embeddingContexts.registerEventHandler(
+  "error",
+  (error) => {
+    console.error("Embedding context error:", error)
+  }
+)
+```
+
+### removeEventHandler
+
+```typescript
+removeEventHandler: (event: EventTypes, handler: EventHandler) => void
+```
+
+Removes a previously registered event handler.
+
+**Parameters:**
+
+- `event`: EventTypes - The type of event the handler was registered for
+- `handler`: EventHandler - The original handler function to remove
+
+**Example:**
+
+```typescript
+const errorHandler = (error) => {
+  console.error("Embedding context error:", error)
+}
+
+// Register handler
+window.microstrategy.embeddingContexts.registerEventHandler(
+  "error",
+  errorHandler
+)
+
+// Later, remove the handler
+window.microstrategy.embeddingContexts.removeEventHandler("error", errorHandler)
+```
+
+### removeCustomErrorHandler
+
+```typescript
+removeCustomErrorHandler: () => void
+```
+
+Removes any custom error handlers that were previously added.
+
+**Example:**
+
+```typescript
+window.microstrategy.embeddingContexts.removeCustomErrorHandler()
+```
+
+### removeSessionErrorHandler
+
+```typescript
+removeSessionErrorHandler: () => void
+```
+
+Removes any session error handlers that were previously added.
+
+**Example:**
+
+```typescript
+window.microstrategy.embeddingContexts.removeSessionErrorHandler()
+```
+
+### goToPage
+
+```typescript
+goToPage: (pageInfo: PageInfo) => Promise<{ redirect: boolean }>
+```
+
+Navigates to a specific page within the MicroStrategy application.
+
+**Parameters:**
+
+- `pageInfo`: PageInfo - Information about the target page
+
+**Returns:**
+
+- Promise resolving to an object with a `redirect` boolean property indicating if the navigation was successful
+
+**Example:**
+
+```typescript
+const result = await window.microstrategy.embeddingContexts.goToPage({
+  pageName: "dossier",
+  projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+  objectId: "54F3D26011D2896560009A8E67019608",
+})
+
+if (result.redirect) {
+  console.log("Successfully navigated to the page")
+}
+```
+
+### addCustomErrorHandler
+
+```typescript
+addCustomErrorHandler: (handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean) => void
+```
+
+Adds a custom error handler for application errors.
+
+**Parameters:**
+
+- `handler`: Function - The error handler callback that receives an [ErrorHandlerInterface](/docs/api-reference/types-and-interfaces/error-handler-interface) object
+- `showErrorPopup`: boolean - Whether to show the default error popup in addition to calling the custom handler
+
+**Example:**
+
+```typescript
+window.microstrategy.embeddingContexts.addCustomErrorHandler((error) => {
+  console.error("Custom error handler:", error.message)
+  // Take additional actions based on the error
+}, false)
+```
+
+### addSessionErrorHandler
+
+```typescript
+addSessionErrorHandler: (handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean) => void
+```
+
+Adds a session error handler specifically for authentication and session-related errors.
+
+**Parameters:**
+
+- `handler`: Function - The error handler callback that receives an [ErrorHandlerInterface](/docs/api-reference/types-and-interfaces/error-handler-interface) object
+- `showErrorPopup`: boolean - Whether to show the default error popup in addition to calling the custom handler
+
+**Example:**
+
+```typescript
+window.microstrategy.embeddingContexts.addSessionErrorHandler((error) => {
+  console.error("Session error:", error.message)
+  if (error.code === "SESSION_EXPIRED") {
+    // Refresh the session
+    initiateReauthentication()
+  }
+}, false)
+```
+
+## Usage with embed-dossier-mstr-react
+
+The `embed-dossier-mstr-react` library provides React components and hooks that make it easier to work with these embedding contexts:
+
+```tsx
+import {
+  LibraryPageEmbed,
+  BotConsumptionPage,
+  BotConsumptionPageWithAuth,
+  DashboardEmbed,
+  DashboardEmbedWithAuth
+} from "embed-dossier-mstr-react";
+
+// Using the library page embed component
+<LibraryPageEmbed
+  serverUrlLibrary="https://your-mstr-server/MicroStrategyLibrary"
+  config={{
+    customUi: {
+      headerEnabled: false
+    }
+  }}
+  className="h-screen"
+/>
+
+// Using the bot consumption page with authentication
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://your-mstr-server/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3B1C44ED6F8CC0E4B39E7D4430F1"
+  loginMode="standard"
+  username="user"
+  password="pass"
+  config={{
+    disableHyper: false
+  }}
+/>
+```
+
+## Related Types
+
+- [EmbedLibraryPageConfig](/docs/api-reference/types-and-interfaces/embed-library-page-config)
+- [EmbedLibraryPage](/docs/api-reference/types-and-interfaces/embed-library-page)
+- [EmbedDossierConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config)
+- [EmbedDossierConsumptionPage](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page)
+- [EmbedBotConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page-config)
+- [EmbedBotConsumptionPage](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page)
+- [EmbedReportPageConfig](/docs/api-reference/types-and-interfaces/embed-report-page-config)
+- [EmbedReportPage](/docs/api-reference/types-and-interfaces/embed-report-page)
+- [ErrorHandlerInterface](/docs/api-reference/types-and-interfaces/error-handler-interface)

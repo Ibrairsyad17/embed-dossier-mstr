@@ -1,0 +1,919 @@
+{
+  "numTotalTestSuites": 30,
+  "numPassedTestSuites": 30,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 80,
+  "numPassedTests": 80,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1745072482049,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["group"],
+          "fullName": "group should be true",
+          "status": "passed",
+          "title": "should be true",
+          "duration": 2.1863000094890594,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487507,
+      "endTime": 1745072487509.1863,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/main.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["BotConsumptionPage"],
+          "fullName": "BotConsumptionPage should render and pass correct props to hook",
+          "status": "passed",
+          "title": "should render and pass correct props to hook",
+          "duration": 36.77020001411438,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPage"],
+          "fullName": "BotConsumptionPage should apply className and style",
+          "status": "passed",
+          "title": "should apply className and style",
+          "duration": 8.703799992799759,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487299,
+      "endTime": 1745072487344.7039,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/BotConsumptionPage.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle guest authentication",
+          "status": "passed",
+          "title": "should handle guest authentication",
+          "duration": 27.16150000691414,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle standard authentication",
+          "status": "passed",
+          "title": "should handle standard authentication",
+          "duration": 2.5023000240325928,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle LDAP authentication",
+          "status": "passed",
+          "title": "should handle LDAP authentication",
+          "duration": 2.560900002717972,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle SAML authentication",
+          "status": "passed",
+          "title": "should handle SAML authentication",
+          "duration": 2.1606999933719635,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle OIDC authentication",
+          "status": "passed",
+          "title": "should handle OIDC authentication",
+          "duration": 2.176699995994568,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should show error for standard auth without credentials",
+          "status": "passed",
+          "title": "should show error for standard auth without credentials",
+          "duration": 20.981299996376038,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "BotConsumptionPageWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "BotConsumptionPageWithAuth Authentication Methods should handle authentication state transitions",
+          "status": "passed",
+          "title": "should handle authentication state transitions",
+          "duration": 9.19879999756813,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should render loading state",
+          "status": "passed",
+          "title": "should render loading state",
+          "duration": 2.7195999920368195,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should render custom loading component",
+          "status": "passed",
+          "title": "should render custom loading component",
+          "duration": 4.818199992179871,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should handle authentication errors with custom error component",
+          "status": "passed",
+          "title": "should handle authentication errors with custom error component",
+          "duration": 4.882200002670288,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should pass correct authentication props to hook",
+          "status": "passed",
+          "title": "should pass correct authentication props to hook",
+          "duration": 3.303899973630905,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should render authenticated view with custom styles",
+          "status": "passed",
+          "title": "should render authenticated view with custom styles",
+          "duration": 5.192599982023239,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["BotConsumptionPageWithAuth"],
+          "fullName": "BotConsumptionPageWithAuth should render nothing when authenticated but no bot page",
+          "status": "passed",
+          "title": "should render nothing when authenticated but no bot page",
+          "duration": 2.1093000173568726,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484767,
+      "endTime": 1745072484858.1094,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/BotConsumptionPageWithAuth.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should renders without crashing",
+          "status": "passed",
+          "title": "should renders without crashing",
+          "duration": 34.106099992990494,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should applies custom className correctly",
+          "status": "passed",
+          "title": "should applies custom className correctly",
+          "duration": 5.337000012397766,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should applies custom style correctly",
+          "status": "passed",
+          "title": "should applies custom style correctly",
+          "duration": 7.108800023794174,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should calls useCreateDashboard with correct parameters",
+          "status": "passed",
+          "title": "should calls useCreateDashboard with correct parameters",
+          "duration": 9.3299999833107,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should renders with minimal props",
+          "status": "passed",
+          "title": "should renders with minimal props",
+          "duration": 5.212900012731552,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should handles empty config correctly",
+          "status": "passed",
+          "title": "should handles empty config correctly",
+          "duration": 4.494499981403351,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should handles malformed URLs gracefully",
+          "status": "passed",
+          "title": "should handles malformed URLs gracefully",
+          "duration": 22.619199991226196,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbed"],
+          "fullName": "DashboardEmbed should extracts server URL correctly from dossier URL",
+          "status": "passed",
+          "title": "should extracts server URL correctly from dossier URL",
+          "duration": 7.627500027418137,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487045,
+      "endTime": 1745072487140.6274,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/DashboardEmbed.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should render loading component while authenticating",
+          "status": "passed",
+          "title": "should render loading component while authenticating",
+          "duration": 38.7921000123024,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should render custom loading component",
+          "status": "passed",
+          "title": "should render custom loading component",
+          "duration": 3.2847999930381775,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should render error state",
+          "status": "passed",
+          "title": "should render error state",
+          "duration": 5.7732000052928925,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should render custom error component",
+          "status": "passed",
+          "title": "should render custom error component",
+          "duration": 3.29339998960495,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should render dashboard container when authenticated",
+          "status": "passed",
+          "title": "should render dashboard container when authenticated",
+          "duration": 4.497399985790253,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should pass correct props to useCreateDashboardWithAuth",
+          "status": "passed",
+          "title": "should pass correct props to useCreateDashboardWithAuth",
+          "duration": 5.345400005578995,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["DashboardEmbedWithAuth"],
+          "fullName": "DashboardEmbedWithAuth should apply custom styles",
+          "status": "passed",
+          "title": "should apply custom styles",
+          "duration": 6.537000000476837,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484775,
+      "endTime": 1745072484842.537,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/DashboardEmbedWithAuth.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should render without crashing",
+          "status": "passed",
+          "title": "should render without crashing",
+          "duration": 31.189099997282028,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should apply custom className",
+          "status": "passed",
+          "title": "should apply custom className",
+          "duration": 4.628600001335144,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should apply custom styles",
+          "status": "passed",
+          "title": "should apply custom styles",
+          "duration": 6.982600003480911,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should pass correct config to hook",
+          "status": "passed",
+          "title": "should pass correct config to hook",
+          "duration": 7.557199984788895,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should render with provided ref",
+          "status": "passed",
+          "title": "should render with provided ref",
+          "duration": 3.8944999873638153,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbed"],
+          "fullName": "LibraryPageEmbed should pass minimal props correctly",
+          "status": "passed",
+          "title": "should pass minimal props correctly",
+          "duration": 4.163299977779388,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487117,
+      "endTime": 1745072487175.1633,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/LibraryPageEmbed.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle guest authentication",
+          "status": "passed",
+          "title": "should handle guest authentication",
+          "duration": 24.775700002908707,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle standard authentication",
+          "status": "passed",
+          "title": "should handle standard authentication",
+          "duration": 2.967500001192093,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle LDAP authentication",
+          "status": "passed",
+          "title": "should handle LDAP authentication",
+          "duration": 2.4478999972343445,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle SAML authentication",
+          "status": "passed",
+          "title": "should handle SAML authentication",
+          "duration": 2.038800001144409,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle OIDC authentication",
+          "status": "passed",
+          "title": "should handle OIDC authentication",
+          "duration": 2.2303999960422516,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should show error for standard auth without credentials",
+          "status": "passed",
+          "title": "should show error for standard auth without credentials",
+          "duration": 20.484400004148483,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "LibraryPageEmbedWithAuth",
+            "Authentication Methods"
+          ],
+          "fullName": "LibraryPageEmbedWithAuth Authentication Methods should handle authentication state transitions",
+          "status": "passed",
+          "title": "should handle authentication state transitions",
+          "duration": 8.565200001001358,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbedWithAuth"],
+          "fullName": "LibraryPageEmbedWithAuth should render nothing when not authenticated",
+          "status": "passed",
+          "title": "should render nothing when not authenticated",
+          "duration": 1.3932999968528748,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbedWithAuth"],
+          "fullName": "LibraryPageEmbedWithAuth should render custom loading component",
+          "status": "passed",
+          "title": "should render custom loading component",
+          "duration": 2.9515999853610992,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbedWithAuth"],
+          "fullName": "LibraryPageEmbedWithAuth should render error state with custom error component",
+          "status": "passed",
+          "title": "should render error state with custom error component",
+          "duration": 4.762899994850159,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbedWithAuth"],
+          "fullName": "LibraryPageEmbedWithAuth should pass correct authentication props to hook",
+          "status": "passed",
+          "title": "should pass correct authentication props to hook",
+          "duration": 3.440700024366379,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["LibraryPageEmbedWithAuth"],
+          "fullName": "LibraryPageEmbedWithAuth should render authenticated view with custom styles",
+          "status": "passed",
+          "title": "should render authenticated view with custom styles",
+          "duration": 5.791200011968613,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484767,
+      "endTime": 1745072484849.7913,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/components/LibraryPageEmbedWithAuth.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPage"],
+          "fullName": "useCreateBotConsumptionPage should create bot consumption page when SDK is loaded",
+          "status": "passed",
+          "title": "should create bot consumption page when SDK is loaded",
+          "duration": 80.94259998202324,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPage"],
+          "fullName": "useCreateBotConsumptionPage should not create if SDK is not loaded",
+          "status": "passed",
+          "title": "should not create if SDK is not loaded",
+          "duration": 3.3147000074386597,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPage"],
+          "fullName": "useCreateBotConsumptionPage should handle creation error correctly",
+          "status": "passed",
+          "title": "should handle creation error correctly",
+          "duration": 55.90049999952316,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487077,
+      "endTime": 1745072487216.9004,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateBotConsumptionPage.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPageWithAuth"],
+          "fullName": "useCreateBotConsumptionPageWithAuth should handle guest authentication successfully",
+          "status": "passed",
+          "title": "should handle guest authentication successfully",
+          "duration": 91.8803000152111,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPageWithAuth"],
+          "fullName": "useCreateBotConsumptionPageWithAuth should handle standard authentication",
+          "status": "passed",
+          "title": "should handle standard authentication",
+          "duration": 58.679300010204315,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPageWithAuth"],
+          "fullName": "useCreateBotConsumptionPageWithAuth should handle authentication error",
+          "status": "passed",
+          "title": "should handle authentication error",
+          "duration": 61.84979999065399,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateBotConsumptionPageWithAuth"],
+          "fullName": "useCreateBotConsumptionPageWithAuth should handle bot page creation with auth token",
+          "status": "passed",
+          "title": "should handle bot page creation with auth token",
+          "duration": 63.76579999923706,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484755,
+      "endTime": 1745072485030.7659,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateBotConsumptionPageWithAuth.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateDashboard"],
+          "fullName": "useCreateDashboard should return initial state correctly",
+          "status": "passed",
+          "title": "should return initial state correctly",
+          "duration": 21.69420000910759,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboard"],
+          "fullName": "useCreateDashboard should not create dashboard when SDK is not loaded",
+          "status": "passed",
+          "title": "should not create dashboard when SDK is not loaded",
+          "duration": 2.906299978494644,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboard"],
+          "fullName": "useCreateDashboard should create dashboard with correct config when SDK is loaded",
+          "status": "passed",
+          "title": "should create dashboard with correct config when SDK is loaded",
+          "duration": 66.88639998435974,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboard"],
+          "fullName": "useCreateDashboard should handle dashboard creation error correctly",
+          "status": "passed",
+          "title": "should handle dashboard creation error correctly",
+          "duration": 63.263799995183945,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboard"],
+          "fullName": "useCreateDashboard should handle config updates",
+          "status": "passed",
+          "title": "should handle config updates",
+          "duration": 5.851300001144409,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484734,
+      "endTime": 1745072484894.8513,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateDashboard.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should initialize with correct state",
+          "status": "passed",
+          "title": "should initialize with correct state",
+          "duration": 29.903400003910065,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle guest authentication successfully",
+          "status": "passed",
+          "title": "should handle guest authentication successfully",
+          "duration": 71.96140000224113,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle standard authentication",
+          "status": "passed",
+          "title": "should handle standard authentication",
+          "duration": 59.35879999399185,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle SAML authentication",
+          "status": "passed",
+          "title": "should handle SAML authentication",
+          "duration": 5.303099989891052,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle OIDC authentication",
+          "status": "passed",
+          "title": "should handle OIDC authentication",
+          "duration": 4.123699992895126,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle authentication errors",
+          "status": "passed",
+          "title": "should handle authentication errors",
+          "duration": 56.086400002241135,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle missing credentials for standard auth",
+          "status": "passed",
+          "title": "should handle missing credentials for standard auth",
+          "duration": 19.397200018167496,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateDashboardWithAuth"],
+          "fullName": "useCreateDashboardWithAuth should handle dashboard creation after successful auth",
+          "status": "passed",
+          "title": "should handle dashboard creation after successful auth",
+          "duration": 72.24160000681877,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484838,
+      "endTime": 1745072485157.2417,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateDashboardWithAuth.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateLibraryPage"],
+          "fullName": "useCreateLibraryPage should create library page with correct config",
+          "status": "passed",
+          "title": "should create library page with correct config",
+          "duration": 38.61270001530647,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateLibraryPage"],
+          "fullName": "useCreateLibraryPage should handle error during library page creation",
+          "status": "passed",
+          "title": "should handle error during library page creation",
+          "duration": 70.3677000105381,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487329,
+      "endTime": 1745072487438.3677,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateLibraryPage.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCreateLibraryPageWithAuth"],
+          "fullName": "useCreateLibraryPageWithAuth should initialize with correct state",
+          "status": "passed",
+          "title": "should initialize with correct state",
+          "duration": 29.88960000872612,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateLibraryPageWithAuth"],
+          "fullName": "useCreateLibraryPageWithAuth should handle guest authentication successfully",
+          "status": "passed",
+          "title": "should handle guest authentication successfully",
+          "duration": 76.16499999165535,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateLibraryPageWithAuth"],
+          "fullName": "useCreateLibraryPageWithAuth should handle standard authentication",
+          "status": "passed",
+          "title": "should handle standard authentication",
+          "duration": 61.809399992227554,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateLibraryPageWithAuth"],
+          "fullName": "useCreateLibraryPageWithAuth should handle authentication errors",
+          "status": "passed",
+          "title": "should handle authentication errors",
+          "duration": 61.67840000987053,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useCreateLibraryPageWithAuth"],
+          "fullName": "useCreateLibraryPageWithAuth should handle library page creation with auth token",
+          "status": "passed",
+          "title": "should handle library page creation with auth token",
+          "duration": 63.8236999809742,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072484754,
+      "endTime": 1745072485047.8237,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useCreateLibraryPageWithAuth.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useLoadMstrSDK"],
+          "fullName": "useLoadMstrSDK should create and append SDK script with correct attributes",
+          "status": "passed",
+          "title": "should create and append SDK script with correct attributes",
+          "duration": 50.816700011491776,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useLoadMstrSDK"],
+          "fullName": "useLoadMstrSDK should set isSdkLoaded to true when script loads successfully",
+          "status": "passed",
+          "title": "should set isSdkLoaded to true when script loads successfully",
+          "duration": 7.639499992132187,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useLoadMstrSDK"],
+          "fullName": "useLoadMstrSDK should set error state when script fails to load",
+          "status": "passed",
+          "title": "should set error state when script fails to load",
+          "duration": 6.628900021314621,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["useLoadMstrSDK"],
+          "fullName": "useLoadMstrSDK should not create script if SDK is already loaded",
+          "status": "passed",
+          "title": "should not create script if SDK is already loaded",
+          "duration": 3.511599987745285,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1745072487161,
+      "endTime": 1745072487230.5117,
+      "status": "passed",
+      "message": "",
+      "name": "D:/KULIAH/final-project/embed-dossier-mstr/packages/embed-dossier-mstr-react/src/tests/hooks/useLoadMstrSDK.test.ts"
+    }
+  ]
+}

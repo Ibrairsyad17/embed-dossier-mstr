@@ -1,12 +1,116 @@
 ---
-title: MicroStrategyDossierConfigCustom AuthenticationType
-description: This page is a reference to the MicroStrategyDossierConfigCustomAuthenticationType used in the `embed-dossier-mstr-react` library.
+title: MicroStrategyDossierConfigCustomAuthenticationType
+description: API reference for the MicroStrategyDossierConfigCustomAuthenticationType interface in the embed-dossier-mstr-react package.
 keywords:
   [
+    "embedding",
+    "sdk",
     "types",
     "interfaces",
-    "reference",
-    "embed-dossier-mstr-react",
-    "microstrategy-dossier-config-custom-authentication-type",
+    "API reference",
+    "embed-dossier-mstr",
+    "MicroStrategyDossierConfigCustomAuthenticationType",
+    "authentication",
+    "typescript",
   ]
 ---
+
+## Type Definition
+
+```typescript
+interface MicroStrategyDossierConfigCustomAuthenticationType {
+  AUTH_TOKEN: string
+  IDENTITY_TOKEN: string
+}
+```
+
+## Properties
+
+### AUTH_TOKEN
+
+```typescript
+AUTH_TOKEN: string
+```
+
+The constant for using an authentication token for authentication. This is typically a standard JWT or other token format used by MicroStrategy's Authentication API.
+
+### IDENTITY_TOKEN
+
+```typescript
+IDENTITY_TOKEN: string
+```
+
+The constant for using an identity token for authentication. This is typically used for identity-based authentication in MicroStrategy.
+
+## Usage Example
+
+The authentication constants can be used when configuring custom authentication for an embedded dossier:
+
+```typescript
+import { MicroStrategyDossierConfig } from "embed-dossier-mstr-react"
+
+// Access the authentication types from the SDK
+const authTypes = window.microstrategy.dossier.CustomAuthenticationType
+
+// Create a dossier configuration with custom authentication
+const config: MicroStrategyDossierConfig = {
+  placeholder: document.getElementById("dossier-container"),
+  url: "https://your-mstr-server/MicroStrategyLibrary/app/PROJECT_ID/DOSSIER_ID",
+
+  // Enable custom authentication
+  enableCustomAuthentication: true,
+  customAuthenticationType: authTypes.AUTH_TOKEN, // Use AUTH_TOKEN type
+
+  // Provide a function to get the authentication token
+  getLoginToken: async () => {
+    // Get your authentication token from your auth service
+    const response = await fetch("https://your-auth-service/api/token")
+    const data = await response.json()
+    return data.token
+  },
+}
+
+// Create the dossier with authentication
+const dossier = await window.microstrategy.dossier.create(config)
+```
+
+## Authentication Types Explained
+
+### AUTH_TOKEN Authentication
+
+AUTH_TOKEN authentication uses a standard authentication token obtained through MicroStrategy's authentication endpoints. This token is typically obtained using one of the following methods:
+
+1. Standard login with username and password
+2. OAuth 2.0 authentication flow
+3. SAML authentication
+4. LDAP authentication
+
+Using AUTH_TOKEN with the Embedding SDK means that you are handling the authentication process and providing the resulting token to the SDK.
+
+### IDENTITY_TOKEN Authentication
+
+IDENTITY_TOKEN authentication uses an identity token, which is a special type of token that represents a user's identity. This token is often used in trusted authentication scenarios where:
+
+1. Your application has its own user management system
+2. You want to map your application users to MicroStrategy users
+3. You're implementing single sign-on (SSO) between your application and MicroStrategy
+
+## Related Configuration Properties
+
+When using custom authentication, make sure to set the following properties in your [MicroStrategyDossierConfig](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config):
+
+```typescript
+{
+  enableCustomAuthentication: true,
+  customAuthenticationType: window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+  getLoginToken: async () => {
+    // Your authentication token retrieval logic
+    return "your-auth-token";
+  }
+}
+```
+
+## Related Types
+
+- [MicroStrategyDossierConfig](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config)
+- [MicroStrategySDK](/docs/api-reference/types-and-interfaces/microstrategy-sdk)

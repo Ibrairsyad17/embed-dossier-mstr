@@ -1,12 +1,268 @@
 ---
-title: MicroStrategy SDK
-description: This page is a reference to the MicroStrategy SDK types and interfaces used in the `embed-dossier-mstr-react` library.
+title: MicroStrategySDK
+description: API reference for the MicroStrategySDK interface in the embed-dossier-mstr-react package.
 keywords:
   [
+    "embedding",
+    "sdk",
     "types",
     "interfaces",
-    "reference",
-    "embed-dossier-mstr-react",
-    "microstrategy-sdk",
+    "API reference",
+    "embed-dossier-mstr",
+    "MicroStrategySDK",
+    "typescript",
   ]
 ---
+
+## Type Definition
+
+```typescript
+interface MicroStrategySDK {
+  dossier: {
+    create: (
+      config: MicroStrategyDossierConfig
+    ) => Promise<MicroStrategyDossier>
+    destroy: () => void
+    CustomAuthenticationType: {
+      AUTH_TOKEN: string
+      IDENTITY_TOKEN: string
+    }
+    EventType: EVENT_TYPE
+  }
+  auth: {
+    oidcLogin: (serverUrl: string) => Promise<string>
+    samlLogin: (serverUrl: string) => Promise<string>
+  }
+  embedding: {
+    featureFlags: Record<string, unknown> | unknown
+  }
+  embeddingContexts: {
+    embedLibraryPage: (
+      config: EmbedLibraryPageConfig
+    ) => Promise<EmbedLibraryPage>
+    embedDossierConsumptionPage: (
+      config: EmbedDossierConsumptionPageConfig
+    ) => Promise<EmbedDossierConsumptionPage>
+    embedBotConsumptionPage: (
+      config: EmbedBotConsumptionPageConfig
+    ) => Promise<EmbedBotConsumptionPage>
+    embedReportPage: (config: EmbedReportPageConfig) => Promise<EmbedReportPage>
+  }
+}
+```
+
+## Properties and Methods
+
+### dossier
+
+Object containing methods and properties related to dossier (dashboard) functionality.
+
+#### dossier.create
+
+```typescript
+create: (config: MicroStrategyDossierConfig) => Promise<MicroStrategyDossier>
+```
+
+Creates a new embedded dossier instance with the provided configuration.
+
+**Parameters:**
+
+- `config`: [MicroStrategyDossierConfig](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config) - Configuration options for the dossier.
+
+**Returns:**
+
+- `Promise<MicroStrategyDossier>`: A promise that resolves to the created [MicroStrategyDossier](/docs/api-reference/types-and-interfaces/microstrategy-dossier) object.
+
+#### dossier.destroy
+
+```typescript
+destroy: () => void
+```
+
+Destroys the current dossier instance, cleaning up resources.
+
+#### dossier.CustomAuthenticationType
+
+```typescript
+CustomAuthenticationType: {
+  AUTH_TOKEN: string
+  IDENTITY_TOKEN: string
+}
+```
+
+Constants for authentication types.
+
+#### dossier.EventType
+
+```typescript
+EventType: EVENT_TYPE
+```
+
+Enum of event types that can be used for event handling.
+
+### auth
+
+Object containing authentication-related methods.
+
+#### auth.oidcLogin
+
+```typescript
+oidcLogin: (serverUrl: string) => Promise<string>
+```
+
+Initiates OpenID Connect (OIDC) authentication.
+
+**Parameters:**
+
+- `serverUrl`: `string` - The base URL of the MicroStrategy Library server.
+
+**Returns:**
+
+- `Promise<string>`: A promise that resolves to the authentication token.
+
+#### auth.samlLogin
+
+```typescript
+samlLogin: (serverUrl: string) => Promise<string>
+```
+
+Initiates SAML authentication.
+
+**Parameters:**
+
+- `serverUrl`: `string` - The base URL of the MicroStrategy Library server.
+
+**Returns:**
+
+- `Promise<string>`: A promise that resolves to the authentication token.
+
+### embedding
+
+Object containing embedding-related properties.
+
+#### embedding.featureFlags
+
+```typescript
+featureFlags: Record<string, unknown> | unknown
+```
+
+Feature flags for the embedding SDK.
+
+### embeddingContexts
+
+Object containing methods for embedding different types of MicroStrategy content.
+
+#### embeddingContexts.embedLibraryPage
+
+```typescript
+embedLibraryPage: (config: EmbedLibraryPageConfig) => Promise<EmbedLibraryPage>
+```
+
+Embeds a MicroStrategy Library page.
+
+**Parameters:**
+
+- `config`: [EmbedLibraryPageConfig](/docs/api-reference/types-and-interfaces/embed-library-page-config) - Configuration options for the library page.
+
+**Returns:**
+
+- `Promise<EmbedLibraryPage>`: A promise that resolves to the [EmbedLibraryPage](/docs/api-reference/types-and-interfaces/embed-library-page) object.
+
+#### embeddingContexts.embedDossierConsumptionPage
+
+```typescript
+embedDossierConsumptionPage: (config: EmbedDossierConsumptionPageConfig) =>
+  Promise<EmbedDossierConsumptionPage>
+```
+
+Embeds a MicroStrategy Dossier consumption page.
+
+**Parameters:**
+
+- `config`: [EmbedDossierConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config) - Configuration options.
+
+**Returns:**
+
+- `Promise<EmbedDossierConsumptionPage>`: A promise that resolves to the [EmbedDossierConsumptionPage](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page) object.
+
+#### embeddingContexts.embedBotConsumptionPage
+
+```typescript
+embedBotConsumptionPage: (config: EmbedBotConsumptionPageConfig) =>
+  Promise<EmbedBotConsumptionPage>
+```
+
+Embeds a MicroStrategy Bot consumption page.
+
+**Parameters:**
+
+- `config`: [EmbedBotConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page-config) - Configuration options.
+
+**Returns:**
+
+- `Promise<EmbedBotConsumptionPage>`: A promise that resolves to the [EmbedBotConsumptionPage](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page) object.
+
+#### embeddingContexts.embedReportPage
+
+```typescript
+embedReportPage: (config: EmbedReportPageConfig) => Promise<EmbedReportPage>
+```
+
+Embeds a MicroStrategy Report page.
+
+**Parameters:**
+
+- `config`: [EmbedReportPageConfig](/docs/api-reference/types-and-interfaces/embed-report-page-config) - Configuration options.
+
+**Returns:**
+
+- `Promise<EmbedReportPage>`: A promise that resolves to the [EmbedReportPage](/docs/api-reference/types-and-interfaces/embed-report-page) object.
+
+## Usage Example
+
+```typescript
+// After the MicroStrategy SDK is loaded
+const sdk = window.microstrategy
+
+// Create a dossier
+const dossier = await sdk.dossier.create({
+  placeholder: document.getElementById("dossier-container"),
+  url: "https://your-mstr-server/MicroStrategyLibrary/app/PROJECT_ID/DOSSIER_ID",
+})
+
+// Authenticate using OIDC
+const authToken = await sdk.auth.oidcLogin(
+  "https://your-mstr-server/MicroStrategyLibrary"
+)
+
+// Embed a library page
+const libraryPage = await sdk.embeddingContexts.embedLibraryPage({
+  placeholder: document.getElementById("library-container"),
+  serverUrl: "https://your-mstr-server/MicroStrategyLibrary",
+})
+```
+
+## Global Declaration
+
+The package extends the global `Window` interface to make the SDK accessible:
+
+```typescript
+declare global {
+  interface Window {
+    microstrategy: MicroStrategySDK
+  }
+}
+```
+
+## Related Types
+
+- [MicroStrategyDossier](/docs/api-reference/types-and-interfaces/microstrategy-dossier)
+- [MicroStrategyDossierConfig](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config)
+- [EmbedLibraryPage](/docs/api-reference/types-and-interfaces/embed-library-page)
+- [EmbedLibraryPageConfig](/docs/api-reference/types-and-interfaces/embed-library-page-config)
+- [EmbedDossierConsumptionPage](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page)
+- [EmbedDossierConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config)
+- [EmbedBotConsumptionPage](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page)
+- [EmbedBotConsumptionPageConfig](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page-config)
+- [EmbedReportPage](/docs/api-reference/types-and-interfaces/embed-report-page)
+- [EmbedReportPageConfig](/docs/api-reference/types-and-interfaces/embed-report-page-config)

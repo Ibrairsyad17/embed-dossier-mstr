@@ -1,13 +1,256 @@
 ---
-title: <DashboardEmbedAuth />
-description: Learn about the <DashboardEmbedAuth /> component and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+title: <DashboardEmbedWithAuth />
+description: Learn about the <DashboardEmbedWithAuth /> component and how to enhance your embedded dashboards with authentication in your React applications using the `embed-dossier-mstr-react` package.
 keywords:
   [
     embedding,
     sdk,
     functionalities,
+    authentication,
     helper methods,
     dashboard,
     embed-dossier-mstr,
   ]
 ---
+
+# DashboardEmbedWithAuth Component
+
+The `DashboardEmbedWithAuth` component is an enhanced version of the `DashboardEmbed` component that adds authentication capabilities. It handles the authentication process with the MicroStrategy server before rendering the dashboard, supporting multiple authentication methods and providing customizable loading and error states.
+
+## Import
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+```
+
+## Props
+
+| Prop               | Type                                                       | Required                  | Description                                                                                                                 |
+| ------------------ | ---------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `dossierUrl`       | `string`                                                   | Yes                       | The complete URL of your MicroStrategy dossier in the format: `https://{env-url}/{libraryName}/app/{projectId}/{dossierId}` |
+| `loginMode`        | `"guest" \| "standard" \| "saml" \| "oidc" \| "ldap"`      | Yes                       | The authentication method to use                                                                                            |
+| `username`         | `string`                                                   | For 'standard' and 'ldap' | Username for authentication (required for standard and LDAP authentication)                                                 |
+| `password`         | `string`                                                   | For 'standard' and 'ldap' | Password for authentication (required for standard and LDAP authentication)                                                 |
+| `className`        | `string`                                                   | No                        | CSS class names to apply to the container element                                                                           |
+| `style`            | `React.CSSProperties`                                      | No                        | Inline styles to apply to the container element                                                                             |
+| `config`           | `Omit<MicroStrategyDossierConfig, "placeholder" \| "url">` | No                        | Additional configuration options for the dashboard                                                                          |
+| `loadingComponent` | `ReactNode`                                                | No                        | Custom component to show during authentication and loading (defaults to a simple "Loading..." message)                      |
+| `errorComponent`   | `ReactNode \| ((error: string) => ReactNode)`              | No                        | Custom component or render function for error states (defaults to a basic error message)                                    |
+
+## Basic Usage
+
+Here's a simple example of using the `DashboardEmbedWithAuth` component with standard authentication:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+const MyAuthenticatedDashboard = () => {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+      loginMode="standard"
+      username="jsmith"
+      password="password123"
+      className="my-dashboard"
+      style={{ height: "700px" }}
+    />
+  )
+}
+```
+
+## Authentication Methods
+
+The component supports multiple authentication methods:
+
+### Guest Authentication
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="guest"
+/>
+```
+
+### Standard Authentication
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+/>
+```
+
+### LDAP Authentication
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="ldap"
+  username="jsmith"
+  password="password123"
+/>
+```
+
+### Single Sign-On Methods
+
+For SAML and OIDC, the component will redirect to the identity provider's login page:
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="saml"
+/>
+```
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="oidc"
+/>
+```
+
+## Custom Loading and Error States
+
+You can customize the loading and error states using the `loadingComponent` and `errorComponent` props:
+
+### Custom Loading Component
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  loadingComponent={
+    <div className="flex justify-center items-center h-60">
+      <div className="spinner-border" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+      <p className="ml-2">Loading your dashboard...</p>
+    </div>
+  }
+/>
+```
+
+### Custom Error Component
+
+You can provide either a React node:
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  errorComponent={
+    <div className="bg-red-50 border-l-4 border-red-500 p-4 my-4">
+      <p className="text-red-700">
+        Failed to authenticate with the MicroStrategy server.
+      </p>
+      <p className="text-sm text-red-500">
+        Please check your credentials and try again.
+      </p>
+    </div>
+  }
+/>
+```
+
+Or a render function that receives the error message:
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  errorComponent={(errorMessage) => (
+    <div className="error-container">
+      <h3>Authentication Error</h3>
+      <p>{errorMessage}</p>
+      <button onClick={() => window.location.reload()}>Retry</button>
+    </div>
+  )}
+/>
+```
+
+## Advanced Configuration
+
+Similar to the `DashboardEmbed` component, you can customize the behavior and appearance of your dashboard by providing a `config` object:
+
+```tsx
+<DashboardEmbedWithAuth
+  dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  config={{
+    enableResponsive: true,
+    disableNotification: true,
+    dockedFilter: {
+      dockedPosition: "left",
+      canClose: true,
+      dockChangeable: true,
+      isDocked: true,
+    },
+    navigationBar: {
+      enabled: true,
+      gotoLibrary: true,
+      title: true,
+      toc: true,
+    },
+    filterFeature: {
+      enabled: true,
+      edit: true,
+      summary: true,
+    },
+  }}
+  style={{ height: "800px", width: "100%" }}
+/>
+```
+
+## How It Works
+
+The `DashboardEmbedWithAuth` component:
+
+1. Extracts the server URL from the provided dossier URL using the `getInfoFromUrl` utility
+2. Uses the `useCreateDashboardWithAuth` hook to handle authentication and dashboard creation
+3. Displays a loading component during authentication
+4. Shows an error component if authentication fails
+5. Renders the dashboard once authentication is successful
+
+## Authentication Flow
+
+1. The component attempts to authenticate with the MicroStrategy server using the provided credentials and login mode
+2. For standard and LDAP authentication, it sends the username and password to the server
+3. For SAML and OIDC, it redirects to the identity provider's login page
+4. For guest authentication, it connects using the guest user credentials
+5. Once authenticated, it creates and renders the dashboard
+
+## Error Handling
+
+The component automatically handles authentication errors and provides several ways to customize error states:
+
+1. If authentication fails, it displays the error component with the error message
+2. The error message includes details about what went wrong, such as invalid credentials or server issues
+3. You can provide a custom error component or function to display errors in a way that matches your application's design
+
+## Security Considerations
+
+When using this component, keep these security best practices in mind:
+
+1. Avoid hardcoding credentials in your code; use environment variables or a secure credential management system
+2. Use HTTPS for all communications with the MicroStrategy server
+3. For production deployments, prefer SAML, OIDC, or backend proxy authentication over storing credentials in the frontend
+4. Consider implementing additional security measures such as IP restrictions or session timeouts
+
+## Related Components
+
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - Basic component without authentication handling
+- [`LibraryPageEmbed`](/docs/api-reference/library-page-embed) - For embedding the MicroStrategy library page
+
+## Related Hooks
+
+- [`useCreateDashboardWithAuth`](/docs/api-reference/use-create-dashboard-with-auth) - The hook used internally by this component
+- [`useCreateDashboard`](/docs/api-reference/use-create-dashboard) - Basic dashboard creation hook without authentication
