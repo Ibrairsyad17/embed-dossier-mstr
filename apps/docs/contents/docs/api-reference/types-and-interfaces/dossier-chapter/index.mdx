@@ -10,3 +10,394 @@ keywords:
     "dossier-chapter",
   ]
 ---
+
+`DossierChapter` is an interface that represents a chapter within a MicroStrategy Dossier. This interface provides access to chapter metadata and navigation methods, allowing you to work with dossier structure and navigate between chapters and pages programmatically.
+
+## Interface Definition
+
+```tsx
+export interface DossierChapter {
+  name: string
+  nodeKey: string
+  pages: DossierPage[]
+  getNextChapter: () => DossierChapter | null
+  getPrevChapter: () => DossierChapter | null
+  getFirstPage: () => DossierPage
+  getLastPage: () => DossierPage
+}
+```
+
+## Properties
+
+| Property  | Type            | Description                                                             |
+| --------- | --------------- | ----------------------------------------------------------------------- |
+| `name`    | `string`        | The display name of the chapter.                                        |
+| `nodeKey` | `string`        | A unique identifier for the chapter, used for navigation and reference. |
+| `pages`   | `DossierPage[]` | An array of `DossierPage` objects that belong to this chapter.          |
+
+## Methods
+
+| Method           | Return Type              | Description                                                                         |
+| ---------------- | ------------------------ | ----------------------------------------------------------------------------------- |
+| `getNextChapter` | `DossierChapter \| null` | Returns the next chapter in the dossier or `null` if this is the last chapter.      |
+| `getPrevChapter` | `DossierChapter \| null` | Returns the previous chapter in the dossier or `null` if this is the first chapter. |
+| `getFirstPage`   | `DossierPage`            | Returns the first page in this chapter.                                             |
+| `getLastPage`    | `DossierPage`            | Returns the last page in this chapter.                                              |
+
+## Usage Examples
+
+### Accessing Chapters in a Dossier
+
+You can retrieve all chapters from a dossier using the `getChapterList` method or through the table of contents:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DossierChapter } from "embed-dossier-mstr-react"
+
+const DossierChapters = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [chapters, setChapters] = useState<DossierChapter[]>([])
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and dossier creation code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Method 1: Get chapters directly
+        const allChapters = dossier.getChapterList()
+        setChapters(allChapters)
+
+        // Method 2: Get chapters through the table of contents
+        const toc = dossier.getTableOfContents()
+        const chaptersFromToc = toc.chapters
+
+        console.log("Chapters from direct method:", allChapters)
+        console.log("Chapters from TOC:", chaptersFromToc)
+
+        // Get the current chapter
+        const currentChapter = dossier.getCurrentChapter()
+        console.log("Current chapter:", currentChapter.name)
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+
+      <div className="chapter-list">
+        <h3>Dossier Chapters</h3>
+        <ul>
+          {chapters.map((chapter) => (
+            <li key={chapter.nodeKey}>
+              <strong>{chapter.name}</strong> (ID: {chapter.nodeKey})
+              <ul>
+                <li>Pages: {chapter.pages.length}</li>
+                <li>First page: {chapter.getFirstPage().name}</li>
+                <li>Last page: {chapter.getLastPage().name}</li>
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+export default DossierChapters
+```
+
+### Navigating Between Chapters
+
+You can navigate between chapters using the `getNextChapter`, `getPrevChapter`, `getFirstPage`, and `getLastPage` methods:
+
+```tsx
+import React, { useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DossierChapter } from "embed-dossier-mstr-react"
+
+const ChapterNavigation = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [dossierInstance, setDossierInstance] = useState<any>(null)
+  const [currentChapter, setCurrentChapter] = useState<DossierChapter | null>(
+    null
+  )
+
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  const initializeDossier = async () => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    try {
+      // Authentication and other setup code...
+
+      const dossier = await window.microstrategy.dossier.create({
+        placeholder: containerRef.current,
+        url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+      })
+
+      setDossierInstance(dossier)
+
+      // Get the current chapter
+      const chapter = dossier.getCurrentChapter()
+      setCurrentChapter(chapter)
+
+      // Register page switch handler to update current chapter
+      dossier.registerPageSwitchHandler(() => {
+        setCurrentChapter(dossier.getCurrentChapter())
+      })
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
+  const navigateToNextChapter = async () => {
+    if (!currentChapter || !dossierInstance) return
+
+    try {
+      const nextChapter = currentChapter.getNextChapter()
+
+      if (nextChapter) {
+        // Navigate to the first page of the next chapter
+        const firstPage = nextChapter.getFirstPage()
+        await dossierInstance.navigateToPage(firstPage)
+        console.log(`Navigated to next chapter: ${nextChapter.name}`)
+      } else {
+        console.log("Already at the last chapter")
+      }
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
+  const navigateToPreviousChapter = async () => {
+    if (!currentChapter || !dossierInstance) return
+
+    try {
+      const prevChapter = currentChapter.getPrevChapter()
+
+      if (prevChapter) {
+        // Navigate to the first page of the previous chapter
+        const lastPage = prevChapter.getLastPage()
+        await dossierInstance.navigateToPage(lastPage)
+        console.log(`Navigated to previous chapter: ${prevChapter.name}`)
+      } else {
+        console.log("Already at the first chapter")
+      }
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+
+      <div className="controls">
+        <button onClick={initializeDossier}>Initialize Dossier</button>
+
+        <div className="chapter-navigation">
+          <h3>Chapter Navigation</h3>
+          <p>
+            Current Chapter: {currentChapter ? currentChapter.name : "None"}
+          </p>
+
+          <button onClick={navigateToPreviousChapter}>Previous Chapter</button>
+          <button onClick={navigateToNextChapter}>Next Chapter</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ChapterNavigation
+```
+
+### Building a Chapter and Page Navigator
+
+You can create a full navigation component that shows all chapters and pages while highlighting the current position:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type {
+  DossierChapter,
+  DossierPage,
+  TableOfContents,
+} from "embed-dossier-mstr-react"
+
+const DossierNavigator = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [dossierInstance, setDossierInstance] = useState<any>(null)
+  const [toc, setToc] = useState<TableOfContents | null>(null)
+  const [currentChapter, setCurrentChapter] = useState<DossierChapter | null>(
+    null
+  )
+  const [currentPage, setCurrentPage] = useState<DossierPage | null>(null)
+
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        setDossierInstance(dossier)
+
+        // Get table of contents
+        const tableOfContents = dossier.getTableOfContents()
+        setToc(tableOfContents)
+
+        // Set current chapter and page
+        setCurrentChapter(dossier.getCurrentChapter())
+        setCurrentPage(dossier.getCurrentPage())
+
+        // Register page switch handler
+        dossier.registerPageSwitchHandler(() => {
+          setCurrentChapter(dossier.getCurrentChapter())
+          setCurrentPage(dossier.getCurrentPage())
+        })
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  const navigateToPage = async (page: DossierPage) => {
+    if (!dossierInstance) return
+
+    try {
+      await dossierInstance.navigateToPage(page)
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
+  return (
+    <div className="dossier-container">
+      <div className="navigation-sidebar">
+        {toc && (
+          <div className="toc">
+            <h3>Dossier Navigation</h3>
+            {toc.chapters.map((chapter) => (
+              <div
+                key={chapter.nodeKey}
+                className={`chapter ${currentChapter?.nodeKey === chapter.nodeKey ? "active-chapter" : ""}`}
+              >
+                <h4>{chapter.name}</h4>
+                <ul className="pages">
+                  {chapter.pages.map((page) => (
+                    <li
+                      key={page.nodeKey}
+                      className={
+                        currentPage?.nodeKey === page.nodeKey
+                          ? "active-page"
+                          : ""
+                      }
+                      onClick={() => navigateToPage(page)}
+                    >
+                      {page.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="dossier-content">
+        <div ref={containerRef} style={{ width: "100%", height: "700px" }} />
+      </div>
+    </div>
+  )
+}
+
+export default DossierNavigator
+```
+
+## Best Practices
+
+1. **Cache Chapter References**: When working with a large dossier, consider caching chapter references for better performance when navigating frequently.
+
+   ```tsx
+   // Store chapters for quick access
+   const chaptersMap = new Map()
+   dossier.getChapterList().forEach((chapter) => {
+     chaptersMap.set(chapter.nodeKey, chapter)
+   })
+
+   // Quick lookup by nodeKey later
+   const getChapterByNodeKey = (nodeKey: string) => {
+     return chaptersMap.get(nodeKey)
+   }
+   ```
+
+2. **Create Helper Methods**: Develop helper methods for common navigation patterns to make your code more maintainable.
+
+   ```tsx
+   const navigateToChapterByIndex = async (index: number) => {
+     const chapters = dossier.getChapterList()
+     if (index >= 0 && index < chapters.length) {
+       const chapter = chapters[index]
+       await dossier.navigateToPage(chapter.getFirstPage())
+       return true
+     }
+     return false
+   }
+   ```
+
+3. **Handle Navigation Errors**: Always wrap navigation method calls in try-catch blocks to handle potential errors gracefully.
+
+   ```tsx
+   try {
+     const nextChapter = currentChapter.getNextChapter()
+     if (nextChapter) {
+       await dossier.navigateToPage(nextChapter.getFirstPage())
+     }
+   } catch (error) {
+     console.error("Navigation failed:", error)
+     // Show user-friendly message
+   }
+   ```
+
+4. **Check for Null References**: The `getNextChapter` and `getPrevChapter` methods can return `null`, so always check before using the result.
+
+   ```tsx
+   const nextChapter = currentChapter.getNextChapter()
+   if (nextChapter) {
+     // Safe to proceed
+     console.log(`Next chapter: ${nextChapter.name}`)
+   } else {
+     console.log("No next chapter available")
+   }
+   ```
+
+## Related Interfaces
+
+- `DossierPage`: Interface that represents pages within a chapter.
+- `TableOfContents`: Interface that contains all chapters in a dossier.
+- `MicroStrategyDossier`: The main interface for dossier objects that provides methods for retrieving chapters and pages.

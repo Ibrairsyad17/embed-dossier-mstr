@@ -161,7 +161,7 @@ export const Documents: Paths[] = [
           },
           {
             title: "FilterTypeInfoMetricQualByValue",
-            href: "/filter-type-info-metric",
+            href: "/filter-type-info-metric-qual-by-value",
           },
           { title: "TableOfContents", href: "/table-of-contents" },
           { title: "DossierPage", href: "/dossier-page" },
@@ -178,14 +178,6 @@ export const Documents: Paths[] = [
           { title: "ShareFeature", href: "/share-feature" },
           { title: "CurrentPage", href: "/current-page" },
           { title: "PageInfo", href: "/page-info" },
-          {
-            title: "DossierConsumptionSettings",
-            href: "/dossier-consumption-settings",
-          },
-          {
-            title: "BotConsumptionSettings",
-            href: "/bot-consumption-settings",
-          },
         ],
       },
     ],

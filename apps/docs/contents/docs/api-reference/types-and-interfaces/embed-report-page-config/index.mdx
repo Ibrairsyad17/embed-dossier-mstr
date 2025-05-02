@@ -10,3 +10,172 @@ keywords:
     "embed-report-page-config",
   ]
 ---
+
+## Interface Definition
+
+```tsx
+interface EmbedReportPageConfig extends EmbedDossierConsumptionPageConfig {}
+```
+
+As shown in the definition, `EmbedReportPageConfig` directly extends `EmbedDossierConsumptionPageConfig` without adding any additional properties. This means that the configuration for embedding report pages is currently identical to that for dossier consumption pages.
+
+## Inherited Properties
+
+Since `EmbedReportPageConfig` extends `EmbedDossierConsumptionPageConfig`, it inherits all of its properties:
+
+| Property                            | Type                                                                       | Required | Description                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `placeholder`                       | `HTMLDivElement \| null`                                                   | Yes      | The DOM element where the Report page will be embedded.                             |
+| `serverUrl`                         | `string`                                                                   | Yes      | The URL of the MicroStrategy Library server.                                        |
+| `projectId`                         | `string`                                                                   | Yes      | The ID of the MicroStrategy project that contains the report.                       |
+| `objectId`                          | `string`                                                                   | Yes      | The ID of the report to embed.                                                      |
+| `customApplicationId`               | `string`                                                                   | No       | An optional identifier for your application.                                        |
+| `enableCustomAuthentication`        | `boolean`                                                                  | No       | Whether to use custom authentication.                                               |
+| `pageKey`                           | `string`                                                                   | No       | A specific page key to navigate to within the report.                               |
+| `containerHeight`                   | `string`                                                                   | No       | The height of the container for the embedded report.                                |
+| `containerWidth`                    | `string`                                                                   | No       | The width of the container for the embedded report.                                 |
+| `customAuthenticationType`          | `MicroStrategyDossierConfigCustomAuthenticationType \| string`             | No       | The type of custom authentication to use.                                           |
+| `getLoginToken`                     | `() => Promise<string \| void \| null>`                                    | No       | A function that returns a promise resolving to an authentication token.             |
+| `disableCustomErrorHandlerOnCreate` | `boolean`                                                                  | No       | Whether to disable the custom error handler during creation.                        |
+| `errorHandler`                      | `(error: ErrorHandlerInterface) => void`                                   | No       | A function to handle errors that occur during the lifecycle of the embedded report. |
+| `sessionErrorHandler`               | `(error: ErrorHandlerInterface) => void`                                   | No       | A function to handle session-related errors.                                        |
+| `customUi`                          | `CustomUi`                                                                 | No       | Configuration options for customizing the UI of the embedded report.                |
+| `settings`                          | `Pick<Settings, "dossierConsumption"> \| Pick<Settings, "botConsumption">` | No       | Additional settings for the report page.                                            |
+
+## Usage Example
+
+Here's an example of how to use the `EmbedReportPageConfig` interface when embedding a MicroStrategy Report page:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const ReportPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedReport = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the report page
+        const config = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example report ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          containerHeight: "600px",
+          containerWidth: "100%",
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+          errorHandler: (error) => {
+            console.error("Report error:", error)
+          },
+          customUi: {
+            // UI customization options
+            showFilterPanel: false,
+            showDossierHeader: true,
+          },
+        }
+
+        const reportPage =
+          await window.microstrategy.embeddingContexts.embedReportPage(config)
+        console.log("Report embedded successfully:", reportPage)
+      } catch (error) {
+        console.error("Failed to embed report:", error)
+      }
+    }
+
+    embedReport()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>Embedded MicroStrategy Report</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default ReportPage
+```
+
+## Using with Authentication
+
+Authentication for report pages works the same way as for dossier consumption pages:
+
+```tsx
+const config = {
+  // ...other required properties
+  enableCustomAuthentication: true,
+  customAuthenticationType: "AUTH_TOKEN", // or window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN
+  getLoginToken: async () => {
+    const response = await fetch(`${serverUrl}/api/auth/token`, {
+      method: "GET",
+      credentials: "include",
+      mode: "cors",
+      headers: { "content-type": "application/json" },
+    })
+    return response.ok ? response.headers.get("x-mstr-authtoken") : null
+  },
+}
+```
+
+## Error Handling
+
+Error handling for report pages is configured in the same way as for dossier consumption pages:
+
+```tsx
+const config = {
+  // ...other properties
+  errorHandler: (error) => {
+    console.error("Report error:", error)
+    // Handle the error, e.g., show a notification to the user
+  },
+  sessionErrorHandler: (error) => {
+    console.error("Session error:", error)
+    // Handle session-specific errors, e.g., redirect to login page
+  },
+}
+```
+
+## Differences from Dossier Consumption
+
+While the configuration for report pages is currently identical to that for dossier consumption pages, there may be differences in how the embedded content behaves:
+
+1. Reports typically present data in a more structured, grid-based format compared to dossiers.
+2. The available interactive features and UI elements may differ between reports and dossiers.
+3. Performance characteristics may vary depending on the complexity and size of the report.
+
+## Development Status
+
+The `EmbedReportPageConfig` interface is in active development. As more features and capabilities are added to the MicroStrategy SDK for report embedding, this interface may be extended with additional properties specific to reports.
+
+## Related Interfaces
+
+- `EmbedDossierConsumptionPageConfig`: The base interface that `EmbedReportPageConfig` extends.
+- `EmbedReportPage`: The interface returned when embedding a report page.
+- `CustomUi`: Interface for UI customization options.
+- `ErrorHandlerInterface`: Interface for error handling.
+- `Settings`: Interface containing settings for embedding different types of pages.

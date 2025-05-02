@@ -10,3 +10,194 @@ keywords:
     "docked-comment-and-filter",
   ]
 ---
+
+## Interface Definition
+
+```tsx
+export interface DockedCommentAndFilter {
+  dockedPosition?: "left" | "right"
+  canClose?: boolean
+  dockChangeable?: boolean
+  isDocked?: boolean
+}
+```
+
+## Properties
+
+| Property         | Type                           | Description                                                            |
+| ---------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| `dockedPosition` | `"left" \| "right"` (optional) | Specifies which side of the dossier the panel should be docked.        |
+| `canClose`       | `boolean` (optional)           | Determines whether users can close the docked panel.                   |
+| `dockChangeable` | `boolean` (optional)           | Determines whether users can change the docking position of the panel. |
+| `isDocked`       | `boolean` (optional)           | Specifies whether the panel is docked by default.                      |
+
+## Usage in Dossier Configuration
+
+The `DockedCommentAndFilter` interface is used in two contexts within the dossier configuration:
+
+1. For comment panels via the `dockedComment` property
+2. For filter panels via the `dockedFilter` property
+
+### Example: Configuring Docked Filters
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DockedCommentAndFilter } from "embed-dossier-mstr-react"
+
+const DossierWithDockedFilter = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const dockedFilterConfig: DockedCommentAndFilter = {
+      dockedPosition: "right",
+      canClose: true,
+      dockChangeable: true,
+      isDocked: true,
+    }
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          dockedFilter: dockedFilterConfig,
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithDockedFilter
+```
+
+### Example: Configuring Docked Comments
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DockedCommentAndFilter } from "embed-dossier-mstr-react"
+
+const DossierWithDockedComments = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const dockedCommentConfig: DockedCommentAndFilter = {
+      dockedPosition: "left",
+      canClose: false,
+      dockChangeable: false,
+      isDocked: true,
+    }
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          enableCollaboration: true, // Required for comments to work
+          dockedComment: dockedCommentConfig,
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithDockedComments
+```
+
+### Example: Using Both Docked Filters and Comments
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DockedCommentAndFilter } from "embed-dossier-mstr-react"
+
+const DossierWithDockedPanels = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          enableCollaboration: true,
+
+          // Configure comments panel on the left
+          dockedComment: {
+            dockedPosition: "left",
+            canClose: true,
+            dockChangeable: true,
+            isDocked: true,
+          },
+
+          // Configure filters panel on the right
+          dockedFilter: {
+            dockedPosition: "right",
+            canClose: true,
+            dockChangeable: true,
+            isDocked: true,
+          },
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithDockedPanels
+```
+
+## Best Practices
+
+1. **Consider User Experience**: When configuring docked panels, consider the available screen space. Having both panels docked simultaneously may reduce the space available for the dossier content, especially on smaller screens.
+
+2. **Default States**: If you want panels to be available but not immediately visible, set `isDocked: false` so users can open them when needed.
+
+3. **Positioning**:
+
+   - For right-to-left (RTL) languages, consider using `dockedPosition: "left"` for filters.
+   - For left-to-right (LTR) languages, the conventional approach is to use `dockedPosition: "right"` for filters.
+
+4. **Control Over Panels**: If you want to enforce a specific layout without user interference, set `canClose: false` and `dockChangeable: false`.
+
+## Related Interfaces
+
+- `DockedTheme`: Extends `DockedCommentAndFilter` with a `theme` property to configure the docked theme panel.
+- `NavigationBar`: Interface for configuring the navigation bar, which can include buttons to show/hide the filter and comment panels.
+- `MicroStrategyDossierConfig`: Main configuration interface that uses `DockedCommentAndFilter` for the `dockedComment` and `dockedFilter` properties.

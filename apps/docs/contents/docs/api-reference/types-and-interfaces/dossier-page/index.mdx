@@ -1,6 +1,6 @@
 ---
-title: Dossier Page
-description: This page is a reference to the Dossier Page used in the `embed-dossier-mstr-react` library.
+title: DossierPage
+description: This page is a reference to the DossierPage interface used in the `embed-dossier-mstr-react` library.
 keywords:
   [
     "types",
@@ -10,3 +10,274 @@ keywords:
     "dossier-page",
   ]
 ---
+
+## Interface Definition
+
+```tsx
+export interface DossierPage {
+  name: string
+  nodeKey: string
+}
+```
+
+## Properties
+
+| Property  | Type     | Description                                                          |
+| --------- | -------- | -------------------------------------------------------------------- |
+| `name`    | `string` | The display name of the dossier page.                                |
+| `nodeKey` | `string` | A unique identifier for the page, used for navigation and reference. |
+
+## Usage in Navigation
+
+The `DossierPage` interface is typically used in the following contexts:
+
+1. When retrieving the table of contents of a dossier
+2. When navigating between pages in a dossier
+3. When getting information about the current page
+
+### Retrieving Pages from a Dossier
+
+You can access the pages in a dossier through the table of contents or directly:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DossierPage } from "embed-dossier-mstr-react"
+
+const DossierPages = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [pages, setPages] = useState<DossierPage[]>([])
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and dossier creation code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Method 1: Get all pages directly
+        const allPages = dossier.getPageList()
+        setPages(allPages)
+
+        // Method 2: Get pages through the table of contents
+        const toc = dossier.getTableOfContents()
+        let pagesFromToc: DossierPage[] = []
+
+        toc.chapters.forEach((chapter) => {
+          pagesFromToc = [...pagesFromToc, ...chapter.pages]
+        })
+
+        console.log("Pages from direct method:", allPages)
+        console.log("Pages from TOC:", pagesFromToc)
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+
+      <div className="page-list">
+        <h3>Dossier Pages</h3>
+        <ul>
+          {pages.map((page) => (
+            <li key={page.nodeKey}>
+              {page.name} (ID: {page.nodeKey})
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+export default DossierPages
+```
+
+### Navigating to a Specific Page
+
+You can use a `DossierPage` object to navigate to a specific page in the dossier:
+
+```tsx
+import React, { useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DossierPage } from "embed-dossier-mstr-react"
+
+const PageNavigation = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [dossierInstance, setDossierInstance] = useState<any>(null)
+  const [pages, setPages] = useState<DossierPage[]>([])
+  const [currentPage, setCurrentPage] = useState<DossierPage | null>(null)
+
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  const initializeDossier = async () => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    try {
+      // Authentication and other setup code...
+
+      const dossier = await window.microstrategy.dossier.create({
+        placeholder: containerRef.current,
+        url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+      })
+
+      setDossierInstance(dossier)
+
+      // Get all pages
+      const allPages = dossier.getPageList()
+      setPages(allPages)
+
+      // Get the current page
+      const currentPageInfo = dossier.getCurrentPage()
+      setCurrentPage(currentPageInfo)
+
+      // Register page switch handler to update current page
+      dossier.registerPageSwitchHandler(() => {
+        setCurrentPage(dossier.getCurrentPage())
+      })
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
+  const navigateToPage = async (page: DossierPage) => {
+    if (!dossierInstance) return
+
+    try {
+      // Navigate to the selected page
+      const result = await dossierInstance.navigateToPage(page)
+
+      if (result && result.valid) {
+        console.log(`Successfully navigated to page: ${page.name}`)
+      } else {
+        console.error("Navigation failed:", result?.message || "Unknown error")
+      }
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
+  const navigateToPageByNodeKey = async (nodeKey: string) => {
+    if (!dossierInstance) return
+
+    try {
+      // Get the page by its nodeKey
+      const page = dossierInstance.getPageByNodeKey(nodeKey)
+
+      // Navigate to the page
+      if (page) {
+        await navigateToPage(page)
+      } else {
+        console.error("Page not found with nodeKey:", nodeKey)
+      }
+    } catch (error) {
+      console.error("Error getting page by nodeKey:", error)
+    }
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+
+      <div className="controls">
+        <button onClick={initializeDossier}>Initialize Dossier</button>
+
+        <div className="page-navigation">
+          <h3>Page Navigation</h3>
+          <p>Current Page: {currentPage ? currentPage.name : "None"}</p>
+
+          <ul>
+            {pages.map((page) => (
+              <li
+                key={page.nodeKey}
+                className={
+                  currentPage?.nodeKey === page.nodeKey ? "active" : ""
+                }
+                onClick={() => navigateToPage(page)}
+              >
+                {page.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default PageNavigation
+```
+
+### Using with Chapter Navigation
+
+`DossierPage` objects are also used when working with chapter navigation through the `DossierChapter` interface:
+
+```tsx
+// Get the first page of a specific chapter
+const firstChapter = dossier.getTableOfContents().chapters[0]
+const firstPageOfChapter = firstChapter.getFirstPage()
+await dossier.navigateToPage(firstPageOfChapter)
+
+// Get the last page of a chapter
+const lastPageOfChapter = firstChapter.getLastPage()
+await dossier.navigateToPage(lastPageOfChapter)
+```
+
+## Best Practices
+
+1. **Store nodeKeys for Persistence**: When you need to remember a specific page for future sessions, store its `nodeKey` rather than the `name`, as the name might change but the nodeKey remains consistent.
+
+   ```tsx
+   // Save the current page's nodeKey for future use
+   const currentPage = dossier.getCurrentPage()
+   localStorage.setItem("lastVisitedPage", currentPage.nodeKey)
+
+   // Later, navigate to the last visited page
+   const lastVisitedPageKey = localStorage.getItem("lastVisitedPage")
+   if (lastVisitedPageKey) {
+     const page = dossier.getPageByNodeKey(lastVisitedPageKey)
+     if (page) {
+       dossier.navigateToPage(page)
+     }
+   }
+   ```
+
+2. **Check Navigation Results**: Always check the result of navigation operations as they can fail for various reasons.
+
+   ```tsx
+   const result = await dossier.navigateToPage(page)
+   if (result && result.valid) {
+     console.log("Navigation successful")
+   } else {
+     console.error("Navigation failed:", result?.message)
+   }
+   ```
+
+3. **Keep Track of the Current Page**: Use the `getCurrentPage` method to get the current page and update your UI accordingly.
+
+   ```tsx
+   dossier.registerPageSwitchHandler(() => {
+     const currentPage = dossier.getCurrentPage()
+     console.log(`Switched to page: ${currentPage.name}`)
+     // Update UI to reflect the current page
+   })
+   ```
+
+## Related Interfaces
+
+- `DossierChapter`: Interface that contains `DossierPage` objects and provides navigation methods.
+- `TableOfContents`: Interface that represents the overall structure of a dossier, containing chapters and pages.
+- `MicroStrategyDossier`: The main interface for dossier objects that provides methods for navigating between pages.

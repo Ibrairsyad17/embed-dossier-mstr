@@ -10,3 +10,235 @@ keywords:
     "docked-theme",
   ]
 ---
+
+## Interface Definition
+
+```tsx
+export interface DockedTheme extends DockedCommentAndFilter {
+  theme?: "light" | "dark"
+}
+```
+
+## Properties
+
+| Property | Type                           | Description                                                |
+| -------- | ------------------------------ | ---------------------------------------------------------- |
+| `theme`  | `"light" \| "dark"` (optional) | Specifies the theme to be used for the docked theme panel. |
+
+## Inherited Properties
+
+Since `DockedTheme` extends `DockedCommentAndFilter`, it inherits all its properties:
+
+| Property         | Type                           | Description                                                            |
+| ---------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| `dockedPosition` | `"left" \| "right"` (optional) | Specifies which side of the dossier the panel should be docked.        |
+| `canClose`       | `boolean` (optional)           | Determines whether users can close the docked panel.                   |
+| `dockChangeable` | `boolean` (optional)           | Determines whether users can change the docking position of the panel. |
+| `isDocked`       | `boolean` (optional)           | Specifies whether the panel is docked by default.                      |
+
+## Usage in Dossier Configuration
+
+The `DockedTheme` interface is used in the dossier configuration via the `dockedTheme` property to control the theme panel's behavior and appearance.
+
+### Example: Configuring Docked Theme Panel
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DockedTheme } from "embed-dossier-mstr-react"
+
+const DossierWithDockedTheme = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const dockedThemeConfig: DockedTheme = {
+      dockedPosition: "right",
+      canClose: true,
+      dockChangeable: true,
+      isDocked: true,
+      theme: "light",
+    }
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          dockedTheme: dockedThemeConfig,
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithDockedTheme
+```
+
+### Example: Configuring All Docked Panels
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type {
+  DockedCommentAndFilter,
+  DockedTheme,
+} from "embed-dossier-mstr-react"
+
+const DossierWithAllDockedPanels = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          enableCollaboration: true,
+
+          // Configure comments panel on the left
+          dockedComment: {
+            dockedPosition: "left",
+            canClose: true,
+            dockChangeable: true,
+            isDocked: true,
+          },
+
+          // Configure filters panel on the right
+          dockedFilter: {
+            dockedPosition: "right",
+            canClose: true,
+            dockChangeable: true,
+            isDocked: false, // Not initially docked
+          },
+
+          // Configure theme panel on the right
+          dockedTheme: {
+            dockedPosition: "right",
+            canClose: true,
+            dockChangeable: true,
+            isDocked: false, // Not initially docked
+            theme: "light",
+          },
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithAllDockedPanels
+```
+
+### Example: Creating a Theme Toggle with Custom UI
+
+```tsx
+import React, { useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { DockedTheme } from "embed-dossier-mstr-react"
+
+const DossierWithThemeToggle = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [dossierInstance, setDossierInstance] = useState<any>(null)
+  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light")
+
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        const dockedThemeConfig: DockedTheme = {
+          dockedPosition: "right",
+          canClose: true,
+          dockChangeable: true,
+          isDocked: false,
+          theme: currentTheme,
+        }
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          dockedTheme: dockedThemeConfig,
+        })
+
+        setDossierInstance(dossier)
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  const toggleTheme = () => {
+    // In a real implementation, you would need to destroy and recreate the dossier
+    // or use the SDK's methods to update the theme if available
+    const newTheme = currentTheme === "light" ? "dark" : "light"
+    setCurrentTheme(newTheme)
+
+    // This is a simplified example - in a real app, you would need to handle
+    // theme changes according to the MicroStrategy SDK capabilities
+    console.log(`Toggled theme to: ${newTheme}`)
+  }
+
+  return (
+    <div>
+      <div className="toolbar">
+        <button onClick={toggleTheme}>Toggle Theme ({currentTheme})</button>
+      </div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+    </div>
+  )
+}
+
+export default DossierWithThemeToggle
+```
+
+## Best Practices
+
+1. **Theme Consistency**: When setting a theme for docked panels, ensure it's consistent with the overall application theme to provide a seamless user experience.
+
+2. **User Preferences**: Consider storing user theme preferences (light/dark) in local storage or user profiles to maintain their choice across sessions.
+
+3. **Accessibility**: Dark themes can be beneficial for users with light sensitivity, so providing this option enhances the accessibility of your application.
+
+4. **Panel Positioning**:
+
+   - When using multiple docked panels, consider their arrangement carefully to avoid cluttering the interface.
+   - If both filter and theme panels are used, it's common to place them on the same side (typically right) as they share similar functionalities.
+
+5. **Combined Usage**: When using `dockedTheme` along with `dockedComment` and `dockedFilter`, consider having only one panel docked by default to maximize the available space for the dossier content.
+
+## Related Interfaces
+
+- `DockedCommentAndFilter`: The parent interface that `DockedTheme` extends, providing the basic docking functionality.
+- `NavigationBar`: Interface for configuring the navigation bar, which might include buttons to toggle the theme.
+- `CustomUi`: Interface for configuring the overall user interface, which may include theme-related options.
+- `MicroStrategyDossierConfig`: Main configuration interface that uses `DockedTheme` for the `dockedTheme` property.
