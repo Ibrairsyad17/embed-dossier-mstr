@@ -10,3 +10,76 @@ keywords:
     "share-feature",
   ]
 ---
+
+## Interface Definition
+
+```typescript
+export interface ShareFeature {
+  enabled?: boolean
+  invite?: boolean
+  link?: boolean
+  email?: boolean
+  export?: boolean
+  download?: boolean
+  shareDossier?: boolean
+  subscribe?: boolean
+}
+```
+
+## Properties
+
+| Name           | Type      | Default     | Description                                                          |
+| -------------- | --------- | ----------- | -------------------------------------------------------------------- |
+| `enabled`      | `boolean` | `undefined` | Master toggle to enable or disable the entire sharing functionality. |
+| `invite`       | `boolean` | `undefined` | Controls whether users can invite others to access the dossier.      |
+| `link`         | `boolean` | `undefined` | Controls whether users can generate and share links to the dossier.  |
+| `email`        | `boolean` | `undefined` | Controls whether users can share the dossier via email.              |
+| `export`       | `boolean` | `undefined` | Controls whether users can export the dossier content.               |
+| `download`     | `boolean` | `undefined` | Controls whether users can download the dossier.                     |
+| `shareDossier` | `boolean` | `undefined` | Controls whether users can share the entire dossier.                 |
+| `subscribe`    | `boolean` | `undefined` | Controls whether users can subscribe to the dossier for updates.     |
+
+## Usage Example
+
+Here's an example of how to configure the share feature options when embedding a dossier:
+
+```typescript
+import { EmbedDossier } from 'embed-dossier-mstr-react';
+
+function App() {
+  return (
+    <EmbedDossier
+      url="https://your-microstrategy-server.com/app/library"
+      customUi={{
+        dossierConsumption: {
+          navigationBar: {
+            share: true // Enables the share button in the navigation bar
+          }
+        }
+      }}
+      shareFeature={{
+        enabled: true,
+        invite: true,
+        link: true,
+        email: true,
+        export: false,
+        download: true,
+        shareDossier: true,
+        subscribe: false
+      }}
+    />
+  );
+}
+```
+
+In this example, the share feature is enabled with most sharing options available, except for exporting and subscribing to the dossier.
+
+## Related Interfaces
+
+- [NavigationBar](/docs/api-reference/types-and-interfaces/navigation-bar) - Controls visibility of navigation elements, including the share button
+- [CustomUi](/docs/api-reference/types-and-interfaces/custom-ui) - Contains configuration for UI elements across different consumption modes
+
+## Notes
+
+- If `enabled` is set to `false`, all other properties in this interface will be ignored.
+- For sharing options to work, you must also enable the share button in the navigation bar via the `CustomUi` configuration.

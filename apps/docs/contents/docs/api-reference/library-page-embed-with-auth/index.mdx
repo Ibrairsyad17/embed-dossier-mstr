@@ -11,3 +11,193 @@ keywords:
     embed-dossier-mstr,
   ]
 ---
+
+## Import
+
+```tsx
+import { LibraryPageEmbedWithAuth } from "embed-dossier-mstr-react"
+```
+
+## Usage
+
+```tsx
+import React from "react"
+import { LibraryPageEmbedWithAuth } from "embed-dossier-mstr-react"
+
+const LibraryPageExample = () => {
+  return (
+    <LibraryPageEmbedWithAuth
+      serverUrlLibrary="https://your-microstrategy-server.com/MicroStrategyLibrary"
+      loginMode="guest" // or "standard", "saml", "oidc", "ldap"
+      // Include username and password for "standard" or "ldap" authentication
+      // username="username"
+      // password="password"
+      className="my-custom-class"
+      style={{ height: "800px" }}
+      config={{
+        // Optional configuration options
+        customUi: {
+          showLibraryHeader: true,
+        },
+      }}
+      loadingComponent={<div className="custom-loader">Loading library...</div>}
+      errorComponent={(error) => <div className="error-message">{error}</div>}
+    />
+  )
+}
+
+export default LibraryPageExample
+```
+
+## Props
+
+| Prop               | Type                                                         | Required    | Default                         | Description                                                            |
+| ------------------ | ------------------------------------------------------------ | ----------- | ------------------------------- | ---------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string`                                                     | Yes         | -                               | The URL of the MicroStrategy Library server.                           |
+| `loginMode`        | `"guest" \| "standard" \| "saml" \| "oidc" \| "ldap"`        | Yes         | -                               | The authentication mode to use.                                        |
+| `username`         | `string`                                                     | Conditional | -                               | Required when `loginMode` is `"standard"` or `"ldap"`.                 |
+| `password`         | `string`                                                     | Conditional | -                               | Required when `loginMode` is `"standard"` or `"ldap"`.                 |
+| `config`           | `Omit<EmbedLibraryPageConfig, "placeholder" \| "serverUrl">` | No          | -                               | Additional configuration options for the Library page.                 |
+| `className`        | `string`                                                     | No          | -                               | CSS class name to apply to the container div.                          |
+| `style`            | `React.CSSProperties`                                        | No          | -                               | Inline styles to apply to the container div.                           |
+| `loadingComponent` | `React.ReactNode`                                            | No          | `<div>Loading...</div>`         | Custom component to show while loading.                                |
+| `errorComponent`   | `(error: string) => React.ReactNode`                         | No          | `(error) => <div>{error}</div>` | Function that returns a custom component to show when an error occurs. |
+
+## Authentication Modes
+
+### Guest Authentication
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="guest"
+  // other props...
+/>
+```
+
+### Standard Authentication
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="standard"
+  username="username"
+  password="password"
+  // other props...
+/>
+```
+
+### SAML Authentication
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="saml"
+  // other props...
+/>
+```
+
+### OIDC Authentication
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="oidc"
+  // other props...
+/>
+```
+
+### LDAP Authentication
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="ldap"
+  username="username"
+  password="password"
+  // other props...
+/>
+```
+
+## Config Options
+
+The `config` prop can include any of the [MicroStrategy Library page embedding options](https://microstrategy.github.io/embedding-sdk/types/EmbedLibraryPageConfig.html) except for `placeholder` and `serverUrl` which are provided separately.
+
+Common configuration options include:
+
+```tsx
+<LibraryPageEmbedWithAuth
+  // other required props...
+  config={{
+    customUi: {
+      // UI customization options
+      showLibraryHeader: true,
+      showFilterPanel: true,
+    },
+    libraryItemSelectMode: "single", // or "multiple"
+    currentPage: {
+      name: "My Folder",
+      id: "FOLDER_ID",
+    },
+  }}
+/>
+```
+
+## Customizing the UI
+
+You can customize the appearance of the component using the `className` and `style` props:
+
+```tsx
+<LibraryPageEmbedWithAuth
+  serverUrlLibrary="https://your-server.com/MicroStrategyLibrary"
+  loginMode="guest"
+  className="library-container rounded-lg shadow-lg"
+  style={{
+    height: "800px",
+    width: "100%",
+    border: "1px solid #e0e0e0",
+  }}
+/>
+```
+
+## Custom Loading and Error Components
+
+You can provide custom components to be displayed during loading or when errors occur:
+
+```tsx
+<LibraryPageEmbedWithAuth
+  // other required props...
+  loadingComponent={
+    <div className="flex justify-center items-center h-full">
+      <div className="spinner"></div>
+      <p>Loading MicroStrategy Library...</p>
+    </div>
+  }
+  errorComponent={(errorMessage) => (
+    <div className="error-container p-4 bg-red-100 text-red-800 rounded">
+      <h3>Error Loading Library</h3>
+      <p>{errorMessage}</p>
+      <button onClick={() => window.location.reload()}>Retry</button>
+    </div>
+  )}
+/>
+```
+
+## Internal Implementation
+
+Under the hood, `<LibraryPageEmbedWithAuth />` uses the `useCreateLibraryPageWithAuth` hook to handle authentication and library page creation. The component:
+
+1. Manages authentication based on the provided `loginMode`
+2. Creates the library page when authentication is successful
+3. Renders custom loading or error components as needed
+4. Applies custom styling to the container element
+
+## Known Issues
+
+- The component currently sets a placeholder of `null` when initializing the library page, which needs to be addressed in future updates.
+- The default height of the container is set to `600px`. You may need to adjust this using the `className` or `style` props.
+
+## Related Components and Hooks
+
+- `useCreateLibraryPageWithAuth`: The hook used internally to handle authentication and library page creation.
+- `useLoadMstrSDK`: Used to load the MicroStrategy SDK before attempting to authenticate and embed the library page.

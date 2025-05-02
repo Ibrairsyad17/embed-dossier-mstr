@@ -10,3 +10,153 @@ keywords:
     "embed-report-page",
   ]
 ---
+
+## Interface Definition
+
+The current implementation of `EmbedReportPage` in the library is as follows:
+
+```tsx
+interface EmbedReportPage {
+  // This interface is currently being expanded as more research is conducted
+  // on available methods and properties for embedded Report pages
+}
+```
+
+## Overview
+
+The `EmbedReportPage` interface encapsulates the methods and properties available for interacting with an embedded MicroStrategy Report page. It is returned when you call `window.microstrategy.embeddingContexts.embedReportPage()` with a valid configuration.
+
+While the interface is currently minimal, it is expected to include methods similar to those found in the `EmbedDossierConsumptionPage` interface, specifically methods for error handling and report manipulation.
+
+## Expected Methods
+
+Based on the MicroStrategy SDK patterns and the related interfaces, the following methods are expected to be part of `EmbedReportPage`:
+
+### Error Handling
+
+```tsx
+// Add a custom error handler to the embedded Report page
+addCustomErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void;
+
+// Add a session error handler to the embedded Report page
+addSessionErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void;
+```
+
+### Report-Specific Methods
+
+The Report page is likely to include additional methods specific to report interactions, which might include:
+
+- Methods to refresh the report data
+- Methods to export the report to different formats (PDF, Excel, etc.)
+- Methods to manipulate report filters and prompts
+- Methods to navigate between report pages
+- Methods to handle report events
+
+## Usage Example
+
+Here's an example of how you might use the `EmbedReportPage` object:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const ReportComponent = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [reportPage, setReportPage] = useState(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedReport = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the report page
+        const config = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example report ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+        }
+
+        // Embed the report page
+        const reportPageInstance =
+          await window.microstrategy.embeddingContexts.embedReportPage(config)
+        setReportPage(reportPageInstance)
+
+        // Add error handlers
+        reportPageInstance.addCustomErrorHandler((error) => {
+          console.error("Report error:", error)
+        }, false)
+      } catch (error) {
+        console.error("Failed to embed report:", error)
+      }
+    }
+
+    embedReport()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>MicroStrategy Embedded Report</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default ReportComponent
+```
+
+## Differences From Dossier Consumption Pages
+
+While reports and dossiers share many similarities in the MicroStrategy ecosystem, there are notable differences in their capabilities and usage:
+
+1. **Structure**: Reports typically have a more structured, grid-based format compared to the more flexible visualization-oriented dossier pages.
+
+2. **Capabilities**: Reports focus on structured data presentation and may include features like:
+
+   - Column sorting and filtering
+   - Subtotals and grand totals
+   - Detailed data exports
+   - Hierarchical data representation
+
+3. **Interactivity**: While dossiers are designed for interactive data exploration, reports may focus more on providing a consistent view of structured data.
+
+## Limitations and Future Updates
+
+The `EmbedReportPage` interface is currently under development in the `embed-dossier-mstr-react` library. As MicroStrategy continues to enhance their Report embedding capabilities and as more research is conducted, this interface is expected to be expanded with additional methods and properties.
+
+Developers should check the [MicroStrategy Embedding SDK documentation](https://microstrategy.github.io/embedding-sdk-docs/) for the most up-to-date information about Report page interactions and capabilities.
+
+## Related Interfaces
+
+- `EmbedReportPageConfig`: The configuration interface used to specify parameters when embedding a report page.
+- `EmbedDossierConsumptionPage`: A related interface for dossier consumption pages, which may share similar methods and patterns.
+- `ErrorHandlerInterface`: Interface for error handling used with the report page's error handler methods.

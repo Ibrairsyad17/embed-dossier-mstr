@@ -10,3 +10,283 @@ keywords:
     "event-handlers",
   ]
 ---
+
+## Interface Definition
+
+```tsx
+export interface EventHandlers {
+  onComponentSelectionChanged?: EventHandler
+  onDossierAuthoringClosed?: EventHandler
+  onDossierAuthoringSaved?: EventHandler
+  onDossierInstanceChanged?: EventHandler
+  onDossierInstanceIDChange?: EventHandler
+  onError?: EventHandler
+  onFilterUpdated?: EventHandler
+  onGraphicsSelected?: EventHandler
+  onLayoutChanged?: EventHandler
+  onLibraryItemSelected?: EventHandler
+  onLibraryItemSelectionCleared?: EventHandler
+  onLibraryMenuSelected?: EventHandler
+  onPageLoaded?: EventHandler
+  onPageRenderFinished?: EventHandler
+  onPageSwitched?: EventHandler
+  onPanelSwitched?: EventHandler
+  onPromptAnswered?: EventHandler
+  onPromptLoaded?: EventHandler
+  onSessionError?: EventHandler
+  onVisualizationResized?: EventHandler
+  onVisualizationElementsChanged?: EventHandler
+  onVizSelectionChanged?: EventHandler
+}
+```
+
+## Properties
+
+Each property in the `EventHandlers` interface corresponds to a specific event that can occur in embedded MicroStrategy components. All properties are optional and of type `EventHandler`, which is defined as `() => void`.
+
+| Property                         | Description                                                           |
+| -------------------------------- | --------------------------------------------------------------------- |
+| `onComponentSelectionChanged`    | Triggered when a component selection changes in a dossier.            |
+| `onDossierAuthoringClosed`       | Triggered when the dossier authoring mode is closed.                  |
+| `onDossierAuthoringSaved`        | Triggered when changes in the dossier authoring mode are saved.       |
+| `onDossierInstanceChanged`       | Triggered when the dossier instance changes.                          |
+| `onDossierInstanceIDChange`      | Triggered when the dossier instance ID changes.                       |
+| `onError`                        | Triggered when an error occurs in the embedded component.             |
+| `onFilterUpdated`                | Triggered when a filter is updated in the dossier.                    |
+| `onGraphicsSelected`             | Triggered when a graphic element is selected in the dossier.          |
+| `onLayoutChanged`                | Triggered when the layout of the dossier changes.                     |
+| `onLibraryItemSelected`          | Triggered when an item is selected in the library.                    |
+| `onLibraryItemSelectionCleared`  | Triggered when library item selections are cleared.                   |
+| `onLibraryMenuSelected`          | Triggered when a menu item is selected in the library.                |
+| `onPageLoaded`                   | Triggered when a page in the dossier is loaded.                       |
+| `onPageRenderFinished`           | Triggered when a page in the dossier finishes rendering.              |
+| `onPageSwitched`                 | Triggered when the user navigates to a different page in the dossier. |
+| `onPanelSwitched`                | Triggered when the user switches between panels.                      |
+| `onPromptAnswered`               | Triggered when a prompt is answered by the user.                      |
+| `onPromptLoaded`                 | Triggered when prompts are loaded in the dossier.                     |
+| `onSessionError`                 | Triggered when a session error occurs.                                |
+| `onVisualizationResized`         | Triggered when a visualization is resized.                            |
+| `onVisualizationElementsChanged` | Triggered when elements in a visualization change.                    |
+| `onVizSelectionChanged`          | Triggered when the selection in a visualization changes.              |
+
+## Usage Examples
+
+### Defining Event Handlers Object
+
+You can create an object that implements the `EventHandlers` interface to define multiple event handlers:
+
+```tsx
+import { EventHandlers } from "embed-dossier-mstr-react"
+
+const myEventHandlers: EventHandlers = {
+  onPageSwitched: () => {
+    console.log("Page switched in the dossier")
+    // Take action when page is switched
+  },
+
+  onFilterUpdated: () => {
+    console.log("Filter was updated")
+    // Refresh data or update UI when filter changes
+  },
+
+  onError: () => {
+    console.error("An error occurred")
+    // Handle error scenario
+  },
+
+  onSessionError: () => {
+    console.error("Session error occurred")
+    // Redirect to login page or show session expired message
+  },
+}
+```
+
+### Using with MicroStrategy Dossier
+
+You can register event handlers defined in an `EventHandlers` object with a MicroStrategy Dossier:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { EventHandlers, useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithEventHandlers = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and other setup code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Define event handlers
+        const eventHandlers: EventHandlers = {
+          onPageSwitched: () => {
+            console.log("Page switched")
+            // Handle page switch
+          },
+          onFilterUpdated: () => {
+            console.log("Filter updated")
+            // Handle filter update
+          },
+        }
+
+        // Register each event handler
+        Object.entries(eventHandlers).forEach(([eventName, handler]) => {
+          if (handler) {
+            // Convert from camelCase to CONSTANT_CASE and remove 'on' prefix
+            const eventType = eventName
+              .replace(/^on/, "")
+              .replace(/([A-Z])/g, "_$1")
+              .toUpperCase()
+
+            dossier.registerEventHandler(
+              // @ts-ignore - Type conversion from string to EventTypes
+              window.microstrategy.dossier.EventType[eventType],
+              handler
+            )
+          }
+        })
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithEventHandlers
+```
+
+### Advanced Usage with Dynamic Event Registration
+
+You can create a utility function to register event handlers from an `EventHandlers` object:
+
+```tsx
+import { EventHandlers, EventTypes } from "embed-dossier-mstr-react"
+
+/**
+ * Register multiple event handlers from an EventHandlers object
+ */
+function registerEventHandlers(dossier: any, handlers: EventHandlers): void {
+  // Map from onEventName to ON_EVENT_NAME format
+  const eventTypeMap: Record<string, EventTypes> = {
+    onComponentSelectionChanged: "onComponentSelectionChanged",
+    onDossierAuthoringClosed: "onDossierAuthoringClosed",
+    // ... map all other event types
+  }
+
+  Object.entries(handlers).forEach(([handlerName, handler]) => {
+    if (handler && eventTypeMap[handlerName]) {
+      dossier.registerEventHandler(
+        window.microstrategy.dossier.EventType[eventTypeMap[handlerName]],
+        handler
+      )
+    }
+  })
+}
+
+// Usage
+const myHandlers: EventHandlers = {
+  onFilterUpdated: () => console.log("Filter updated"),
+  onPageSwitched: () => console.log("Page switched"),
+}
+
+// Register all handlers
+registerEventHandlers(dossierInstance, myHandlers)
+```
+
+## Best Practices
+
+1. **Organize by Component**: Group event handlers by the component they're related to or the functionality they implement.
+
+   ```tsx
+   // Filter-related event handlers
+   const filterHandlers: EventHandlers = {
+     onFilterUpdated: () => {
+       /* ... */
+     },
+     onPromptAnswered: () => {
+       /* ... */
+     },
+     onPromptLoaded: () => {
+       /* ... */
+     },
+   }
+
+   // Navigation-related event handlers
+   const navigationHandlers: EventHandlers = {
+     onPageSwitched: () => {
+       /* ... */
+     },
+     onPanelSwitched: () => {
+       /* ... */
+     },
+   }
+   ```
+
+2. **Clean up on unmount**: When using event handlers in React components, remember to remove them when the component unmounts.
+
+   ```tsx
+   useEffect(() => {
+     // Register handlers
+
+     // Return cleanup function
+     return () => {
+       if (dossierRef.current) {
+         Object.entries(eventHandlers).forEach(([eventName, handler]) => {
+           if (handler) {
+             // Convert from camelCase to CONSTANT_CASE and remove 'on' prefix
+             const eventType = eventName
+               .replace(/^on/, "")
+               .replace(/([A-Z])/g, "_$1")
+               .toUpperCase()
+
+             dossierRef.current.removeEventHandler(
+               // @ts-ignore - Type conversion from string to EventTypes
+               window.microstrategy.dossier.EventType[eventType],
+               handler
+             )
+           }
+         })
+       }
+     }
+   }, [])
+   ```
+
+3. **Use Typed Event Data**: When working with event handlers, it's helpful to properly type the event data for better intellisense and error checking.
+
+   ```tsx
+   interface FilterUpdateEvent {
+     filterInfo: {
+       name: string
+       values: any[]
+     }
+   }
+
+   const eventHandlers: EventHandlers = {
+     onFilterUpdated: function (this: any, event: FilterUpdateEvent) {
+       console.log(
+         `Filter ${event.filterInfo.name} updated with values:`,
+         event.filterInfo.values
+       )
+     },
+   }
+   ```
+
+## Related Types
+
+- `EventTypes`: A type representing all possible event types.
+- `EventHandler`: The function type used for individual event handlers.
+- `MicroStrategyDossier`: The main interface for dossier objects that can register event handlers.
+- `EVENT_TYPE`: A constant object defining all event type string values.

@@ -1,0 +1,253 @@
+---
+title: FilterTypeInfoMetricQualByValue
+description: This page is a reference to the FilterTypeInfoMetricQualByValue used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "filter-type-info-metric-qual-by-value",
+  ]
+---
+
+## Interface Definition
+
+```tsx
+export interface FilterTypeInfoMetricQualByValue {
+  operator:
+    | "equals"
+    | "not equals"
+    | "greater"
+    | "greater equal"
+    | "less"
+    | "less equal"
+    | "between"
+    | "not between"
+    | "in"
+    | "not in"
+    | "is null"
+    | "is not null"
+  from?: string
+  to?: string
+  value?: string
+}
+```
+
+## Properties
+
+| Property   | Type                | Description                                                                                                                                                                                                                  |
+| ---------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `operator` | `string` (enum)     | The comparison operator used to qualify metrics. Must be one of the following: "equals", "not equals", "greater", "greater equal", "less", "less equal", "between", "not between", "in", "not in", "is null", "is not null". |
+| `from`     | `string` (optional) | The lower bound value used with operators like "between" or "not between".                                                                                                                                                   |
+| `to`       | `string` (optional) | The upper bound value used with operators like "between" or "not between".                                                                                                                                                   |
+| `value`    | `string` (optional) | The single value used with operators like "equals", "greater than", etc.                                                                                                                                                     |
+
+## Usage in Filter Operations
+
+The `FilterTypeInfoMetricQualByValue` interface is typically used in two contexts:
+
+1. When retrieving information about existing metric qualification filters in a dossier
+2. When setting or modifying metric qualification filters in a dossier
+
+### Retrieving Metric Qualification Filter Information
+
+When you retrieve the filter list from a dossier using the `getFilterList` method, metric qualification filters will have their details represented as a `FilterTypeInfoMetricQualByValue` object:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithMetricFilter = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and dossier creation code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Get all filters
+        const filters = await dossier.getFilterList()
+
+        // Find metric qualification filters
+        const metricQualFilters = filters.filter((filter) => {
+          // Check if the filter detail is a FilterTypeInfoMetricQualByValue
+          const detail = filter.filterDetail
+          return (
+            detail &&
+            "operator" in detail &&
+            typeof detail.operator === "string"
+          )
+        })
+
+        // Display information about the metric qualification filters
+        metricQualFilters.forEach((filter) => {
+          const metricQualInfo =
+            filter.filterDetail as FilterTypeInfoMetricQualByValue
+          console.log(`Filter: ${filter.filterName}`)
+          console.log(`- Operator: ${metricQualInfo.operator}`)
+
+          if (
+            metricQualInfo.operator === "between" ||
+            metricQualInfo.operator === "not between"
+          ) {
+            console.log(
+              `- Range: ${metricQualInfo.from} to ${metricQualInfo.to}`
+            )
+          } else if (
+            metricQualInfo.operator !== "is null" &&
+            metricQualInfo.operator !== "is not null"
+          ) {
+            console.log(`- Value: ${metricQualInfo.value}`)
+          }
+        })
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithMetricFilter
+```
+
+### Setting Metric Qualification Filters
+
+When setting a metric qualification filter, you need to use the `filterSetMetricQualByValue` method with a `FilterJson` object that includes the metric qualification information:
+
+```tsx
+import React, { useRef } from 'react';
+import { useLoadMstrSDK } from 'embed-dossier-mstr-react';
+
+const DossierWithMetricFilter = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const serverUrl = 'https://your-microstrategy-server.com/MicroStrategyLibrary';
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl });
+
+  const setGreaterThanFilter = async () => {
+    if (!containerRef.current || !window.microstrategy) return;
+
+    try {
+      // Assuming dossier is already created and stored in a ref
+      const dossier = window.microstrategySdk.dossierInstance;
+
+      // Set a "greater than" metric filter
+      dossier.filterSetMetricQualByValue({
+        filterInfo: {
+          key: "RevenueFilter" // The key of the metric filter
+        },
+        exp: {
+          operator: "greater",
+          firstValue: "1000000" // Filter for revenue greater than 1,000,000
+        }
+      });
+
+      // Apply the filter
+      dossier.filterApplyAll();
+
+    } catch (error) {
+      console.error('Error setting metric filter:', error);
+    }
+  };
+
+  const setBetweenFilter = async () => {
+    if (!containerRef.current || !window.microstrategy) return;
+
+    try {
+      const dossier = window.microstrategySdk.dossierInstance;
+
+      // Set a "between" metric filter
+      dossier.filterSetMetricQualByValue({
+        filterInfo: {
+          key: "RevenueFilter"
+        },
+        exp: {
+          operator: "between",
+          firstValue: "500000", // Lower bound
+          lastValue: "1000000"  // Upper bound
+        }
+      });
+
+      dossier.filterApplyAll();
+
+    } catch (error) {
+      console.error('Error setting metric filter:', error);
+    }
+  };
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: '100%', height: '600px' }} />
+      <button onClick={setGreaterThanFilter}>Filter Revenue > 1,000,000</button>
+      <button onClick={setBetweenFilter}>Filter Revenue Between 500,000-1,000,000</button>
+    </div>
+  );
+};
+
+export default DossierWithMetricFilter;
+```
+
+## Operators
+
+The `operator` property in the `FilterTypeInfoMetricQualByValue` interface supports various comparison operations:
+
+### Single Value Operators
+
+These operators require a single value in the `value` property:
+
+| Operator        | Description                                            | Example                                       |
+| --------------- | ------------------------------------------------------ | --------------------------------------------- |
+| `equals`        | Metric equals the specified value                      | `{ operator: "equals", value: "100" }`        |
+| `not equals`    | Metric does not equal the specified value              | `{ operator: "not equals", value: "100" }`    |
+| `greater`       | Metric is greater than the specified value             | `{ operator: "greater", value: "100" }`       |
+| `greater equal` | Metric is greater than or equal to the specified value | `{ operator: "greater equal", value: "100" }` |
+| `less`          | Metric is less than the specified value                | `{ operator: "less", value: "100" }`          |
+| `less equal`    | Metric is less than or equal to the specified value    | `{ operator: "less equal", value: "100" }`    |
+
+### Range Operators
+
+These operators require both `from` and `to` properties:
+
+| Operator      | Description                                       | Example                                               |
+| ------------- | ------------------------------------------------- | ----------------------------------------------------- |
+| `between`     | Metric is between the specified range (inclusive) | `{ operator: "between", from: "100", to: "200" }`     |
+| `not between` | Metric is outside the specified range             | `{ operator: "not between", from: "100", to: "200" }` |
+
+### List Operators
+
+These operators are used with multiple values:
+
+| Operator | Description                                   | Example                                        |
+| -------- | --------------------------------------------- | ---------------------------------------------- |
+| `in`     | Metric is in the list of specified values     | `{ operator: "in", value: "100,200,300" }`     |
+| `not in` | Metric is not in the list of specified values | `{ operator: "not in", value: "100,200,300" }` |
+
+### Null Operators
+
+These operators don't require any additional values:
+
+| Operator      | Description                 | Example                       |
+| ------------- | --------------------------- | ----------------------------- |
+| `is null`     | Metric has a null value     | `{ operator: "is null" }`     |
+| `is not null` | Metric has a non-null value | `{ operator: "is not null" }` |
+
+## Related Interfaces
+
+- `FilterTypeInfoMetricQualByRank`: Used for metric qualification filters based on rank rather than absolute value.
+- `FilterTypeInfoMetricSliderByValue`: Used for metric qualification filters that use slider controls with absolute values.
+- `FilterTypeInfoMetricSliderByRank`: Used for metric qualification filters that use slider controls with rank values.
+- `FilterJson`: Used when setting a metric qualification filter via the `filterSetMetricQualByValue` method.
+- `FilterListType`: The interface that includes `FilterTypeInfoMetricQualByValue` as part of the `filterDetail` property.

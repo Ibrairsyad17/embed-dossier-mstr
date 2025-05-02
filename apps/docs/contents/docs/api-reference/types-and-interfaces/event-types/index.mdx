@@ -10,3 +10,223 @@ keywords:
     "event-types",
   ]
 ---
+
+## Type Definitions
+
+There are three main types related to events in the library:
+
+```tsx
+// EventTypes represents all possible event types
+export type EventTypes = EVENT_TYPE[keyof EVENT_TYPE]
+
+// EventHandler is a function type for event handlers
+export type EventHandler = () => void
+
+// EventHandlers interface provides typed event handler properties
+export interface EventHandlers {
+  onComponentSelectionChanged?: EventHandler
+  onDossierAuthoringClosed?: EventHandler
+  onDossierAuthoringSaved?: EventHandler
+  onDossierInstanceChanged?: EventHandler
+  onDossierInstanceIDChange?: EventHandler
+  onError?: EventHandler
+  onFilterUpdated?: EventHandler
+  onGraphicsSelected?: EventHandler
+  onLayoutChanged?: EventHandler
+  onLibraryItemSelected?: EventHandler
+  onLibraryItemSelectionCleared?: EventHandler
+  onLibraryMenuSelected?: EventHandler
+  onPageLoaded?: EventHandler
+  onPageRenderFinished?: EventHandler
+  onPageSwitched?: EventHandler
+  onPanelSwitched?: EventHandler
+  onPromptAnswered?: EventHandler
+  onPromptLoaded?: EventHandler
+  onSessionError?: EventHandler
+  onVisualizationResized?: EventHandler
+  onVisualizationElementsChanged?: EventHandler
+  onVizSelectionChanged?: EventHandler
+}
+```
+
+## Available Event Types
+
+The `EVENT_TYPE` constant defines all the available event types:
+
+| Event Type                          | Value                              | Description                                                       |
+| ----------------------------------- | ---------------------------------- | ----------------------------------------------------------------- |
+| `ON_COMPONENT_SELECTION_CHANGED`    | `"onComponentSelectionChanged"`    | Fires when a component selection changes in a dossier.            |
+| `ON_DOSSIER_AUTHORING_CLOSED`       | `"onDossierAuthoringClosed"`       | Fires when the dossier authoring mode is closed.                  |
+| `ON_DOSSIER_AUTHORING_SAVED`        | `"onDossierAuthoringSaved"`        | Fires when changes in the dossier authoring mode are saved.       |
+| `ON_DOSSIER_INSTANCE_CHANGED`       | `"onDossierInstanceChanged"`       | Fires when the dossier instance changes.                          |
+| `ON_DOSSIER_INSTANCE_ID_CHANGE`     | `"onDossierInstanceIDChange"`      | Fires when the dossier instance ID changes.                       |
+| `ON_ERROR`                          | `"onError"`                        | Fires when an error occurs in the embedded component.             |
+| `ON_FILTER_UPDATED`                 | `"onFilterUpdated"`                | Fires when a filter is updated in the dossier.                    |
+| `ON_GRAPHICS_SELECTED`              | `"onGraphicsSelected"`             | Fires when a graphic element is selected in the dossier.          |
+| `ON_LAYOUT_CHANGED`                 | `"onLayoutChanged"`                | Fires when the layout of the dossier changes.                     |
+| `ON_LIBRARY_ITEM_SELECTED`          | `"onLibraryItemSelected"`          | Fires when an item is selected in the library.                    |
+| `ON_LIBRARY_ITEM_SELECTION_CLEARED` | `"onLibraryItemSelectionCleared"`  | Fires when library item selections are cleared.                   |
+| `ON_LIBRARY_MENU_SELECTED`          | `"onLibraryMenuSelected"`          | Fires when a menu item is selected in the library.                |
+| `ON_PAGE_LOADED`                    | `"onPageLoaded"`                   | Fires when a page in the dossier is loaded.                       |
+| `ON_PAGE_RENDER_FINISHED`           | `"onPageRenderFinished"`           | Fires when a page in the dossier finishes rendering.              |
+| `ON_PAGE_SWITCHED`                  | `"onPageSwitched"`                 | Fires when the user navigates to a different page in the dossier. |
+| `ON_PANEL_SWITCHED`                 | `"onPanelSwitched"`                | Fires when the user switches between panels.                      |
+| `ON_PROMPT_ANSWERED`                | `"onPromptAnswered"`               | Fires when a prompt is answered by the user.                      |
+| `ON_PROMPT_LOADED`                  | `"onPromptLoaded"`                 | Fires when prompts are loaded in the dossier.                     |
+| `ON_SESSION_ERROR`                  | `"onSessionError"`                 | Fires when a session error occurs.                                |
+| `ON_VISUALIZATION_RESIZED`          | `"onVisualizationResized"`         | Fires when a visualization is resized.                            |
+| `ON_VIZ_ELEMENT_CHANGED`            | `"onVisualizationElementsChanged"` | Fires when elements in a visualization change.                    |
+| `ON_VIZ_SELECTION_CHANGED`          | `"onVizSelectionChanged"`          | Fires when the selection in a visualization changes.              |
+
+## Usage Examples
+
+### Registering Event Handlers with MicroStrategy Dossier
+
+You can register event handlers for a MicroStrategy Dossier to respond to various events:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithEvents = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authenticate and get dossier instance
+        // ... authentication code ...
+
+        // Create dossier
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Register event handlers
+        dossier.registerEventHandler(
+          window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+          () => {
+            console.log("Page switched!")
+            // Access current page info
+            const currentPage = dossier.getCurrentPage()
+            console.log("Current page:", currentPage.name)
+          }
+        )
+
+        dossier.registerEventHandler(
+          window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+          () => {
+            console.log("Filter updated!")
+            // You could refresh data or update UI in response
+          }
+        )
+      } catch (error) {
+        console.error("Error embedding dossier:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithEvents
+```
+
+### Using Event Wrapper Functions
+
+The MicroStrategy Dossier object provides wrapper functions that make it easier to register common event handlers:
+
+```tsx
+// Using wrapper function for filter updates
+dossier.registerFilterUpdateHandler(() => {
+  console.log("Filter was updated!")
+  // Handle filter update
+})
+
+// Using wrapper function for page switches
+dossier.registerPageSwitchHandler(() => {
+  const currentPage = dossier.getCurrentPage()
+  console.log(`Switched to page: ${currentPage.name}`)
+})
+
+// Using wrapper function for graphics selection on a specific visualization
+dossier.registerGraphicsSelectEventHandlerToViz("vizKey123", () => {
+  console.log("Graphics selected in visualization!")
+})
+```
+
+### Removing Event Handlers
+
+You can remove event handlers when they are no longer needed:
+
+```tsx
+const filterUpdateHandler = () => {
+  console.log("Filter updated!")
+}
+
+// Register the handler
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+  filterUpdateHandler
+)
+
+// Later, remove the handler
+dossier.removeEventHandler(
+  window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+  filterUpdateHandler
+)
+```
+
+## Event Data
+
+When events fire, they often include data about the event. To access this data, you need to define your event handler to accept an event object:
+
+```tsx
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+  (event) => {
+    console.log("Filter updated!", event)
+    // Access event data to get information about the filter change
+  }
+)
+```
+
+## Best Practices
+
+1. **Clean up event handlers**: Always remove event handlers when components unmount to prevent memory leaks.
+
+   ```tsx
+   useEffect(() => {
+     // Register event handlers
+
+     return () => {
+       // Clean up by removing event handlers
+       if (dossierRef.current) {
+         dossierRef.current.removeEventHandler(
+           window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+           pageSwitchHandler
+         )
+       }
+     }
+   }, [])
+   ```
+
+2. **Use meaningful handler names**: Name your handler functions clearly to make your code more maintainable.
+
+3. **Use wrapper functions when available**: The wrapper functions like `registerFilterUpdateHandler` make your code more readable and are less error-prone.
+
+4. **Handle errors in event handlers**: Wrap your event handler logic in try-catch blocks to prevent uncaught exceptions.
+
+## Related Interfaces
+
+- `MicroStrategyDossier`: The main interface that exposes event registration methods.
+- `EmbedDossierConsumptionPage`: Interface for dossier consumption pages that can register events.
+- `EmbedLibraryPage`: Interface for library pages that can register events.
+- `ErrorHandlerInterface`: Interface for handling error events.

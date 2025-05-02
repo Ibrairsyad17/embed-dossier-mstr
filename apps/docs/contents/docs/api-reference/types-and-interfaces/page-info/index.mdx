@@ -4,3 +4,34 @@ description: This page is a reference to the PageInfo used in the `embed-dossier
 keywords:
   ["types", "interfaces", "reference", "embed-dossier-mstr-react", "page-info"]
 ---
+
+## Properties
+
+| Property        | Type    | Required | Description                                         |
+| --------------- | ------- | -------- | --------------------------------------------------- |
+| `applicationId` | string  | No       | The identifier for the application hosting the page |
+| `projectId`     | string  | No       | The identifier for the project containing the page  |
+| `objectId`      | string  | No       | The unique identifier for the object/document       |
+| `pageKey`       | string  | No       | The unique key that identifies the specific page    |
+| `isAuthoring`   | boolean | No       | Indicates whether the page is in authoring mode     |
+
+## Usage
+
+The `PageInfo` interface is typically used when working with page-specific operations or when information about the current page context is needed. It allows components to identify and reference specific pages within the dossier.
+
+```typescript
+import { PageInfo } from "embed-dossier-mstr-react"
+
+// Example of creating a PageInfo object
+const pageInfo: PageInfo = {
+  applicationId: "app123",
+  projectId: "project456",
+  objectId: "object789",
+  pageKey: "page1",
+  isAuthoring: false,
+}
+```
+
+## Related Interfaces
+
+- `CurrentPage` - Contains information about the currently active page
