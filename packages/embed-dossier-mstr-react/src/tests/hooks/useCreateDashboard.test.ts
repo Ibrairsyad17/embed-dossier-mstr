@@ -130,7 +130,8 @@ describe("useCreateDashboard", () => {
     const mockDashboardInstance = { ...mockDashboard };
     mockCreate.mockImplementation(() => Promise.resolve(mockDashboardInstance));
 
-    const { result } = renderHook(() => useCreateDashboard(defaultProps));
+    // const { result } = 
+    renderHook(() => useCreateDashboard(defaultProps));
 
     await vi.waitFor(() => {
       expect(mockCreate).toHaveBeenCalledWith({

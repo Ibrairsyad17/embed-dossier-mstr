@@ -130,7 +130,8 @@ describe("useCreateDashboardWithAuth", () => {
   });
 
   it("should handle SAML authentication", async () => {
-    const { result } = renderHook(() =>
+    // const { result } = 
+    renderHook(() =>
       useCreateDashboardWithAuth({
         ...defaultProps,
         loginMode: "saml",
@@ -143,7 +144,8 @@ describe("useCreateDashboardWithAuth", () => {
   });
 
   it("should handle OIDC authentication", async () => {
-    const { result } = renderHook(() =>
+    // const { result } = 
+    renderHook(() =>
       useCreateDashboardWithAuth({
         ...defaultProps,
         loginMode: "oidc",

@@ -184,7 +184,7 @@ export const Documents: Paths[] = [
   },
   {
     title: "Examples Implementation",
-    href: "/examples-implementation",
+    href: "/examples",
     heading: "Examples",
   },
 ]
