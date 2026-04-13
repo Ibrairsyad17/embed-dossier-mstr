@@ -56,6 +56,80 @@ That's it. The component handles SDK loading, dashboard creation, and cleanup au
 
 ## 🔐 With Authentication
 
+````tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react";
+
+function SecureDashboard() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-server.com/MicroStrategyLibrary/app/{projectId}/{dossierId}"
+      loginMode="standard"
+      username="analyst"
+      password="password"
+      style={{ width: "100%", height: "800px" }}
+      loadingComponent={<div>Authenticating...</div>}
+      errorComponent={(error) => <div>Error: {error}</div>}
+    />
+  );
+}
+<div align="center">
+
+# embed-dossier-mstr
+
+[![CI](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml/badge.svg)](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
+[![npm downloads](https://img.shields.io/npm/dm/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
+
+**A production-ready React library for embedding MicroStrategy Dashboards, Reports, and Bot pages.**
+
+Type-safe · Lazy-loaded · Fully tested · Multiple auth methods
+
+[Quick Start](#-quick-start) · [Documentation](#-api-reference) · [Examples](#-advanced-usage) · [Contributing](./CONTRIBUTING.md)
+
+</div>
+
+---
+
+## Why this library?
+
+MicroStrategy's Embedding SDK is powerful but low-level — it requires manual script injection, global `window` mutations, and has zero TypeScript support. This library wraps it into **clean, idiomatic React** with:
+
+- 🎯 **Full TypeScript coverage** — 40+ interfaces, no `any` in your code
+- ⚡ **Lazy SDK loading** — SDK is loaded on-demand, not upfront
+- 🧹 **Automatic cleanup** — Dashboards are closed on unmount, scripts removed
+- 🔐 **5 auth methods** — Guest, Standard, LDAP, SAML, OIDC out of the box
+- 🎣 **Two integration patterns** — Simple components or flexible hooks
+- 🧪 **Comprehensive tests** — All components and hooks tested with Vitest
+
+## 📦 Installation
+
+```bash
+npm install embed-dossier-mstr-react
+````
+
+**Peer dependencies:** React 18.2+ or React 19
+
+## ⚡ Quick Start
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react";
+
+function App() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+      style={{ width: "100%", height: "800px" }}
+    />
+  );
+}
+```
+
+That's it. The component handles SDK loading, dashboard creation, and cleanup automatically.
+
+## 🔐 With Authentication
+
 ```tsx
 import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react";
 
