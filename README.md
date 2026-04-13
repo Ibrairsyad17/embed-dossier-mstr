@@ -56,7 +56,7 @@ That's it. The component handles SDK loading, dashboard creation, and cleanup au
 
 ## 🔐 With Authentication
 
-````tsx
+```tsx
 import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react";
 
 function SecureDashboard() {
@@ -72,42 +72,7 @@ function SecureDashboard() {
     />
   );
 }
-<div align="center">
-
-# embed-dossier-mstr
-
-[![CI](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml/badge.svg)](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
-[![npm downloads](https://img.shields.io/npm/dm/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
-
-**A production-ready React library for embedding MicroStrategy Dashboards, Reports, and Bot pages.**
-
-Type-safe · Lazy-loaded · Fully tested · Multiple auth methods
-
-[Quick Start](#-quick-start) · [Documentation](#-api-reference) · [Examples](#-advanced-usage) · [Contributing](./CONTRIBUTING.md)
-
-</div>
-
----
-
-## Why this library?
-
-MicroStrategy's Embedding SDK is powerful but low-level — it requires manual script injection, global `window` mutations, and has zero TypeScript support. This library wraps it into **clean, idiomatic React** with:
-
-- 🎯 **Full TypeScript coverage** — 40+ interfaces, no `any` in your code
-- ⚡ **Lazy SDK loading** — SDK is loaded on-demand, not upfront
-- 🧹 **Automatic cleanup** — Dashboards are closed on unmount, scripts removed
-- 🔐 **5 auth methods** — Guest, Standard, LDAP, SAML, OIDC out of the box
-- 🎣 **Two integration patterns** — Simple components or flexible hooks
-- 🧪 **Comprehensive tests** — All components and hooks tested with Vitest
-
-## 📦 Installation
-
-```bash
-npm install embed-dossier-mstr-react
-````
+```
 
 **Peer dependencies:** React 18.2+ or React 19
 

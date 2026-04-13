@@ -1,27 +1,31 @@
-export const url = "https://rubix-documents.vercel.app"
+export const url = "https://embed-dossier-mstr.vercel.app"
 export const siteicon = "/embed-logo-icon.svg"
 
 export const gtm = "GT-M34QK8LC"
 export const gtmconnected = true
 
-export const sitename = "EmbedYourDossier"
+export const sitename = "embed-dossier-mstr"
 export const description =
-  "Comprehensive documentation for EmbedYourDossier - a powerful React component that simplifies MicroStrategy Embedding SDK integration into your React applications."
+  "Comprehensive documentation for embed-dossier-mstr - a powerful React library that simplifies embedding MicroStrategy Dashboards, Reports, and Bot pages with full TypeScript support."
 export const keywords = [
-  "Next.js",
-  "documentation",
-  "MicroStrategy",
-  "open source",
-  "SEO",
   "React",
+  "MicroStrategy",
   "MicroStrategy Embedding SDK",
+  "dossier",
+  "embed",
+  "embedded analytics",
+  "business intelligence",
+  "dashboard",
+  "TypeScript",
+  "MSTR",
+  "Next.js"
 ]
 export const urlimage = "/images/og-image.png"
-export const imagealt = "EmbedYourDossier for React Documentation"
-export const twitterhandle = "@EmbedYourDossier"
+export const imagealt = "embed-dossier-mstr Documentation"
+export const twitterhandle = "@Ibrairsyad17"
 
-export const companyname = "EmbedYourDossier"
-export const companylink = "https://www.rubixstudios.com.au"
+export const companyname = "embed-dossier-mstr"
+export const companylink = "https://github.com/Ibrairsyad17/embed-dossier-mstr"
 
 export const branding = true
 export const rightsidebar = true
