@@ -1,24 +1,53 @@
 {
   "name": "embed-dossier-mstr-react",
-  "version": "1.2.0",
+  "version": "2.0.0",
+  "description": "A production-ready React library for embedding MicroStrategy Dossiers, Reports, and Bot Consumption pages with full TypeScript support.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
   "sideEffects": false,
   "private": false,
   "license": "MIT",
   "files": [
-    "dist/**"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --external react",
-    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external react",
+    "build": "tsup src/index.ts --format esm --format cjs --dts --external react --external react-dom --clean",
+    "dev": "tsup src/index.ts --format esm --format cjs --watch --dts --external react --external react-dom",
     "lint": "eslint \"src/**/*.ts*\"",
     "lint:fix": "eslint \"src/**/*.ts*\" --fix",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "test": "vitest run --reporter=json > report.json",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist && rm -rf coverage",
+    "test": "vitest run",
     "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
@@ -29,21 +58,27 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "3.0.6",
     "@vitest/ui": "3.0.6",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "jsdom": "24.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tsup": "^8.0.2",
     "typescript": "5.5.4",
     "vitest": "^3.0.6"
   },
-  "dependencies": {
-    "classnames": "^2.5.1",
-    "clsx": "^2.1.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ibrairsyad17/embed-dossier-mstr.git",
+    "directory": "packages/embed-dossier-mstr-react"
+  },
+  "homepage": "https://github.com/Ibrairsyad17/embed-dossier-mstr#readme",
+  "bugs": {
+    "url": "https://github.com/Ibrairsyad17/embed-dossier-mstr/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -57,7 +92,10 @@
     "sdk",
     "api",
     "typescript",
-    "business intelligence",
-    "bi"
+    "business-intelligence",
+    "bi",
+    "dashboard",
+    "analytics",
+    "embedding"
   ]
 }

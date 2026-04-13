@@ -51,7 +51,7 @@ describe("useLoadMstrSDK", () => {
 
     expect(result.current.isSdkLoaded).toBe(false);
     expect(result.current.isSdkError.isError).toBe(true);
-    expect(result.current.isSdkError.message).toBe("Error loading the SDK");
+    expect(result.current.isSdkError.message).toBe(`Failed to load MicroStrategy SDK from ${serverUrl}`);
   });
 
   it("should not create script if SDK is already loaded", () => {

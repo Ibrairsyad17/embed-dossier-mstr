@@ -1,16 +1,40 @@
-.DS_Store
+# Dependencies
 node_modules
-.turbo
-*.log
-.next
+
+# Build outputs
 dist
 dist-ssr
-*.local
+.next
+out
+
+# Turbo
+.turbo
+
+# Coverage & test reports
+coverage
+report.json
+*.tsbuildinfo
+
+# Environment
 .env
+.env.*
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache
 .cache
+
+# IDE
+.idea
+*.swp
+*.swo
+
+# Build artifacts
 server/dist
 public/dist
-.turbo
-pnpm-lock.yaml
-yarn.lock
-package-lock.json

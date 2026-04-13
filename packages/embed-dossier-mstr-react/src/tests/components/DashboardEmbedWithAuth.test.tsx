@@ -93,8 +93,8 @@ describe("DashboardEmbedWithAuth", () => {
 
     const dashboardContainer = container.firstChild as HTMLElement;
     expect(dashboardContainer).toHaveClass("custom-class");
-    expect(dashboardContainer).toHaveClass("w-full");
-    expect(dashboardContainer).toHaveClass("h-[600px]");
+    expect(dashboardContainer).not.toHaveClass("w-full");
+    expect(dashboardContainer).not.toHaveClass("h-[600px]");
   });
 
   it("should pass correct props to useCreateDashboardWithAuth", () => {

@@ -1,9 +1,18 @@
-import { EVENT_TYPE } from "../constants/eventType";
+import { EventTypeValue } from "../constants/eventType";
 
-export type EventTypes = EVENT_TYPE[keyof EVENT_TYPE];
+/** Union of all MicroStrategy event type string values */
+export type EventTypes = EventTypeValue;
 
-export type EventHandler = () => void;
+/**
+ * Event handler function signature.
+ *
+ * MicroStrategy SDK passes event-specific data to handlers.
+ * Use `unknown` and narrow the type in your handler for type safety.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EventHandler = (event?: any) => void;
 
+/** Map of all available event handlers for MicroStrategy dashboards */
 export interface EventHandlers {
   onComponentSelectionChanged?: EventHandler;
   onDossierAuthoringClosed?: EventHandler;

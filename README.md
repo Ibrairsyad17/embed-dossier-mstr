@@ -1,73 +1,202 @@
-# Turborepo Design System starter with Changesets
+<div align="center">
 
-This is an official React design system starter powered by Turborepo. Versioning and package publishing is handled by [Changesets](https://github.com/changesets/changesets) and fully automated with GitHub Actions.
+# embed-dossier-mstr
 
-## Using this example
+[![CI](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml/badge.svg)](https://github.com/Ibrairsyad17/embed-dossier-mstr/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
+[![npm downloads](https://img.shields.io/npm/dm/embed-dossier-mstr-react.svg)](https://www.npmjs.com/package/embed-dossier-mstr-react)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue.svg)](https://www.typescriptlang.org/)
 
-Run the following command:
+**A production-ready React library for embedding MicroStrategy Dashboards, Reports, and Bot pages.**
 
-```sh
-npx create-turbo@latest -e with-changesets
+Type-safe · Lazy-loaded · Fully tested · Multiple auth methods
+
+[Quick Start](#-quick-start) · [Documentation](#-api-reference) · [Examples](#-advanced-usage) · [Contributing](./CONTRIBUTING.md)
+
+</div>
+
+---
+
+## Why this library?
+
+MicroStrategy's Embedding SDK is powerful but low-level — it requires manual script injection, global `window` mutations, and has zero TypeScript support. This library wraps it into **clean, idiomatic React** with:
+
+- 🎯 **Full TypeScript coverage** — 40+ interfaces, no `any` in your code
+- ⚡ **Lazy SDK loading** — SDK is loaded on-demand, not upfront
+- 🧹 **Automatic cleanup** — Dashboards are closed on unmount, scripts removed
+- 🔐 **5 auth methods** — Guest, Standard, LDAP, SAML, OIDC out of the box
+- 🎣 **Two integration patterns** — Simple components or flexible hooks
+- 🧪 **Comprehensive tests** — All components and hooks tested with Vitest
+
+## 📦 Installation
+
+```bash
+npm install embed-dossier-mstr-react
 ```
 
-## What's inside?
+**Peer dependencies:** React 18.2+ or React 19
 
-This Turborepo includes the following:
+## ⚡ Quick Start
 
-### Apps and Packages
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react";
 
-- `docs`: A placeholder documentation site powered by [Next.js](https://nextjs.org/)
-- `@acme/core`: core React components
-- `@acme/utils`: shared React utilities
-- `@acme/tsconfig`: shared `tsconfig.json`s used throughout the monorepo
-- `@acme/eslint-config`: ESLint preset
+function App() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0"
+      style={{ width: "100%", height: "800px" }}
+    />
+  );
+}
+```
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+That's it. The component handles SDK loading, dashboard creation, and cleanup automatically.
+
+## 🔐 With Authentication
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react";
+
+function SecureDashboard() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-server.com/MicroStrategyLibrary/app/{projectId}/{dossierId}"
+      loginMode="standard"
+      username="analyst"
+      password="password"
+      style={{ width: "100%", height: "800px" }}
+      loadingComponent={<div>Authenticating...</div>}
+      errorComponent={(error) => <div>Error: {error}</div>}
+    />
+  );
+}
+```
+
+## 🎣 Hook-Based Integration
+
+For full control over the dashboard lifecycle:
+
+```tsx
+import { useCreateDashboard, getInfoFromUrl } from "embed-dossier-mstr-react";
+
+function CustomDashboard({ url }: { url: string }) {
+  const { serverUrlLibrary } = getInfoFromUrl(url);
+
+  const { dashboard, containerRef, isSdkLoaded, isDashboardError } =
+    useCreateDashboard({
+      serverUrlLibrary,
+      config: { url },
+    });
+
+  if (isDashboardError) return <div>Failed to load</div>;
+  if (!isSdkLoaded) return <div>Loading SDK...</div>;
+
+  // Access dashboard methods: dashboard.refresh(), dashboard.getFilterList(), etc.
+
+  return <div ref={containerRef} style={{ width: "100%", height: "800px" }} />;
+}
+```
+
+## 🔧 Advanced Usage
+
+### Full Configuration
+
+```tsx
+import { DashboardEmbed, MicroStrategyDossierConfig } from "embed-dossier-mstr-react";
+
+const config: Omit<MicroStrategyDossierConfig, "placeholder" | "url"> = {
+  enableResponsive: true,
+  enableCollaboration: true,
+  navigationBar: {
+    enabled: true,
+    gotoLibrary: true,
+    title: true,
+    toc: true,
+    reset: true,
+    filter: true,
+    bookmark: true,
+  },
+  filterFeature: { enabled: true, edit: true, summary: true },
+  shareFeature: { enabled: true, link: true, export: true },
+};
+
+<DashboardEmbed dossierUrl={url} config={config} style={{ width: "100%", height: "800px" }} />;
+```
+
+### Event Handling
+
+```tsx
+import { EVENT_TYPE } from "embed-dossier-mstr-react";
+
+// After getting the dashboard instance via hooks:
+dashboard.registerEventHandler(EVENT_TYPE.ON_PAGE_SWITCHED, (event) => {
+  console.log("Page switched:", event);
+});
+
+dashboard.registerEventHandler(EVENT_TYPE.ON_FILTER_UPDATED, (event) => {
+  console.log("Filter changed:", event);
+});
+```
+
+## 📚 API Reference
+
+### Components
+
+| Component | Description |
+|---|---|
+| `DashboardEmbed` | Embed a dashboard with automatic SDK loading |
+| `DashboardEmbedWithAuth` | Dashboard with built-in authentication |
+| `LibraryPageEmbed` | Embed the MicroStrategy Library page |
+| `LibraryPageEmbedWithAuth` | Library page with authentication |
+| `BotConsumptionPage` | Embed a Bot Consumption page |
+| `BotConsumptionPageWithAuth` | Bot page with authentication |
+
+### Hooks
+
+| Hook | Description |
+|---|---|
+| `useCreateDashboard` | Create and manage a dashboard instance |
+| `useCreateDashboardWithAuth` | Dashboard with authentication lifecycle |
+| `useCreateLibraryPage` | Create a library page instance |
+| `useCreateLibraryPageWithAuth` | Library page with auth |
+| `useCreateBotConsumptionPage` | Create a bot page instance |
+| `useCreateBotConsumptionPageWithAuth` | Bot page with auth |
+| `useLoadMstrSDK` | Load the MicroStrategy SDK |
 
 ### Utilities
 
-This Turborepo has some additional tools already setup for you:
+| Function | Description |
+|---|---|
+| `getInfoFromUrl(url)` | Parse a dossier URL into components |
+| `getServerUrl(url)` | Extract the server base URL |
+| `getAuthToken({ serverUrlLibrary })` | Get an existing auth token |
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## 🏗️ Project Structure
 
-### Useful commands
+This is a monorepo managed with [Turborepo](https://turbo.build/):
 
-- `yarn build` - Build all packages and the docs site
-- `yarn dev` - Develop all packages and the docs site
-- `yarn lint` - Lint all packages
-- `yarn changeset` - Generate a changeset
-- `yarn clean` - Clean up all `node_modules` and `dist` folders (runs each package's clean script)
-
-### Changing the npm organization scope
-
-The npm organization scope for this design system starter is `@acme`. To change this, it's a bit manual at the moment, but you'll need to do the following:
-
-- Rename folders in `packages/*` to replace `acme` with your desired scope
-- Search and replace `acme` with your desired scope
-- Re-run `yarn install`
-
-## Versioning and Publishing packages
-
-Package publishing has been configured using [Changesets](https://github.com/changesets/changesets). Please review their [documentation](https://github.com/changesets/changesets#documentation) to familiarize yourself with the workflow.
-
-This example comes with automated npm releases setup in a [GitHub Action](https://github.com/changesets/action). To get this working, you will need to create an `NPM_TOKEN` and `GITHUB_TOKEN` in your repository settings. You should also install the [Changesets bot](https://github.com/apps/changeset-bot) on your GitHub repository as well.
-
-For more information about this automation, refer to the official [changesets documentation](https://github.com/changesets/changesets/blob/main/docs/automating-changesets.md)
-
-### npm
-
-If you want to publish package to the public npm registry and make them publicly available, this is already setup.
-
-To publish packages to a private npm organization scope, **remove** the following from each of the `package.json`'s
-
-```diff
-- "publishConfig": {
--  "access": "public"
-- },
+```
+├── packages/
+│   └── embed-dossier-mstr-react/   # Core library (published to npm)
+├── apps/
+│   └── docs/                        # Documentation site (Next.js)
 ```
 
-### GitHub Package Registry
+## 🧪 Testing
 
-See [Working with the npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#publishing-a-package-using-publishconfig-in-the-packagejson-file)
+```bash
+pnpm install
+pnpm --filter embed-dossier-mstr-react test        # Run tests
+pnpm --filter embed-dossier-mstr-react coverage     # Coverage report
+pnpm --filter embed-dossier-mstr-react test:ui      # Visual test runner
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+[MIT](./LICENSE) © Ibrahim Irsyad
