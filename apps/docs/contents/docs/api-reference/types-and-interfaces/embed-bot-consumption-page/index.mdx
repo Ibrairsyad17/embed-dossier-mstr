@@ -1,0 +1,152 @@
+---
+title: EmbedBotConsumptionPage
+description: This page is a reference to the EmbedBotConsumptionPage type used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "embed-bot-consumption-page",
+  ]
+---
+
+# EmbedBotConsumptionPage
+
+`EmbedBotConsumptionPage` is an interface that represents the embedded MicroStrategy Bot consumption page object. This object is returned when you successfully embed a Bot consumption page using the `embedBotConsumptionPage` method from the MicroStrategy SDK.
+
+## Interface Definition
+
+The current implementation of `EmbedBotConsumptionPage` in the library is as follows:
+
+```tsx
+interface EmbedBotConsumptionPage {
+  // This interface is currently being expanded as more research is conducted
+  // on available methods and properties for embedded Bot pages
+}
+```
+
+## Overview
+
+The `EmbedBotConsumptionPage` interface encapsulates the methods and properties available for interacting with an embedded MicroStrategy Bot consumption page. It is returned when you call `window.microstrategy.embeddingContexts.embedBotConsumptionPage()` with a valid configuration.
+
+While the interface is currently minimal, it is expected to include methods similar to those found in the `EmbedDossierConsumptionPage` interface, specifically methods for error handling.
+
+## Expected Methods
+
+Based on the MicroStrategy SDK patterns and the related `EmbedDossierConsumptionPage` interface, the following methods are expected to be part of `EmbedBotConsumptionPage`:
+
+### Error Handling
+
+```tsx
+// Add a custom error handler to the embedded Bot page
+addCustomErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void;
+
+// Add a session error handler to the embedded Bot page
+addSessionErrorHandler: (
+  handler: (error: ErrorHandlerInterface) => void,
+  showErrorPopup: boolean
+) => void;
+```
+
+### Bot-Specific Methods
+
+The Bot consumption page is likely to include additional methods specific to bot interactions, which might include:
+
+- Methods to send messages to the bot
+- Methods to retrieve conversation history
+- Methods to control the bot UI elements
+- Methods to handle bot responses and events
+
+## Usage Example
+
+Here's an example of how you might use the `EmbedBotConsumptionPage` object:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const BotComponent = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [botPage, setBotPage] = useState(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedBot = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the bot consumption page
+        const config = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example bot ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+        }
+
+        // Embed the bot consumption page
+        const botPageInstance =
+          await window.microstrategy.embeddingContexts.embedBotConsumptionPage(
+            config
+          )
+        setBotPage(botPageInstance)
+
+        // Add error handlers
+        botPageInstance.addCustomErrorHandler((error) => {
+          console.error("Bot error:", error)
+        }, false)
+      } catch (error) {
+        console.error("Failed to embed bot:", error)
+      }
+    }
+
+    embedBot()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>MicroStrategy Embedded Bot</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default BotComponent
+```
+
+## Limitations and Future Updates
+
+The `EmbedBotConsumptionPage` interface is currently under development in the `embed-dossier-mstr-react` library. As MicroStrategy continues to enhance their Bot capabilities and as more research is conducted, this interface is expected to be expanded with additional methods and properties.
+
+Developers should check the [MicroStrategy Embedding SDK documentation](https://microstrategy.github.io/embedding-sdk-docs/) for the most up-to-date information about Bot consumption page interactions and capabilities.
+
+## Related Interfaces
+
+- `EmbedBotConsumptionPageConfig`: The configuration interface used to specify parameters when embedding a bot consumption page.
+- `EmbedDossierConsumptionPage`: A related interface for dossier consumption pages, which may share similar methods and patterns.
+- `ErrorHandlerInterface`: Interface for error handling used with the bot page's error handler methods.

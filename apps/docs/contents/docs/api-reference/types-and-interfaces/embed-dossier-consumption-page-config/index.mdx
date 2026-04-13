@@ -1,0 +1,226 @@
+---
+title: EmbedDossierConsumptionPageConfig
+description: This page is a reference to the EmbedDossierConsumptionPageConfig type used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "embed-dossier-consumption-page-config",
+  ]
+---
+
+## Interface Definition
+
+```tsx
+interface EmbedDossierConsumptionPageConfig {
+  placeholder: HTMLDivElement | null
+  serverUrl: string
+  projectId: string
+  objectId: string
+  customApplicationId?: string
+  enableCustomAuthentication?: boolean
+  pageKey?: string
+  containerHeight?: string
+  containerWidth?: string
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string
+  getLoginToken?: () => Promise<string | void | null>
+  disableCustomErrorHandlerOnCreate?: boolean
+  errorHandler?: (error: ErrorHandlerInterface) => void
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void
+  customUi?: CustomUi
+  settings?:
+    | Pick<Settings, "dossierConsumption">
+    | Pick<Settings, "botConsumption">
+}
+```
+
+## Properties
+
+### Required Properties
+
+| Property      | Type                     | Description                                                                                                                                  |
+| ------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `placeholder` | `HTMLDivElement \| null` | The DOM element where the Dossier consumption page will be embedded. This is typically a reference to a div element in your React component. |
+| `serverUrl`   | `string`                 | The URL of the MicroStrategy Library server. For example: "https://your-server.com/MicroStrategyLibrary"                                     |
+| `projectId`   | `string`                 | The ID of the MicroStrategy project that contains the dossier.                                                                               |
+| `objectId`    | `string`                 | The ID of the dossier to embed.                                                                                                              |
+
+### Optional Properties
+
+| Property                            | Type                                                                       | Description                                                                                                                   |
+| ----------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `customApplicationId`               | `string`                                                                   | An optional identifier for your application.                                                                                  |
+| `enableCustomAuthentication`        | `boolean`                                                                  | Whether to use custom authentication. When set to `true`, you need to provide a `getLoginToken` function.                     |
+| `pageKey`                           | `string`                                                                   | A specific page key to navigate to within the dossier.                                                                        |
+| `containerHeight`                   | `string`                                                                   | The height of the container for the embedded dossier (e.g., "600px", "100%").                                                 |
+| `containerWidth`                    | `string`                                                                   | The width of the container for the embedded dossier (e.g., "800px", "100%").                                                  |
+| `customAuthenticationType`          | `MicroStrategyDossierConfigCustomAuthenticationType \| string`             | The type of custom authentication to use. Can be either `"AUTH_TOKEN"` or `"IDENTITY_TOKEN"`.                                 |
+| `getLoginToken`                     | `() => Promise<string \| void \| null>`                                    | A function that returns a promise resolving to an authentication token. Required when `enableCustomAuthentication` is `true`. |
+| `disableCustomErrorHandlerOnCreate` | `boolean`                                                                  | Whether to disable the custom error handler during creation.                                                                  |
+| `errorHandler`                      | `(error: ErrorHandlerInterface) => void`                                   | A function to handle errors that occur during the lifecycle of the embedded dossier.                                          |
+| `sessionErrorHandler`               | `(error: ErrorHandlerInterface) => void`                                   | A function to handle session-related errors.                                                                                  |
+| `customUi`                          | `CustomUi`                                                                 | Configuration options for customizing the UI of the embedded dossier.                                                         |
+| `settings`                          | `Pick<Settings, "dossierConsumption"> \| Pick<Settings, "botConsumption">` | Additional settings for the dossier consumption page or bot consumption page.                                                 |
+
+## Usage Example
+
+Here's an example of how to use the `EmbedDossierConsumptionPageConfig` interface when embedding a dossier consumption page:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierConsumptionPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the dossier consumption page
+        const config: EmbedDossierConsumptionPageConfig = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example dossier ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          containerHeight: "600px",
+          containerWidth: "100%",
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+          errorHandler: (error) => {
+            console.error("Dossier error:", error)
+          },
+          customUi: {
+            showDossierTitle: true,
+          },
+        }
+
+        const dossierPage =
+          await window.microstrategy.embeddingContexts.embedDossierConsumptionPage(
+            config
+          )
+        console.log("Dossier embedded successfully:", dossierPage)
+      } catch (error) {
+        console.error("Failed to embed dossier:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>Embedded Dossier</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default DossierConsumptionPage
+```
+
+## CustomUi Options
+
+The `customUi` property allows you to customize the appearance of the embedded dossier. Here are some common options:
+
+```tsx
+{
+  customUi: {
+    showDossierTitle: boolean, // Show or hide the dossier title
+    showFilterPanel: boolean, // Show or hide the filter panel
+    showChartTooltips: boolean, // Show or hide chart tooltips
+    showExportButton: boolean, // Show or hide the export button
+    // ...other UI customization options
+  }
+}
+```
+
+## Using with Authentication
+
+For secure authentication, you should use the `enableCustomAuthentication` property along with the `getLoginToken` function:
+
+```tsx
+const config = {
+  // ...other required properties
+  enableCustomAuthentication: true,
+  customAuthenticationType: "AUTH_TOKEN", // or window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN
+  getLoginToken: async () => {
+    // Implement your token fetching logic here
+    const response = await fetch(`${serverUrl}/api/auth/token`, {
+      method: "GET",
+      credentials: "include",
+      mode: "cors",
+      headers: { "content-type": "application/json" },
+    })
+    return response.ok ? response.headers.get("x-mstr-authtoken") : null
+  },
+}
+```
+
+## Error Handling
+
+The `errorHandler` and `sessionErrorHandler` properties allow you to handle errors that occur during the lifecycle of the embedded dossier:
+
+```tsx
+const config = {
+  // ...other properties
+  errorHandler: (error) => {
+    console.error("Dossier error:", error)
+    // Handle the error, e.g., show a notification to the user
+  },
+  sessionErrorHandler: (error) => {
+    console.error("Session error:", error)
+    // Handle session-specific errors, e.g., redirect to login page
+  },
+}
+```
+
+## Using with Settings
+
+The `settings` property allows you to configure additional settings for the dossier consumption page:
+
+```tsx
+const config = {
+  // ...other properties
+  settings: {
+    dossierConsumption: {
+      // Dossier consumption specific settings
+      interactivity: {
+        // Control interactivity settings
+      },
+    },
+  },
+}
+```
+
+## Related Interfaces
+
+- `EmbedDossierConsumptionPage`: The interface returned when embedding a dossier consumption page.
+- `CustomUi`: Interface for UI customization options.
+- `ErrorHandlerInterface`: Interface for error handling.

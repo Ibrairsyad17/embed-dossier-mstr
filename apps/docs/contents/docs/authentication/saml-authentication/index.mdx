@@ -1,0 +1,293 @@
+---
+title: SAML Authentication
+description: Learn how to embed MicroStrategy's use cases in your React application using Security Assertion Markup Language (SAML) authentication.
+keywords: ["MicroStrategy", "Embedding", "Authentication", "SAML", "Use Cases"]
+---
+
+## Using DashboardEmbedWithAuth Component
+
+The simplest way to implement SAML authentication is using the `DashboardEmbedWithAuth` component:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+function DashboardWithSamlAuth() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      loginMode="saml"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+      // Optional custom loading component
+      loadingComponent={<div>Redirecting to Identity Provider...</div>}
+      // Optional custom error component
+      errorComponent={(error) => (
+        <div className="error-container">
+          <h3>Authentication Failed</h3>
+          <p>{error}</p>
+        </div>
+      )}
+      // Additional dashboard configuration
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+        enableResponsive: true,
+      }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbedWithAuth` component accepts the following props for SAML authentication:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier
+- `loginMode` (required): Set to "saml" for SAML authentication
+- `className` (optional): CSS class names for the container
+- `style` (optional): React inline styles for the container
+- `loadingComponent` (optional): Custom component to show during authentication
+- `errorComponent` (optional): Custom component or function to render error states
+- `config` (optional): Additional dashboard configuration options
+
+## Using useCreateDashboardWithAuth Hook
+
+For more control over the SAML authentication process, you can use the `useCreateDashboardWithAuth` hook directly:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+function CustomDashboardWithSamlAuth() {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "saml",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (isAuthenticating) {
+    return <div>Redirecting to Identity Provider...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3>Authentication Failed</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div ref={divRef} className="dashboard-container" />
+      {isAuthenticated && dashboard && (
+        <div className="controls">
+          <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboardWithAuth` hook returns an object with the following properties:
+
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isAuthenticating`: Boolean indicating if authentication is in progress
+- `isAuthenticated`: Boolean indicating if authentication was successful
+- `error`: Error message if authentication failed
+
+## SAML Configuration
+
+Here's how to implement advanced SAML configurations:
+
+```tsx
+function AdvancedSamlAuth() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="saml"
+      config={{
+        // SAML-specific settings
+        enableCustomAuthentication: true,
+        customAuthenticationType: "SAML",
+        samlConfig: {
+          identityProvider: "your-idp-url",
+          allowPopup: true, // Enable popup for SAML login
+        },
+
+        // Error handling
+        errorHandler: (error) => {
+          console.error("Dashboard error:", error)
+          // Handle SAML-specific errors
+          if (error.includes("Failed to open a new tab")) {
+            alert("Please enable popups to complete SAML authentication")
+          }
+        },
+        sessionErrorHandler: (error) => {
+          if (error.code === "SESSION_EXPIRED") {
+            // Handle SAML session expiration
+            handleSamlSessionExpiration()
+          }
+        },
+      }}
+    />
+  )
+}
+```
+
+## Handling SAML Redirects
+
+SAML authentication typically involves redirects. Here's how to handle them properly:
+
+```tsx
+import { useEffect, useState } from "react"
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+function SamlAuthWithRedirect() {
+  const [isRedirecting, setIsRedirecting] = useState(false)
+
+  // Handle SAML redirect completion
+  useEffect(() => {
+    const handleSamlCallback = () => {
+      const urlParams = new URLSearchParams(window.location.search)
+      const samlResponse = urlParams.get("SAMLResponse")
+
+      if (samlResponse) {
+        setIsRedirecting(false)
+        // Clear SAML response from URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        )
+      }
+    }
+
+    handleSamlCallback()
+  }, [])
+
+  // Custom loading component for SAML redirect
+  const SamlLoadingState = () => (
+    <div className="saml-loading">
+      <h3>SAML Authentication in Progress</h3>
+      <p>You will be redirected to your identity provider...</p>
+      {isRedirecting && <LoadingSpinner />}
+    </div>
+  )
+
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="saml"
+      loadingComponent={<SamlLoadingState />}
+      config={{
+        enableCustomAuthentication: true,
+        customAuthenticationType: "SAML",
+        // Handle pre-redirect
+        onSamlRedirect: () => {
+          setIsRedirecting(true)
+        },
+      }}
+    />
+  )
+}
+```
+
+## Error Handling
+
+Implement comprehensive error handling for SAML authentication:
+
+```tsx
+function DashboardWithSamlErrorHandling() {
+  const handleSamlError = (error: string) => {
+    // Handle specific SAML errors
+    if (error.includes("Popup blocked")) {
+      return (
+        <div className="error-message">
+          <h3>Popup Blocked</h3>
+          <p>Please enable popups to complete SAML authentication.</p>
+          <button onClick={retryAuthentication}>Try Again</button>
+        </div>
+      )
+    }
+
+    if (error.includes("SAML assertion expired")) {
+      return (
+        <div className="error-message">
+          <h3>Session Expired</h3>
+          <p>Your SAML session has expired. Please authenticate again.</p>
+          <button onClick={initiateNewSamlFlow}>Authenticate</button>
+        </div>
+      )
+    }
+
+    // Default error message
+    return (
+      <div className="error-message">
+        <h3>Authentication Error</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="your-dossier-url"
+      loginMode="saml"
+      errorComponent={handleSamlError}
+      config={{
+        errorHandler: (error) => {
+          console.error("SAML error:", error)
+          // Implement error tracking
+          trackSamlError(error)
+        },
+        sessionErrorHandler: (error) => {
+          if (error.code === "SESSION_EXPIRED") {
+            handleSamlSessionExpiration()
+          }
+        },
+      }}
+    />
+  )
+}
+```
+
+## Example Use Case Implementation
+
+Here's a live example of how to implement SAML authentication in a real-world scenario:
+
+<iframe
+  src="https://stackblitz.com/edit/saml-authentication-mstr?file=src%2Fcomponents%2FSAMLAuthentication.tsx"
+  width="100%"
+  height="500px"
+  style={{ border: "none" }}
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+Or you can see the code on StackBlitz:
+
+<Card
+  title="See the code on StackBlitz"
+  href="https://stackblitz.com/edit/saml-authentication-mstr?file=src%2Fcomponents%2FSAMLAuthentication.tsx"
+  icon="alignJustify"
+  external={true}
+  variant="small"
+/>
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).

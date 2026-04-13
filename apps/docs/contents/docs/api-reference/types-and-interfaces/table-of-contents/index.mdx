@@ -1,0 +1,286 @@
+---
+title: TableOfContents
+description: This page is a reference to the TableOfContents used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "table-of-contents",
+  ]
+---
+
+# TableOfContents
+
+`TableOfContents` is an interface that represents the structure of a MicroStrategy Dossier's content organization. It provides access to all chapters and their pages within a dossier, allowing for programmatic navigation and content exploration.
+
+## Interface Definition
+
+```tsx
+export interface TableOfContents {
+  chapters: DossierChapter[]
+}
+```
+
+## Properties
+
+| Property   | Type               | Description                                                                                         |
+| ---------- | ------------------ | --------------------------------------------------------------------------------------------------- |
+| `chapters` | `DossierChapter[]` | An array of `DossierChapter` objects that make up the dossier. Each chapter contains its own pages. |
+
+## Related Interfaces
+
+The `TableOfContents` interface works with two other important interfaces:
+
+### DossierChapter
+
+```tsx
+export interface DossierChapter {
+  name: string
+  nodeKey: string
+  pages: DossierPage[]
+  getNextChapter: () => DossierChapter | null
+  getPrevChapter: () => DossierChapter | null
+  getFirstPage: () => DossierPage
+  getLastPage: () => DossierPage
+}
+```
+
+### DossierPage
+
+```tsx
+export interface DossierPage {
+  name: string
+  nodeKey: string
+}
+```
+
+## Usage Examples
+
+### Getting the Table of Contents
+
+You can retrieve the table of contents from an embedded dossier using the `getTableOfContents` method:
+
+```tsx
+import React, { useEffect, useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { TableOfContents } from "embed-dossier-mstr-react"
+
+const DossierWithTOC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [toc, setToc] = useState<TableOfContents | null>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and dossier creation code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Get the table of contents
+        const tableOfContents = dossier.getTableOfContents()
+        setToc(tableOfContents)
+
+        console.log("Dossier structure:")
+        tableOfContents.chapters.forEach((chapter, chapterIndex) => {
+          console.log(`Chapter ${chapterIndex + 1}: ${chapter.name}`)
+          chapter.pages.forEach((page, pageIndex) => {
+            console.log(
+              `  Page ${pageIndex + 1}: ${page.name} (${page.nodeKey})`
+            )
+          })
+        })
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+
+      {toc && (
+        <div className="toc-sidebar">
+          <h3>Table of Contents</h3>
+          <ul>
+            {toc.chapters.map((chapter, chapterIndex) => (
+              <li key={chapter.nodeKey}>
+                <strong>{chapter.name}</strong>
+                <ul>
+                  {chapter.pages.map((page) => (
+                    <li key={page.nodeKey}>{page.name}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default DossierWithTOC
+```
+
+### Navigating Using the Table of Contents
+
+You can use the table of contents to navigate to specific pages in the dossier:
+
+```tsx
+import React, { useRef, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type {
+  DossierChapter,
+  DossierPage,
+  TableOfContents,
+} from "embed-dossier-mstr-react"
+
+const NavigableDossier = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [toc, setToc] = useState<TableOfContents | null>(null)
+  const [currentPage, setCurrentPage] = useState<DossierPage | null>(null)
+  const [dossierInstance, setDossierInstance] = useState<any>(null)
+
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  const initializeDossier = async () => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    try {
+      // Authentication code...
+
+      const dossier = await window.microstrategy.dossier.create({
+        placeholder: containerRef.current,
+        url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+      })
+
+      setDossierInstance(dossier)
+
+      // Get the table of contents
+      const tableOfContents = dossier.getTableOfContents()
+      setToc(tableOfContents)
+
+      // Get the current page
+      const page = dossier.getCurrentPage()
+      setCurrentPage(page)
+
+      // Register a page switch handler
+      dossier.registerPageSwitchHandler(() => {
+        setCurrentPage(dossier.getCurrentPage())
+      })
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
+  const navigateToPage = async (page: DossierPage) => {
+    if (!dossierInstance) return
+
+    try {
+      await dossierInstance.navigateToPage(page)
+      setCurrentPage(page)
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
+  return (
+    <div className="dossier-container">
+      <div className="navigation-sidebar">
+        <h3>Chapters & Pages</h3>
+        {toc && (
+          <nav>
+            {toc.chapters.map((chapter: DossierChapter) => (
+              <div key={chapter.nodeKey} className="chapter">
+                <h4>{chapter.name}</h4>
+                <ul>
+                  {chapter.pages.map((page: DossierPage) => (
+                    <li
+                      key={page.nodeKey}
+                      className={
+                        currentPage?.nodeKey === page.nodeKey ? "active" : ""
+                      }
+                      onClick={() => navigateToPage(page)}
+                    >
+                      {page.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        )}
+      </div>
+
+      <div className="dossier-content">
+        <div ref={containerRef} style={{ width: "100%", height: "700px" }} />
+      </div>
+
+      <button onClick={initializeDossier}>Load Dossier</button>
+    </div>
+  )
+}
+
+export default NavigableDossier
+```
+
+## Working with Chapter Navigation
+
+The `DossierChapter` interface includes methods for navigating between chapters and pages:
+
+```tsx
+const navigateThroughChapters = async () => {
+  if (!dossierInstance || !toc) return
+
+  // Get the first chapter
+  const firstChapter = toc.chapters[0]
+  console.log(`Starting at: ${firstChapter.name}`)
+
+  // Navigate to the first page of the first chapter
+  const firstPage = firstChapter.getFirstPage()
+  await dossierInstance.navigateToPage(firstPage)
+
+  // Wait a bit and then go to the last page of the chapter
+  setTimeout(async () => {
+    const lastPage = firstChapter.getLastPage()
+    await dossierInstance.navigateToPage(lastPage)
+
+    // Get the next chapter if available
+    const nextChapter = firstChapter.getNextChapter()
+    if (nextChapter) {
+      console.log(`Moving to next chapter: ${nextChapter.name}`)
+      const nextChapterFirstPage = nextChapter.getFirstPage()
+      await dossierInstance.navigateToPage(nextChapterFirstPage)
+    }
+  }, 3000)
+}
+```
+
+## Best Practices
+
+1. **Cache the TOC**: The table of contents structure doesn't change frequently during a session, so you can cache it after retrieving it once.
+
+2. **Use nodeKey for tracking**: Always use the `nodeKey` property as a unique identifier when tracking or referencing pages, especially in React component keys.
+
+3. **Handle navigation errors**: Always wrap navigation methods in try-catch blocks and provide feedback to users if navigation fails.
+
+4. **Combine with event handlers**: Use the TOC in combination with page switch event handlers to create a synchronized navigation experience.
+
+## Related Interfaces
+
+- `DossierChapter`: Represents a chapter in the dossier.
+- `DossierPage`: Represents a page within a chapter in the dossier.
+- `MicroStrategyDossier`: The main interface for dossier objects that provides the `getTableOfContents` method.

@@ -1,0 +1,190 @@
+---
+title: Filter Type Info Calendar
+description: This page is a reference to the Filter Type Info Calendar used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "filter-type-info-calendar",
+  ]
+---
+
+## Interface Definition
+
+```tsx
+export interface FilterTypeInfoCalendar {
+  from: string
+  to: string
+  maxDate: string
+  minDate: string
+}
+```
+
+## Properties
+
+| Property  | Type     | Description                                                                   |
+| --------- | -------- | ----------------------------------------------------------------------------- |
+| `from`    | `string` | The start date of the selected date range in ISO format (e.g., "2023-05-01"). |
+| `to`      | `string` | The end date of the selected date range in ISO format (e.g., "2023-05-31").   |
+| `maxDate` | `string` | The maximum date that can be selected in the calendar in ISO format.          |
+| `minDate` | `string` | The minimum date that can be selected in the calendar in ISO format.          |
+
+## Usage in Filter Operations
+
+The `FilterTypeInfoCalendar` interface is typically used in two contexts:
+
+1. When retrieving information about existing date filters in a dossier
+2. When setting or modifying date filters in a dossier
+
+### Retrieving Date Filter Information
+
+When you retrieve the filter list from a dossier using the `getFilterList` method, date filters will have their details represented as a `FilterTypeInfoCalendar` object:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithDateFilter = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and dossier creation code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Get all filters
+        const filters = await dossier.getFilterList()
+
+        // Find calendar filters
+        const calendarFilters = filters.filter((filter) => {
+          // Check if the filter detail is a FilterTypeInfoCalendar
+          const detail = filter.filterDetail
+          return (
+            detail &&
+            "from" in detail &&
+            "to" in detail &&
+            "maxDate" in detail &&
+            "minDate" in detail
+          )
+        })
+
+        // Display information about the calendar filters
+        calendarFilters.forEach((filter) => {
+          const calendarInfo = filter.filterDetail as FilterTypeInfoCalendar
+          console.log(`Filter: ${filter.filterName}`)
+          console.log(
+            `- Date Range: ${calendarInfo.from} to ${calendarInfo.to}`
+          )
+          console.log(
+            `- Valid Range: ${calendarInfo.minDate} to ${calendarInfo.maxDate}`
+          )
+        })
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithDateFilter
+```
+
+### Setting Date Filters
+
+When setting a date filter, you need to use the `filterSetDateRange` method with a `FilterJson` object that includes the date information:
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithDateFilter = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  const setDateFilter = async () => {
+    if (!containerRef.current || !window.microstrategy) return
+
+    try {
+      // Assuming dossier is already created and stored in a ref
+      const dossier = window.microstrategySdk.dossierInstance
+
+      // Set a date range filter
+      dossier.filterSetDateRange({
+        filterInfo: {
+          key: "YearFilter", // The key of the date filter
+        },
+        date: {
+          from: "2023-01-01", // Start date
+          to: "2023-12-31", // End date
+        },
+      })
+
+      // Apply the filter
+      dossier.filterApplyAll()
+    } catch (error) {
+      console.error("Error setting date filter:", error)
+    }
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+      <button onClick={setDateFilter}>Set Date Filter to 2023</button>
+    </div>
+  )
+}
+
+export default DossierWithDateFilter
+```
+
+## Working with Date Formats
+
+When working with calendar filters, dates are typically represented as ISO strings (`YYYY-MM-DD`). However, you might need to convert between different date formats depending on your application's needs:
+
+```tsx
+// Convert from Date object to string format for FilterTypeInfoCalendar
+const dateToISOString = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+// Convert from ISO string to Date object
+const isoStringToDate = (isoString: string): Date => {
+  return new Date(isoString)
+}
+
+// Example usage
+const today = new Date()
+const nextMonth = new Date(today)
+nextMonth.setMonth(today.getMonth() + 1)
+
+// Format for use with FilterTypeInfoCalendar
+const fromDate = dateToISOString(today)
+const toDate = dateToISOString(nextMonth)
+
+console.log(`Date range: ${fromDate} to ${toDate}`)
+```
+
+## Related Interfaces
+
+- `FilterListType`: The interface that includes `FilterTypeInfoCalendar` as part of the `filterDetail` property.
+- `FilterJson`: Used when setting a calendar filter via the `filterSetDateRange` method.
+- `FilterSelection`: Used for various filter selection operations.

@@ -1,0 +1,282 @@
+---
+title: NavigationBar
+description: This page is a reference to the NavigationBar used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "navigation-bar",
+  ]
+---
+
+## Interface Definition
+
+```tsx
+export interface NavigationBar {
+  enabled?: boolean
+  gotoLibrary?: boolean
+  title?: boolean
+  toc?: boolean
+  reset?: boolean
+  reprompt?: boolean
+  share?: boolean
+  comment?: boolean
+  notification?: boolean
+  filter?: boolean
+  options?: boolean
+  bookmark?: boolean
+  undoRedo?: boolean
+  edit?: boolean
+}
+```
+
+## Properties
+
+| Property       | Type                 | Description                                                                                                         |
+| -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `enabled`      | `boolean` (optional) | Controls the overall visibility of the navigation bar. If set to `false`, the entire navigation bar is hidden.      |
+| `gotoLibrary`  | `boolean` (optional) | Controls the visibility of the button to return to the MicroStrategy Library.                                       |
+| `title`        | `boolean` (optional) | Controls whether the dossier title is displayed in the navigation bar.                                              |
+| `toc`          | `boolean` (optional) | Controls the visibility of the table of contents button, which allows users to navigate between chapters and pages. |
+| `reset`        | `boolean` (optional) | Controls the visibility of the reset button, which resets the dossier to its initial state.                         |
+| `reprompt`     | `boolean` (optional) | Controls the visibility of the reprompt button, which allows users to change their prompt answers.                  |
+| `share`        | `boolean` (optional) | Controls the visibility of the share button, which allows users to share the dossier.                               |
+| `comment`      | `boolean` (optional) | Controls the visibility of the comment button, which allows users to add comments to the dossier.                   |
+| `notification` | `boolean` (optional) | Controls the visibility of the notification button, which shows notifications related to the dossier.               |
+| `filter`       | `boolean` (optional) | Controls the visibility of the filter button, which allows users to access and modify filters.                      |
+| `options`      | `boolean` (optional) | Controls the visibility of the options button, which provides access to additional settings and features.           |
+| `bookmark`     | `boolean` (optional) | Controls the visibility of the bookmark button, which allows users to bookmark specific views of the dossier.       |
+| `undoRedo`     | `boolean` (optional) | Controls the visibility of the undo and redo buttons.                                                               |
+| `edit`         | `boolean` (optional) | Controls the visibility of the edit button, which allows users to switch to dossier authoring mode.                 |
+
+## Usage in Dossier Configuration
+
+The `NavigationBar` interface is used in the dossier configuration via the `navigationBar` property to control the appearance and functionality of the navigation bar.
+
+### Example: Basic Navigation Bar Configuration
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { NavigationBar } from "embed-dossier-mstr-react"
+
+const DossierWithCustomNavigationBar = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const navigationBarConfig: NavigationBar = {
+      enabled: true,
+      gotoLibrary: true,
+      title: true,
+      toc: true,
+      reset: true,
+      filter: true,
+      options: false,
+      share: false,
+      undoRedo: false,
+      edit: false,
+    }
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          navigationBar: navigationBarConfig,
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithCustomNavigationBar
+```
+
+### Example: Minimal Navigation Bar for Read-Only Mode
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { NavigationBar } from "embed-dossier-mstr-react"
+
+const DossierWithMinimalNavigationBar = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          // Minimal navigation bar with only title and table of contents
+          navigationBar: {
+            enabled: true,
+            title: true,
+            toc: true,
+            gotoLibrary: false,
+            reset: false,
+            reprompt: false,
+            share: false,
+            comment: false,
+            notification: false,
+            filter: false,
+            options: false,
+            bookmark: false,
+            undoRedo: false,
+            edit: false,
+          },
+          // Set dossier to be read-only
+          dossierFeature: {
+            readonly: true,
+          },
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithMinimalNavigationBar
+```
+
+### Example: Navigation Bar for Editable Dossier
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+import type { NavigationBar } from "embed-dossier-mstr-react"
+
+const DossierWithEditableNavigationBar = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          // Navigation bar with edit functionality enabled
+          navigationBar: {
+            enabled: true,
+            title: true,
+            toc: true,
+            gotoLibrary: true,
+            reset: true,
+            reprompt: true,
+            share: true,
+            filter: true,
+            options: true,
+            undoRedo: true,
+            edit: true, // Enable edit button for authoring mode
+          },
+          // Set dossier rendering mode to authoring
+          dossierRenderingMode: "authoring",
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithEditableNavigationBar
+```
+
+### Example: Completely Hidden Navigation Bar
+
+```tsx
+import React, { useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithHiddenNavigationBar = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  React.useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const createDossier = async () => {
+      try {
+        // Authentication code...
+
+        await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+          // Hide the entire navigation bar
+          navigationBar: {
+            enabled: false,
+          },
+        })
+      } catch (error) {
+        console.error("Error creating dossier:", error)
+      }
+    }
+
+    createDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithHiddenNavigationBar
+```
+
+## Best Practices
+
+1. **User Experience Considerations**: Only include navigation bar elements that are relevant to your users. Removing unnecessary buttons can create a cleaner, more focused interface.
+
+2. **Consistency with Permissions**: Ensure that the navigation bar configuration aligns with the user's permissions. For example, don't show the edit button if the user doesn't have edit permissions.
+
+3. **Accessibility**: Keep essential navigation functions available for users who rely on them. The table of contents (`toc`) button, for instance, is important for navigating between pages.
+
+4. **Branding and Customization**: Consider hiding the `gotoLibrary` button if you want to maintain a seamless integration with your own application and prevent users from leaving your embedded solution.
+
+5. **Read-Only vs. Interactive**: For dashboards meant primarily for viewing, consider a minimal navigation bar with only essential elements like `title`, `toc`, and potentially `filter`.
+
+6. **Mobile Considerations**: On smaller screens, consider a more minimal navigation bar configuration to conserve space.
+
+7. **Collaboration Features**: If your application includes collaborative features, consider enabling `comment`, `share`, and `notification` options.
+
+## Related Interfaces
+
+- `CustomUi`: A more comprehensive interface for customizing the UI, which includes navigation bar configuration for different contexts.
+- `ShareFeature`: Detailed configuration for the share functionality accessed via the share button.
+- `OptionsFeature`: Detailed configuration for the options menu accessed via the options button.
+- `DockedCommentAndFilter`: Configuration for the docked panels that can be accessed via the comment and filter buttons.
+- `DockedTheme`: Configuration for the theme panel that affects the overall appearance of the dossier.

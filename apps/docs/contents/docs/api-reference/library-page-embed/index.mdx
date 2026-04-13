@@ -1,0 +1,205 @@
+---
+title: <LibraryPageEmbed />
+description: Learn about the <LibraryPageEmbed /> component and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    embedding,
+    sdk,
+    functionalities,
+    helper methods,
+    dashboard,
+    embed-dossier-mstr,
+  ]
+---
+
+## Import
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+```
+
+## Props
+
+| Prop               | Type                                                         | Required | Description                                                                                                    |
+| ------------------ | ------------------------------------------------------------ | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string`                                                     | Yes      | The base URL of the MicroStrategy Library server (e.g., `https://demo.microstrategy.com/MicroStrategyLibrary`) |
+| `config`           | `Omit<EmbedLibraryPageConfig, "placeholder" \| "serverUrl">` | No       | Configuration options for the library page                                                                     |
+| `className`        | `string`                                                     | No       | CSS class names to apply to the container element                                                              |
+| `style`            | `React.CSSProperties`                                        | No       | Inline styles to apply to the container element                                                                |
+
+## Basic Usage
+
+Here's a simple example of using the `LibraryPageEmbed` component:
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+
+const MyLibraryPage = () => {
+  return (
+    <LibraryPageEmbed
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      className="my-library-page"
+      style={{ height: "800px" }}
+    />
+  )
+}
+```
+
+## How It Works
+
+The `LibraryPageEmbed` component:
+
+1. Uses the `useCreateLibraryPage` hook to initialize and create the library page
+2. Renders a div element with the provided styling that serves as the container for the embedded library page
+3. Passes the serverUrlLibrary and configuration to the underlying MicroStrategy SDK
+
+## Advanced Configuration
+
+You can customize the behavior and appearance of your library page by providing a `config` object:
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+
+const MyCustomLibraryPage = () => {
+  return (
+    <LibraryPageEmbed
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      config={{
+        placeholderHeight: 800,
+        placeholderWidth: "100%",
+        customAuthenticationType: 2, // AUTH_TOKEN authentication
+        enableResponsive: true,
+        currentPage: "mstrWeb.2048",
+        disableErrorPopupWindow: true,
+        disableNotificationCenter: true,
+        enableFilterInfobar: true,
+      }}
+      style={{ border: "1px solid #e5e7eb", borderRadius: "8px" }}
+    />
+  )
+}
+```
+
+## Configuration Options
+
+The `config` prop accepts all MicroStrategy library page configuration options except for `placeholder` and `serverUrl` (which are handled automatically). Some common configuration options include:
+
+| Option                      | Type               | Description                                                      |
+| --------------------------- | ------------------ | ---------------------------------------------------------------- |
+| `placeholderHeight`         | `number`           | Height in pixels for the library page                            |
+| `placeholderWidth`          | `string \| number` | Width for the library page (e.g., "100%" or 1200)                |
+| `customAuthenticationType`  | `number`           | Authentication type to use (e.g., 0 = AUTH_NONE, 2 = AUTH_TOKEN) |
+| `enableResponsive`          | `boolean`          | Enable responsive design for the library page                    |
+| `currentPage`               | `string`           | Specific page ID to show initially                               |
+| `disableErrorPopupWindow`   | `boolean`          | Hide error popup windows                                         |
+| `disableNotificationCenter` | `boolean`          | Hide notification center                                         |
+| `enableFilterInfobar`       | `boolean`          | Show filter info bar                                             |
+
+## Authentication
+
+When embedding the library page, you'll typically need to handle authentication. The component supports various authentication methods through the `customAuthenticationType` configuration option:
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+
+const AuthenticatedLibraryPage = () => {
+  return (
+    <LibraryPageEmbed
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      config={{
+        customAuthenticationType: 2, // AUTH_TOKEN
+        getLoginToken: async () => {
+          // Fetch authentication token from your backend
+          const response = await fetch("/api/mstr-auth-token")
+          const data = await response.json()
+          return data.token
+        },
+      }}
+      style={{ height: "700px" }}
+    />
+  )
+}
+```
+
+## Use Cases
+
+The `LibraryPageEmbed` component is ideal for scenarios where you need to:
+
+1. Provide access to the entire MicroStrategy content library within your application
+2. Allow users to browse, search, and access multiple dashboards and documents
+3. Maintain the native MicroStrategy library experience while embedding in your app
+4. Give users the ability to create, edit, and manage dashboards directly
+
+## Styling and Customization
+
+You can customize the appearance of the embedded library page using CSS:
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+
+import "./library-page-styles.css" // Custom CSS styles
+
+const StyledLibraryPage = () => {
+  return (
+    <div className="library-page-wrapper">
+      <h2>MicroStrategy Library</h2>
+      <LibraryPageEmbed
+        serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+        className="custom-library-container"
+        style={{
+          height: "800px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+      />
+    </div>
+  )
+}
+```
+
+## Error Handling
+
+The component relies on the underlying `useCreateLibraryPage` hook for error handling. If there are issues loading the library page, you may want to implement your own error boundary:
+
+```tsx
+import { LibraryPageEmbed } from "embed-dossier-mstr-react"
+import { ErrorBoundary } from "react-error-boundary"
+
+const LibraryPageWithErrorHandling = () => {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ error }) => (
+        <div className="error-container">
+          <h3>Failed to load MicroStrategy Library</h3>
+          <p>{error.message}</p>
+        </div>
+      )}
+    >
+      <LibraryPageEmbed
+        serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+        style={{ height: "700px" }}
+      />
+    </ErrorBoundary>
+  )
+}
+```
+
+## Performance Considerations
+
+The library page embedding provides access to the full MicroStrategy interface, which can be resource-intensive. Consider the following best practices:
+
+1. Use appropriate container dimensions to avoid unnecessary scrolling
+2. Consider lazy-loading the component when it's visible in the viewport
+3. If you only need specific dashboards, use the `DashboardEmbed` component instead
+4. Set proper caching headers on your server for MicroStrategy resources
+
+## Related Components
+
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - For embedding specific dashboards
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - For embedding authenticated dashboards
+
+## Related Hooks
+
+- [`useCreateLibraryPage`](/docs/api-reference/use-create-library-page) - The hook used internally by this component
+- [`useLoadMstrSDK`](/docs/api-reference/use-load-mstr-sdk) - Used to load the MicroStrategy SDK

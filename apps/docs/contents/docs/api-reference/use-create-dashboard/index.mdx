@@ -1,0 +1,202 @@
+---
+title: useCreateDashboard()
+description: Learn about the useCreateDashboard() hook and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    "embedding",
+    "sdk",
+    "functionalities",
+    "helper hooks",
+    "dashboard",
+    "embed-dossier-mstr",
+    "hooks",
+  ]
+---
+
+## Import
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+```
+
+## Parameters
+
+The hook accepts a single object parameter with the following properties:
+
+| Parameter          | Type                                              | Required | Description                                                                                               |
+| ------------------ | ------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string`                                          | Yes      | The base URL of the MicroStrategy Library server, used to load the MicroStrategy SDK                      |
+| `config`           | `Omit<MicroStrategyDossierConfig, "placeholder">` | Yes      | Configuration options for the dashboard, excluding the `placeholder` property which is handled internally |
+
+### Config Object Properties
+
+The `config` object accepts MicroStrategy dossier configuration options, which include:
+
+| Property              | Type      | Required | Description                                    |
+| --------------------- | --------- | -------- | ---------------------------------------------- |
+| `url`                 | `string`  | Yes      | The complete URL of your MicroStrategy dossier |
+| `enableResponsive`    | `boolean` | No       | Enable responsive design for the dashboard     |
+| `disableNotification` | `boolean` | No       | Hide notification popups                       |
+| `dockedFilter`        | `object`  | No       | Configure the filter panel docking behavior    |
+| `navigationBar`       | `object`  | No       | Configure the navigation bar options           |
+| `filterFeature`       | `object`  | No       | Configure the filter features                  |
+| `shareFeature`        | `object`  | No       | Configure sharing functionality                |
+| `customUi`            | `object`  | No       | Customize UI elements                          |
+
+## Return Values
+
+The hook returns an object with the following properties:
+
+| Return Value       | Type                              | Description                                                                                                                                               |
+| ------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dashboard`        | `MicroStrategyDossier \| null`    | The instantiated dashboard object, which can be used to interact with the dashboard programmatically, or `null` if the dashboard has not been created yet |
+| `containerRef`     | `React.RefObject<HTMLDivElement>` | A React ref that should be attached to the container element where the dashboard will be rendered                                                         |
+| `isSdkLoaded`      | `boolean`                         | A boolean flag indicating whether the MicroStrategy SDK has been loaded successfully                                                                      |
+| `isDashboardError` | `boolean`                         | A boolean flag indicating whether an error occurred during dashboard creation                                                                             |
+
+## How It Works
+
+The `useCreateDashboard` hook:
+
+1. Uses the `useLoadMstrSDK` hook to load the MicroStrategy SDK from the provided server URL
+2. Once the SDK is loaded, calls the MicroStrategy dashboard creation API
+3. Sets the dashboard instance in state and provides a container ref for rendering
+4. Handles error states and SDK loading status
+
+## Basic Usage
+
+Here's a simple example of using the `useCreateDashboard` hook directly:
+
+```tsx
+import { useEffect } from "react"
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+const MyDashboard = () => {
+  const { containerRef, dashboard, isSdkLoaded, isDashboardError } =
+    useCreateDashboard({
+      serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+      config: {
+        url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+        enableResponsive: true,
+      },
+    })
+
+  // Example of using the dashboard instance
+  useEffect(() => {
+    if (dashboard) {
+      console.log("Dashboard successfully created!")
+      // You can call dashboard methods here
+    }
+  }, [dashboard])
+
+  if (isDashboardError) {
+    return <div>Error loading dashboard</div>
+  }
+
+  if (!isSdkLoaded) {
+    return <div>Loading SDK...</div>
+  }
+
+  return <div ref={containerRef} style={{ height: "600px", width: "100%" }} />
+}
+```
+
+## Advanced Usage
+
+### Interacting with the Dashboard Instance
+
+Once the dashboard is created, you can use the returned `dashboard` object to interact with it programmatically:
+
+```tsx
+import { useEffect } from "react"
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+const InteractiveDashboard = () => {
+  const { containerRef, dashboard } = useCreateDashboard({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    config: {
+      url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+    },
+  })
+
+  const handleRefreshDashboard = () => {
+    if (dashboard) {
+      dashboard.refresh()
+    }
+  }
+
+  const handleChangeTheme = (theme: "light" | "dark") => {
+    if (dashboard) {
+      dashboard.setTheme(theme)
+    }
+  }
+
+  return (
+    <div>
+      <div className="controls">
+        <button onClick={handleRefreshDashboard}>Refresh Dashboard</button>
+        <button onClick={() => handleChangeTheme("light")}>Light Theme</button>
+        <button onClick={() => handleChangeTheme("dark")}>Dark Theme</button>
+      </div>
+      <div ref={containerRef} style={{ height: "600px", width: "100%" }} />
+    </div>
+  )
+}
+```
+
+### Custom Loading and Error States
+
+You can create custom loading and error states:
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+const DashboardWithFeedback = () => {
+  const { containerRef, isSdkLoaded, isDashboardError } = useCreateDashboard({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    config: {
+      url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+    },
+  })
+
+  if (isDashboardError) {
+    return (
+      <div className="error-container">
+        <h3>Failed to load dashboard</h3>
+        <p>Please check your connection and try again</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="dashboard-container">
+      {!isSdkLoaded && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      )}
+      <div ref={containerRef} style={{ height: "700px", width: "100%" }} />
+    </div>
+  )
+}
+```
+
+## Error Handling
+
+The hook includes built-in error handling during dashboard creation:
+
+1. It catches and logs any errors that occur during the dashboard creation process
+2. It sets `isDashboardError` to `true` when an error occurs
+3. It allows you to provide custom error handling and UI based on the error state
+
+## Related Components
+
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - A ready-to-use component built on top of this hook
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - An enhanced version with authentication capabilities
+
+## Related Hooks
+
+- [`useLoadMstrSDK`](/docs/api-reference/use-load-mstr-sdk) - Used internally by this hook to load the MicroStrategy SDK
+- [`useCreateDashboardWithAuth`](/docs/api-reference/use-create-dashboard-with-auth) - An enhanced version of this hook with authentication capabilities

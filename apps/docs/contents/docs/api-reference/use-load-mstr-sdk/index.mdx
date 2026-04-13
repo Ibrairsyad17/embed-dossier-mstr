@@ -1,0 +1,249 @@
+---
+title: useLoadMstrSDK()
+description: Learn about the useLoadMstrSDK() hook and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    embedding,
+    sdk,
+    functionalities,
+    helper methods,
+    dashboard,
+    embed-dossier-mstr,
+    hook,
+  ]
+---
+
+## Import
+
+```tsx
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+```
+
+## Parameters
+
+The hook accepts a single object parameter with the following property:
+
+| Parameter          | Type     | Required | Description                                                                                                                                     |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string` | Yes      | The base URL of the MicroStrategy Library server from which to load the SDK. For example, `https://demo.microstrategy.com/MicroStrategyLibrary` |
+
+## Return Values
+
+The hook returns an object with the following properties:
+
+| Return Value  | Type                                    | Description                                                                          |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| `isSdkLoaded` | `boolean`                               | A boolean flag indicating whether the MicroStrategy SDK has been successfully loaded |
+| `isSdkError`  | `{ isError: boolean, message: string }` | An object containing error information if the SDK failed to load                     |
+
+## How It Works
+
+The `useLoadMstrSDK` hook:
+
+1. Checks if the MicroStrategy SDK is already loaded in the window object
+2. If not loaded, dynamically creates a script element to load the SDK from the specified server URL
+3. Sets up event handlers to track successful loading or errors
+4. Returns the loading status so consumers can react accordingly
+
+This hook uses the `embeddinglib.js` script from the MicroStrategy server which contains all the necessary functions and objects to create embedded dashboards.
+
+## Basic Usage
+
+Here's a simple example of using the `useLoadMstrSDK` hook directly:
+
+```tsx
+import { useEffect } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const SdkLoader = () => {
+  const { isSdkLoaded, isSdkError } = useLoadMstrSDK({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+  })
+
+  useEffect(() => {
+    if (isSdkLoaded) {
+      console.log("MicroStrategy SDK loaded successfully!")
+      // Perform initialization actions that depend on the SDK
+    }
+  }, [isSdkLoaded])
+
+  if (isSdkError.isError) {
+    return (
+      <div className="error-message">
+        Failed to load MicroStrategy SDK: {isSdkError.message}
+      </div>
+    )
+  }
+
+  return <div>SDK Status: {isSdkLoaded ? "Loaded" : "Loading..."}</div>
+}
+```
+
+## Advanced Usage
+
+### Creating a Loading Indicator
+
+```tsx
+import { useEffect, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const EnhancedLoader = () => {
+  const { isSdkLoaded, isSdkError } = useLoadMstrSDK({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+  })
+  const [loadingTime, setLoadingTime] = useState(0)
+
+  // Track loading time for better user feedback
+  useEffect(() => {
+    if (!isSdkLoaded && !isSdkError.isError) {
+      const timer = setInterval(() => {
+        setLoadingTime((prev) => prev + 1)
+      }, 1000)
+
+      return () => clearInterval(timer)
+    }
+  }, [isSdkLoaded, isSdkError])
+
+  if (isSdkError.isError) {
+    return (
+      <div className="sdk-error">
+        <h3>SDK Loading Error</h3>
+        <p>
+          Unable to load MicroStrategy SDK. Please check your server URL and
+          network connection.
+        </p>
+        <p>Error: {isSdkError.message}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    )
+  }
+
+  if (!isSdkLoaded) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading MicroStrategy SDK... {loadingTime}s</p>
+        {loadingTime > 10 && (
+          <p>
+            This is taking longer than expected. Please check your connection.
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  return <div>SDK loaded successfully!</div>
+}
+```
+
+### Checking Browser Compatibility
+
+```tsx
+import { useEffect, useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const SdkWithCompatibilityCheck = () => {
+  const [isBrowserCompatible, setIsBrowserCompatible] = useState(true)
+
+  // Check browser compatibility before loading SDK
+  useEffect(() => {
+    const checkCompatibility = () => {
+      const isIE = /*@cc_on!@*/ false || !!(document as any).documentMode
+      const isEdgeLegacy = !isIE && !!(window as any).StyleMedia
+
+      if (isIE || isEdgeLegacy) {
+        setIsBrowserCompatible(false)
+      }
+    }
+
+    checkCompatibility()
+  }, [])
+
+  // Only load SDK if browser is compatible
+  const { isSdkLoaded, isSdkError } = useLoadMstrSDK({
+    serverUrlLibrary: isBrowserCompatible
+      ? "https://demo.microstrategy.com/MicroStrategyLibrary"
+      : "",
+  })
+
+  if (!isBrowserCompatible) {
+    return (
+      <div className="browser-error">
+        <h3>Unsupported Browser</h3>
+        <p>The MicroStrategy embedding features require a modern browser.</p>
+        <p>Please use Chrome, Firefox, Edge (Chromium), or Safari.</p>
+      </div>
+    )
+  }
+
+  if (isSdkError.isError) {
+    return <div>Failed to load SDK</div>
+  }
+
+  return <div>SDK Status: {isSdkLoaded ? "Ready" : "Loading..."}</div>
+}
+```
+
+## Error Handling
+
+The hook provides basic error handling during SDK loading. Here's an example of how to handle different error scenarios:
+
+```tsx
+import { useState } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const SdkErrorHandler = () => {
+  const [serverUrl, setServerUrl] = useState(
+    "https://demo.microstrategy.com/MicroStrategyLibrary"
+  )
+  const { isSdkLoaded, isSdkError } = useLoadMstrSDK({
+    serverUrlLibrary: serverUrl,
+  })
+
+  const handleRetry = () => {
+    // Attempt with a different URL or the same URL to trigger a reload
+    setServerUrl((prev) => prev + "?retry=" + Date.now())
+  }
+
+  if (isSdkError.isError) {
+    return (
+      <div className="error-container">
+        <h3>SDK Loading Error</h3>
+        <p>Error: {isSdkError.message}</p>
+        <p>Possible causes:</p>
+        <ul>
+          <li>Invalid server URL</li>
+          <li>Network connectivity issues</li>
+          <li>CORS policy restrictions</li>
+          <li>MicroStrategy server is unavailable</li>
+        </ul>
+        <button onClick={handleRetry}>Retry Loading SDK</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="sdk-status">
+      {isSdkLoaded
+        ? "SDK loaded successfully!"
+        : "Loading MicroStrategy SDK..."}
+    </div>
+  )
+}
+```
+
+## Implementation Notes
+
+The hook adds the MicroStrategy embedding library script to the document head with the path `{serverUrlLibrary}/javascript/embeddinglib.js`. This is the official embedding SDK provided by MicroStrategy.
+
+The hook is designed to only load the SDK once, even if multiple components in your application use this hook simultaneously.
+
+## Related Components
+
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - Uses this hook internally through useCreateDashboard
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - Uses this hook internally through useCreateDashboardWithAuth
+
+## Related Hooks
+
+- [`useCreateDashboard`](/docs/api-reference/use-create-dashboard) - Uses this hook to load the SDK before creating a dashboard
+- [`useCreateDashboardWithAuth`](/docs/api-reference/use-create-dashboard-with-auth) - Uses this hook to load the SDK before authentication and dashboard creation

@@ -1,0 +1,145 @@
+---
+title: OIDC Authentication
+description: Learn how to embed MicroStrategy's use cases in your React application using OpenID Connect (OIDC) authentication.
+keywords:
+  [
+    "MicroStrategy",
+    "Embedding",
+    "Authentication",
+    "OIDC",
+    "OpenID Connect",
+    "Use Cases",
+  ]
+---
+
+## Using DashboardEmbedWithAuth Component
+
+The simplest way to implement OIDC authentication is using the `DashboardEmbedWithAuth` component:
+
+```tsx
+import { DashboardEmbedWithAuth } from "embed-dossier-mstr-react"
+
+function DashboardWithOidcAuth() {
+  return (
+    <DashboardEmbedWithAuth
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      loginMode="oidc"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+      // Optional custom loading component
+      loadingComponent={<div>Redirecting to Identity Provider...</div>}
+      // Optional custom error component
+      errorComponent={(error) => (
+        <div className="error-container">
+          <h3>Authentication Failed</h3>
+          <p>{error}</p>
+        </div>
+      )}
+      // Additional dashboard configuration
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+        enableResponsive: true,
+      }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbedWithAuth` component accepts the following props for OIDC authentication:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier
+- `loginMode` (required): Set to "oidc" for OpenID Connect authentication
+- `className` (optional): CSS class names for the container
+- `style` (optional): React inline styles for the container
+- `loadingComponent` (optional): Custom component to show during authentication
+- `errorComponent` (optional): Custom component or function to render error states
+- `config` (optional): Additional dashboard configuration options
+
+## Using useCreateDashboardWithAuth Hook
+
+For more control over the OIDC authentication process, you can use the `useCreateDashboardWithAuth` hook directly:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+function CustomDashboardWithOidcAuth() {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticating, isAuthenticated, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      loginMode: "oidc",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (isAuthenticating) {
+    return <div>Redirecting to Identity Provider...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h3>Authentication Failed</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div ref={divRef} className="dashboard-container" />
+      {isAuthenticated && dashboard && (
+        <div className="controls">
+          <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboardWithAuth` hook returns an object with the following properties:
+
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isAuthenticating`: Boolean indicating if authentication is in progress
+- `isAuthenticated`: Boolean indicating if authentication was successful
+- `error`: Error message if authentication failed
+
+## Example Use Case Implementation
+
+Here's a live example of how to implement OIDC authentication in a real-world scenario:
+
+<iframe
+  src="https://stackblitz.com/edit/oidc-authentication-mstr?file=src%2Fcomponents%2FOidcAuthentication.tsx"
+  width="100%"
+  height="500px"
+  style={{ border: "none" }}
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+Or you can see the code on StackBlitz:
+
+<Card
+  title="See the code on StackBlitz"
+  href="https://stackblitz.com/edit/oidc-authentication-mstr?file=src%2Fcomponents%2FOidcAuthentication.tsx"
+  icon="alignJustify"
+  external={true}
+  variant="small"
+/>
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).

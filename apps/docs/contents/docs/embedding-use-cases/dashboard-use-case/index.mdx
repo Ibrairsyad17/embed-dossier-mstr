@@ -1,0 +1,191 @@
+---
+title: Dashboard Use Case
+description: Learn how to embed a Microstrategy's Dashboard in your React application using the embed-dossier-mstr-react package.
+keywords:
+  [
+    "embed-dossier-mstr-react",
+    "MicroStrategy",
+    "Dossier",
+    "React",
+    "Embedding",
+    "Dashboard",
+  ]
+---
+
+## Installation
+
+First, install the package. You could see the documentation about installing the package in [Installation Page](/docs/installation)
+
+## Basic Usage
+
+The simplest way to embed a dashboard is using the `DashboardEmbed` component:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+function MyDashboard() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      className="dashboard-container"
+      style={{ height: "600px" }}
+    />
+  )
+}
+```
+
+### Props
+
+The `DashboardEmbed` component accepts the following props:
+
+- `dossierUrl` (required): The full URL of your MicroStrategy dossier in the format:
+  `https://{env-url}/{libraryName}/app/{projectId}/{dossierId}`
+- `className` (optional): CSS class names to apply to the container
+- `style` (optional): React inline styles for the container
+- `config` (optional): Additional configuration options for the dashboard
+
+## Advanced Configuration
+
+You can customize the dashboard behavior using the `config` prop:
+
+```tsx
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+function CustomizedDashboard() {
+  return (
+    <DashboardEmbed
+      dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId"
+      config={{
+        enableResponsive: true,
+        containerHeight: "800px",
+        containerWidth: "100%",
+        dockedFilter: {
+          enabled: true,
+          pinned: true,
+          position: "left",
+        },
+        filterFeature: {
+          enabled: true,
+          edit: true,
+          summary: true,
+        },
+        shareFeature: {
+          enabled: true,
+          export: true,
+          download: true,
+        },
+      }}
+    />
+  )
+}
+```
+
+## Using the useCreateDashboard Hook
+
+For more control over the dashboard embedding process, you can use the `useCreateDashboard` hook directly:
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+function CustomDashboard() {
+  const { containerRef, dashboard, isSdkLoaded, isDashboardError } =
+    useCreateDashboard({
+      serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+      config: {
+        url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+        enableResponsive: true,
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (!isSdkLoaded) {
+    return <div>Loading MicroStrategy SDK...</div>
+  }
+
+  if (isDashboardError) {
+    return <div>Error loading dashboard</div>
+  }
+
+  return (
+    <div>
+      <div ref={containerRef} className="dashboard-container" />
+      {dashboard && (
+        <button onClick={() => dashboard.refresh()}>Refresh Dashboard</button>
+      )}
+    </div>
+  )
+}
+```
+
+### Hook Return Values
+
+The `useCreateDashboard` hook returns an object with the following properties:
+
+- `containerRef`: React ref that must be attached to the container div
+- `dashboard`: The MicroStrategy dashboard instance (null until loaded)
+- `isSdkLoaded`: Boolean indicating if the MicroStrategy SDK has loaded
+- `isDashboardError`: Boolean indicating if there was an error loading the dashboard
+
+## Error Handling
+
+The component and hook include built-in error handling:
+
+```tsx
+import { useCreateDashboard } from "embed-dossier-mstr-react"
+
+function DashboardWithErrorHandling() {
+  const { containerRef, isSdkLoaded, isDashboardError } = useCreateDashboard({
+    serverUrlLibrary: "https://your-mstr-server/MicroStrategyLibrary",
+    config: {
+      url: "https://your-mstr-server/MicroStrategyLibrary/app/projectId/dossierId",
+      disableErrorPopupWindow: true, // Handle errors manually
+      disableNotification: true,
+    },
+  })
+
+  if (!isSdkLoaded) {
+    return <div>Loading...</div>
+  }
+
+  if (isDashboardError) {
+    return <div>Failed to load dashboard. Please try again later.</div>
+  }
+
+  return <div ref={containerRef} className="dashboard-container" />
+}
+```
+
+## Best Practices
+
+1. **URL Handling**: Always validate the dossier URL format before passing it to the component
+2. **Responsive Design**: Enable responsive mode when embedding in responsive layouts
+3. **Error Handling**: Implement proper error handling for both SDK loading and dashboard creation
+4. **Performance**: Consider the container size and loading states to prevent layout shifts
+
+## Example Use Case Implementation
+
+Here's a live example of how to implement a dashboard in a real-world scenario:
+
+<iframe
+  src="https://stackblitz.com/edit/vitejs-vite-d38t6oex?embed=1&file=src%2Fcomponents%2FSimpleDashboardEmbed.tsx"
+  width="100%"
+  height="500px"
+  style={{ border: "none" }}
+  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+/>
+
+Or you can see the code on StackBlitz:
+
+<Card
+  title="See the code on StackBlitz"
+  href="https://stackblitz.com/edit/vitejs-vite-d38t6oex?embed=1&file=src%2Fcomponents%2FSimpleDashboardEmbed.tsx"
+  icon="alignJustify"
+  external={true}
+  variant="small"
+/>
+
+## API Reference
+
+For detailed information about all available configuration options and methods, please refer to the [API Reference Documentation](/docs/api-documentation).

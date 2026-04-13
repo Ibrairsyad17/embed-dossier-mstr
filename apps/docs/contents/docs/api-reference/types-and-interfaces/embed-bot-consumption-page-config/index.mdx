@@ -1,0 +1,202 @@
+---
+title: EmbedBotConsumptionPageConfig
+description: This page is a reference to the EmbedBotConsumptionPageConfig type used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "embed-bot-consumption-page-config",
+  ]
+---
+
+## Interface Definition
+
+```tsx
+interface EmbedBotConsumptionPageConfig
+  extends EmbedDossierConsumptionPageConfig {
+  disableHyper?: boolean
+  permissions?: {
+    allowClipboardWrite?: boolean
+  }
+}
+```
+
+## Properties
+
+### Inherited Properties
+
+Since `EmbedBotConsumptionPageConfig` extends `EmbedDossierConsumptionPageConfig`, it inherits all of its properties:
+
+| Property                            | Type                                                                       | Required | Description                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
+| `placeholder`                       | `HTMLDivElement \| null`                                                   | Yes      | The DOM element where the Bot consumption page will be embedded.                 |
+| `serverUrl`                         | `string`                                                                   | Yes      | The URL of the MicroStrategy Library server.                                     |
+| `projectId`                         | `string`                                                                   | Yes      | The ID of the MicroStrategy project that contains the bot.                       |
+| `objectId`                          | `string`                                                                   | Yes      | The ID of the bot to embed.                                                      |
+| `customApplicationId`               | `string`                                                                   | No       | An optional identifier for your application.                                     |
+| `enableCustomAuthentication`        | `boolean`                                                                  | No       | Whether to use custom authentication.                                            |
+| `pageKey`                           | `string`                                                                   | No       | A specific page key to navigate to within the bot.                               |
+| `containerHeight`                   | `string`                                                                   | No       | The height of the container for the embedded bot.                                |
+| `containerWidth`                    | `string`                                                                   | No       | The width of the container for the embedded bot.                                 |
+| `customAuthenticationType`          | `MicroStrategyDossierConfigCustomAuthenticationType \| string`             | No       | The type of custom authentication to use.                                        |
+| `getLoginToken`                     | `() => Promise<string \| void \| null>`                                    | No       | A function that returns a promise resolving to an authentication token.          |
+| `disableCustomErrorHandlerOnCreate` | `boolean`                                                                  | No       | Whether to disable the custom error handler during creation.                     |
+| `errorHandler`                      | `(error: ErrorHandlerInterface) => void`                                   | No       | A function to handle errors that occur during the lifecycle of the embedded bot. |
+| `sessionErrorHandler`               | `(error: ErrorHandlerInterface) => void`                                   | No       | A function to handle session-related errors.                                     |
+| `customUi`                          | `CustomUi`                                                                 | No       | Configuration options for customizing the UI of the embedded bot.                |
+| `settings`                          | `Pick<Settings, "dossierConsumption"> \| Pick<Settings, "botConsumption">` | No       | Additional settings for the bot consumption page.                                |
+
+### Additional Properties
+
+`EmbedBotConsumptionPageConfig` adds the following properties:
+
+| Property                          | Type      | Required | Description                                                                                                             |
+| --------------------------------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `disableHyper`                    | `boolean` | No       | Whether to disable hyperlink functionality in the bot. When set to `true`, hyperlinks in the bot will not be clickable. |
+| `permissions`                     | `object`  | No       | Object containing permission settings for the bot.                                                                      |
+| `permissions.allowClipboardWrite` | `boolean` | No       | When set to `true`, allows the bot to write to the user's clipboard.                                                    |
+
+## Usage Example
+
+Here's an example of how to use the `EmbedBotConsumptionPageConfig` interface when embedding a bot consumption page:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const BotConsumptionPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedBot = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the bot consumption page
+        const config = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example bot ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          containerHeight: "600px",
+          containerWidth: "100%",
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+          // Bot-specific configuration
+          disableHyper: false,
+          permissions: {
+            allowClipboardWrite: true,
+          },
+          settings: {
+            botConsumption: {
+              // Bot consumption specific settings
+            },
+          },
+          customUi: {
+            // UI customization options
+          },
+          errorHandler: (error) => {
+            console.error("Bot error:", error)
+          },
+        }
+
+        const botPage =
+          await window.microstrategy.embeddingContexts.embedBotConsumptionPage(
+            config
+          )
+        console.log("Bot embedded successfully:", botPage)
+      } catch (error) {
+        console.error("Failed to embed bot:", error)
+      }
+    }
+
+    embedBot()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>Embedded Bot</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default BotConsumptionPage
+```
+
+## Settings for Bot Consumption
+
+When configuring a bot consumption page, you can use the `settings` property with the `botConsumption` key to specify bot-specific settings:
+
+```tsx
+const config = {
+  // ...other properties
+  settings: {
+    botConsumption: {
+      // Bot-specific settings
+      // For example:
+      // startupPrompt: "Hello, how can I help you today?"
+    },
+  },
+}
+```
+
+## Differences from Dossier Consumption
+
+While bots and dossiers share many configuration options, there are some key differences:
+
+1. Bots can have hyperlink functionality disabled with the `disableHyper` property
+2. Bots can be granted clipboard write access with the `permissions.allowClipboardWrite` property
+3. Bot consumption uses different settings options specifically designed for conversational interfaces
+
+## Using with Authentication
+
+Authentication for bot consumption pages works the same way as for dossier consumption pages:
+
+```tsx
+const config = {
+  // ...other required properties
+  enableCustomAuthentication: true,
+  customAuthenticationType: "AUTH_TOKEN", // or window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN
+  getLoginToken: async () => {
+    const response = await fetch(`${serverUrl}/api/auth/token`, {
+      method: "GET",
+      credentials: "include",
+      mode: "cors",
+      headers: { "content-type": "application/json" },
+    })
+    return response.ok ? response.headers.get("x-mstr-authtoken") : null
+  },
+}
+```
+
+## Related Interfaces
+
+- `EmbedDossierConsumptionPageConfig`: The base interface that `EmbedBotConsumptionPageConfig` extends.
+- `EmbedBotConsumptionPage`: The interface returned when embedding a bot consumption page.
+- `CustomUi`: Interface for UI customization options.
+- `ErrorHandlerInterface`: Interface for error handling.
+- `Settings`: Interface containing all possible settings for embedding different types of pages.

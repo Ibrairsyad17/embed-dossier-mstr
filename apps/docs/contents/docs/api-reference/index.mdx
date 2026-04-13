@@ -1,0 +1,321 @@
+---
+title: API Reference
+description: Learn about the API Reference available in `embed-dossier-mstr-react` package and how to enhance your embedded dashboards in your React applications.
+keywords:
+  [
+    embedding,
+    sdk,
+    functionalities,
+    helper methods,
+    dashboard,
+    embed-dossier-mstr,
+    api-reference,
+  ]
+---
+
+# API Reference
+
+This API reference documents the interfaces and types available in the `embed-dossier-mstr-react` package, which provides React components and utilities for embedding MicroStrategy dashboards in your applications.
+
+## Core Interfaces
+
+### MicroStrategySDK
+
+The global interface that provides access to the MicroStrategy SDK functionalities.
+
+```typescript
+interface MicroStrategySDK {
+  dossier: {
+    create: (
+      config: MicroStrategyDossierConfig
+    ) => Promise<MicroStrategyDossier>
+    destroy: () => void
+    CustomAuthenticationType: {
+      AUTH_TOKEN: string
+      IDENTITY_TOKEN: string
+    }
+    EventType: EVENT_TYPE
+  }
+  auth: {
+    oidcLogin: (serverUrl: string) => Promise<string>
+    samlLogin: (serverUrl: string) => Promise<string>
+  }
+  embedding: {
+    featureFlags: Record<string, unknown> | unknown
+  }
+  embeddingContexts: {
+    embedLibraryPage: (
+      config: EmbedLibraryPageConfig
+    ) => Promise<EmbedLibraryPage>
+    embedDossierConsumptionPage: (
+      config: EmbedDossierConsumptionPageConfig
+    ) => Promise<EmbedDossierConsumptionPage>
+    embedBotConsumptionPage: (
+      config: EmbedBotConsumptionPageConfig
+    ) => Promise<EmbedBotConsumptionPage>
+    embedReportPage: (config: EmbedReportPageConfig) => Promise<EmbedReportPage>
+  }
+}
+```
+
+### MicroStrategyDossierConfig
+
+Configuration options for creating a MicroStrategy dossier instance.
+
+```typescript
+interface MicroStrategyDossierConfig {
+  placeholder: HTMLDivElement | null // Required
+  url: string // Required
+  containerHeight?: string // Optional
+  containerWidth?: string // Optional
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string
+  disableNotification?: boolean
+  disableErrorPopupWindow?: boolean
+  dockedComment?: DockedCommentAndFilter
+  dockedFilter?: DockedCommentAndFilter
+  dockedTheme?: DockedTheme
+  // ...and many more configuration options
+}
+```
+
+Key properties:
+
+- `placeholder`: DOM element where the dossier will be rendered (required)
+- `url`: URL of the dossier to embed (required)
+- `containerHeight` and `containerWidth`: Dimensions of the embedded dossier
+- `customAuthenticationType`: Authentication type (AUTH_TOKEN or IDENTITY_TOKEN)
+- `enableCustomAuthentication`: Whether to use custom authentication
+
+### MicroStrategyDossier
+
+Interface representing an embedded dossier instance with methods to control its behavior.
+
+```typescript
+interface MicroStrategyDossier {
+  close: () => void
+  refresh: () => void
+  resize: (width: string, height: string) => void
+  getDossierInstanceId: () => Promise<string>
+  getFilterList: () => Promise<FilterListType[]>
+  // ...and many more methods
+}
+```
+
+#### Key Methods
+
+##### Basic Operations
+
+- `close()`: Closes the dossier
+- `refresh()`: Refreshes the dossier data
+- `resize(width, height)`: Resizes the dossier container
+
+##### Instance Management
+
+- `getDossierInstanceId()`: Gets the instance ID of the dossier
+
+##### Filter Operations
+
+- `getFilterList()`: Gets the list of available filters
+- `filterSelectAllAttributes(params)`: Selects all attributes in a filter
+- `filterDeselectAllAttributes(params)`: Deselects all attributes in a filter
+- `filterClearAll()`: Clears all filters
+- `filterApplyAll()`: Applies all filter changes
+
+##### Navigation
+
+- `getTableOfContents()`: Gets the table of contents for the dashboard
+- `goToPrevPage()`: Navigates to the previous page
+- `goToNextPage()`: Navigates to the next page
+- `navigateToPage(page)`: Navigates to a specific page
+- `getCurrentChapter()`: Gets the current chapter
+- `getCurrentPage()`: Gets the current page
+
+##### Event Handling
+
+- `registerEventHandler(event, handler)`: Registers an event handler
+- `removeEventHandler(event, handler)`: Removes an event handler
+
+## Embedding Contexts
+
+### EmbeddingContexts
+
+Interface providing methods to embed different MicroStrategy contexts.
+
+```typescript
+interface EmbeddingContexts {
+  embedLibraryPage: (
+    params: EmbedLibraryPageConfig
+  ) => Promise<EmbedLibraryPage>
+  embedDossierConsumptionPage: (
+    params: EmbedDossierConsumptionPageConfig
+  ) => Promise<EmbedDossierConsumptionPage>
+  embedBotConsumptionPage: (
+    params: EmbedBotConsumptionPageConfig
+  ) => Promise<EmbedBotConsumptionPage>
+  embedReportPage: (params: EmbedReportPageConfig) => Promise<EmbedReportPage>
+  // ...additional methods
+}
+```
+
+### EmbedLibraryPageConfig
+
+Configuration for embedding a MicroStrategy Library page.
+
+```typescript
+interface EmbedLibraryPageConfig {
+  placeholder: HTMLElement | null
+  serverUrl: string
+  containerHeight?: string
+  containerWidth?: string
+  enableCustomAuthentication?: boolean
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string
+  getLoginToken?: () => Promise<string | void | null>
+  disableCustomErrorHandlerOnCreate?: boolean
+  errorHandler?: (error: ErrorHandlerInterface) => void
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void
+  customUi?: CustomUi
+  libraryItemSelectMode?: "single" | "multiple"
+  currentPage?: CurrentPage
+}
+```
+
+### EmbedDossierConsumptionPageConfig
+
+Configuration for embedding a MicroStrategy Dossier consumption page.
+
+```typescript
+interface EmbedDossierConsumptionPageConfig {
+  placeholder: HTMLDivElement | null
+  serverUrl: string
+  projectId: string
+  objectId: string
+  customApplicationId?: string
+  enableCustomAuthentication?: boolean
+  pageKey?: string
+  containerHeight?: string
+  containerWidth?: string
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string
+  getLoginToken?: () => Promise<string | void | null>
+  disableCustomErrorHandlerOnCreate?: boolean
+  errorHandler?: (error: ErrorHandlerInterface) => void
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void
+  customUi?: CustomUi
+  settings?:
+    | Pick<Settings, "dossierConsumption">
+    | Pick<Settings, "botConsumption">
+}
+```
+
+## Usage Examples
+
+### Basic Dossier Embedding
+
+```typescript
+import { useMicroStrategyDossier } from "embed-dossier-mstr-react";
+
+function MyDashboard() {
+  const containerRef = useRef(null);
+
+  const { dossier, loading, error } = useMicroStrategyDossier({
+    placeholder: containerRef.current,
+    url: "https://your-mstr-server.com/path-to-dossier",
+    enableCustomAuthentication: true,
+    getLoginToken: async () => {
+      // Your authentication logic here
+      return "your-auth-token";
+    }
+  });
+
+  // Access dossier methods
+  const handleRefresh = () => {
+    dossier?.refresh();
+  };
+
+  return (
+    <div>
+      <button onClick={handleRefresh}>Refresh Dashboard</button>
+      <div ref={containerRef} style={{ height: "600px", width: "100%" }} />
+    </div>
+  );
+}
+```
+
+### Working with Filters
+
+```typescript
+// Get all filters
+const getFilters = async () => {
+  if (dossier) {
+    const filters = await dossier.getFilterList()
+    console.log("Available filters:", filters)
+  }
+}
+
+// Apply a filter
+const applyFilter = () => {
+  if (dossier) {
+    dossier.filterSelectSingleAttribute({
+      key: "filterKey",
+      selections: ["value1", "value2"],
+    })
+    dossier.filterApplyAll()
+  }
+}
+```
+
+### Navigating Between Pages
+
+```typescript
+// Navigate to the next page
+const goToNext = async () => {
+  if (dossier) {
+    const result = await dossier.goToNextPage()
+    if (result && result.valid) {
+      console.log("Successfully navigated to next page")
+    }
+  }
+}
+
+// Get the table of contents and navigate to a specific page
+const navigateToSpecificPage = () => {
+  if (dossier) {
+    const toc = dossier.getTableOfContents()
+    const pages = toc.chapters.flatMap((chapter) => chapter.pages)
+    const targetPage = pages.find((page) => page.name === "My Page")
+
+    if (targetPage) {
+      dossier.navigateToPage(targetPage)
+    }
+  }
+}
+```
+
+## Event Handling
+
+```typescript
+// Register an event handler for page switch events
+const registerPageSwitchHandler = () => {
+  if (dossier) {
+    dossier.registerPageSwitchHandler((event) => {
+      console.log("Switched to page:", event.pageName)
+    })
+  }
+}
+
+// Register an event handler for filter updates
+const registerFilterUpdateHandler = () => {
+  if (dossier) {
+    dossier.registerFilterUpdateHandler((event) => {
+      console.log("Filter updated:", event)
+    })
+  }
+}
+```
+
+For more detailed information on these APIs, please refer to the [MicroStrategy Embedding SDK documentation](https://microstrategy.github.io/embedding-sdk-docs).

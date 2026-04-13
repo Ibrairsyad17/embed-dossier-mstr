@@ -1,0 +1,350 @@
+---
+title: useCreateDashboardWithAuth()
+description: Learn about the useCreateDashboardWithAuth() hook and how to enhance your embedded dashboards in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    "embedding",
+    "sdk",
+    "functionalities",
+    "helper hooks",
+    "dashboard",
+    "embed-dossier-mstr",
+    "hooks",
+  ]
+---
+
+## Import
+
+```tsx
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+```
+
+## Parameters
+
+The hook accepts a single object parameter with the following properties:
+
+| Parameter          | Type                                                  | Required                  | Description                                      |
+| ------------------ | ----------------------------------------------------- | ------------------------- | ------------------------------------------------ |
+| `serverUrlLibrary` | `string`                                              | Yes                       | The base URL of the MicroStrategy Library server |
+| `placeholder`      | `HTMLDivElement \| null`                              | Yes                       | DOM element where the dashboard will be rendered |
+| `config`           | `Omit<MicroStrategyDossierConfig, "placeholder">`     | Yes                       | Configuration options for the dashboard          |
+| `loginMode`        | `"guest" \| "standard" \| "saml" \| "oidc" \| "ldap"` | Yes                       | Authentication method to use                     |
+| `username`         | `string`                                              | For 'standard' and 'ldap' | Username for authentication                      |
+| `password`         | `string`                                              | For 'standard' and 'ldap' | Password for authentication                      |
+
+## Return Values
+
+The hook returns an object with the following properties:
+
+| Return Value       | Type                           | Description                                                     |
+| ------------------ | ------------------------------ | --------------------------------------------------------------- |
+| `dashboard`        | `MicroStrategyDossier \| null` | The instantiated dashboard object, or `null` if not created yet |
+| `isAuthenticated`  | `boolean`                      | Whether authentication was successful                           |
+| `isAuthenticating` | `boolean`                      | Whether authentication is currently in progress                 |
+| `error`            | `string \| null`               | Error message if authentication failed, or `null` if no error   |
+
+## Authentication Methods
+
+The hook supports multiple authentication methods:
+
+### Guest Authentication
+
+Uses MicroStrategy's guest access feature without requiring credentials. Ideal for public dashboards.
+
+### Standard Authentication
+
+Uses MicroStrategy's standard username/password authentication. Requires both `username` and `password` parameters.
+
+### LDAP Authentication
+
+Similar to standard authentication but uses LDAP directory service. Requires both `username` and `password` parameters.
+
+### SAML Authentication
+
+Implements Security Assertion Markup Language (SAML) single sign-on authentication. No additional parameters required, but will redirect the user to the identity provider's login page.
+
+### OIDC Authentication
+
+Implements OpenID Connect (OIDC) authentication. No additional parameters required, but will redirect the user to the OIDC provider's login page.
+
+## How It Works
+
+The `useCreateDashboardWithAuth` hook:
+
+1. Uses the `useLoadMstrSDK` hook to load the MicroStrategy SDK
+2. Performs authentication based on the specified `loginMode`
+3. Creates a dashboard instance with authentication configuration
+4. Manages authentication state and errors
+5. Returns the dashboard instance and authentication state
+
+## Basic Usage
+
+Here's a simple example of using the `useCreateDashboardWithAuth` hook directly:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+const MyAuthenticatedDashboard = () => {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticated, isAuthenticating, error } =
+    useCreateDashboardWithAuth({
+      serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+      placeholder: divRef.current,
+      config: {
+        url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+        enableResponsive: true,
+      },
+      loginMode: "standard",
+      username: "jsmith",
+      password: "password123",
+    })
+
+  if (isAuthenticating) {
+    return <div>Authenticating and loading dashboard...</div>
+  }
+
+  if (error) {
+    return <div className="error-container">{error}</div>
+  }
+
+  return (
+    <div>
+      {isAuthenticated ? (
+        <div>Authentication successful! Dashboard loaded.</div>
+      ) : (
+        <div>Not yet authenticated</div>
+      )}
+      <div ref={divRef} style={{ height: "600px", width: "100%" }} />
+    </div>
+  )
+}
+```
+
+## Advanced Usage
+
+### Handling Different Authentication Methods
+
+```tsx
+import { useRef, useState } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+const AuthenticationDemo = () => {
+  const divRef = useRef<HTMLDivElement>(null)
+  const [authMode, setAuthMode] = useState<
+    "guest" | "standard" | "saml" | "oidc" | "ldap"
+  >("guest")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
+  const { dashboard, isAuthenticating, error } = useCreateDashboardWithAuth({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    placeholder: divRef.current,
+    config: {
+      url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+    },
+    loginMode: authMode,
+    username,
+    password,
+  })
+
+  const handleLogin = (
+    mode: "guest" | "standard" | "saml" | "oidc" | "ldap"
+  ) => {
+    setAuthMode(mode)
+  }
+
+  return (
+    <div>
+      <div className="auth-controls">
+        <button onClick={() => handleLogin("guest")}>Guest Login</button>
+        <button onClick={() => handleLogin("saml")}>SAML Login</button>
+        <button onClick={() => handleLogin("oidc")}>OIDC Login</button>
+
+        <div className="standard-auth-form">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button onClick={() => handleLogin("standard")}>
+            Standard Login
+          </button>
+          <button onClick={() => handleLogin("ldap")}>LDAP Login</button>
+        </div>
+      </div>
+
+      {isAuthenticating && <div className="loader">Authenticating...</div>}
+      {error && <div className="error-message">{error}</div>}
+
+      <div ref={divRef} style={{ height: "700px", width: "100%" }} />
+    </div>
+  )
+}
+```
+
+### Using Dashboard APIs After Authentication
+
+```tsx
+import { useEffect, useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+const InteractiveDashboard = () => {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { dashboard, isAuthenticated } = useCreateDashboardWithAuth({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    placeholder: divRef.current,
+    config: {
+      url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+    },
+    loginMode: "guest",
+  })
+
+  // Example of using the dashboard instance after authenticated
+  useEffect(() => {
+    if (dashboard && isAuthenticated) {
+      // Set up event listeners
+      dashboard.on("pageChanged", (pageInfo) => {
+        console.log("Page changed:", pageInfo)
+      })
+
+      dashboard.on("filterChanged", (filterInfo) => {
+        console.log("Filter changed:", filterInfo)
+      })
+    }
+  }, [dashboard, isAuthenticated])
+
+  const handleExportToPDF = async () => {
+    if (dashboard && isAuthenticated) {
+      try {
+        await dashboard.exportToPdf({ filename: "dashboard-export" })
+      } catch (error) {
+        console.error("Export failed:", error)
+      }
+    }
+  }
+
+  const handleRefresh = () => {
+    if (dashboard && isAuthenticated) {
+      dashboard.refresh()
+    }
+  }
+
+  return (
+    <div>
+      <div className="dashboard-controls">
+        <button onClick={handleRefresh}>Refresh Dashboard</button>
+        <button onClick={handleExportToPDF}>Export to PDF</button>
+      </div>
+
+      <div ref={divRef} style={{ height: "600px", width: "100%" }} />
+    </div>
+  )
+}
+```
+
+## Error Handling
+
+The hook provides comprehensive error handling for authentication failures:
+
+```tsx
+import { useRef } from "react"
+import { useCreateDashboardWithAuth } from "embed-dossier-mstr-react"
+
+const DashboardWithErrorHandling = () => {
+  const divRef = useRef<HTMLDivElement>(null)
+
+  const { isAuthenticating, error } = useCreateDashboardWithAuth({
+    serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+    placeholder: divRef.current,
+    config: {
+      url: "https://demo.microstrategy.com/MicroStrategyLibrary/app/B7CA92F04B9FAE8D941C3E9B7E0CD754/27D332AC6D43352E0928B9A1FCAF4AB0",
+    },
+    loginMode: "standard",
+    username: "jsmith",
+    password: "wrong-password", // Intentionally wrong to demonstrate error handling
+  })
+
+  if (isAuthenticating) {
+    return <div className="loading-state">Authenticating...</div>
+  }
+
+  if (error) {
+    // Handle specific error cases
+    if (error.includes("credentials")) {
+      return (
+        <div className="credential-error">
+          <h3>Invalid Credentials</h3>
+          <p>Please check your username and password and try again.</p>
+          <button onClick={() => window.location.reload()}>Try Again</button>
+        </div>
+      )
+    }
+
+    // Handle SAML/OIDC popup blocker errors
+    if (error.includes("popups")) {
+      return (
+        <div className="popup-error">
+          <h3>Popup Blocked</h3>
+          <p>
+            Please enable popups in your browser to continue with
+            authentication.
+          </p>
+          <button onClick={() => window.location.reload()}>Try Again</button>
+        </div>
+      )
+    }
+
+    // General error case
+    return (
+      <div className="general-error">
+        <h3>Authentication Failed</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    )
+  }
+
+  return <div ref={divRef} style={{ height: "700px", width: "100%" }} />
+}
+```
+
+## Implementation Details
+
+Behind the scenes, the hook implements different authentication flows:
+
+1. **Standard/LDAP Authentication**: Sends a POST request to the `/api/auth/login` endpoint with username and password
+2. **Guest Authentication**: Sends a POST request to the `/api/auth/login` endpoint with guest login mode
+3. **SAML/OIDC Authentication**: Uses the MicroStrategy SDK to initiate the single sign-on process
+4. **Token Management**: Automatically fetches and refreshes authentication tokens as needed
+
+After successful authentication, the hook configures the dashboard with `customAuthenticationType: AUTH_TOKEN` and provides a token fetching function.
+
+## Security Best Practices
+
+When using this hook, follow these security best practices:
+
+1. **Never hardcode credentials** - Store sensitive information in environment variables or a secure credential store
+2. **Use HTTPS** - Always use encrypted connections for dashboard embedding
+3. **Set appropriate timeouts** - Configure session timeouts based on your security requirements
+4. **Consider SSO** - Prefer SAML or OIDC for production environments to avoid handling credentials directly
+5. **Implement backend proxy** - For maximum security, handle authentication on your backend server
+
+## Related Components
+
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - A component that uses this hook internally
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - A simpler component for unauthenticated dashboards
+
+## Related Hooks
+
+- [`useCreateDashboard`](/docs/api-reference/use-create-dashboard) - Basic dashboard creation hook without authentication
+- [`useLoadMstrSDK`](/docs/api-reference/use-load-mstr-sdk) - Hook for loading the MicroStrategy SDK

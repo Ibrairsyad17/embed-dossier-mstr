@@ -1,0 +1,295 @@
+---
+title: CustomUi
+description: This page is a reference to the CustomUi interface used in the `embed-dossier-mstr-react` library.
+keywords:
+  ["types", "interfaces", "reference", "embed-dossier-mstr-react", "custom-ui"]
+---
+
+## Interface Definition
+
+```typescript
+export interface CustomUi {
+  library?: LibraryUI
+  reportConsumption?: ReportConsumptionUI
+  dossierConsumption?: DossierConsumptionUI
+  botConsumption?: BotConsumptionUI
+  dossierAuthoring?: DossierAuthoringUI
+}
+```
+
+## Properties
+
+### library
+
+Configuration options for the library interface.
+
+```typescript
+library?: {
+  navigationBar?: {
+    enabled?: boolean;
+    sortAndFilter?: boolean;
+    title?: boolean;
+    searchBar?: boolean;
+    createNew?: {
+      enabled?: boolean;
+    };
+    notification?: boolean;
+    multiSelect?: {
+      enabled?: boolean;
+    };
+    account?: {
+      enabled?: boolean;
+    };
+    user?: {
+      enabled?: boolean;
+    };
+  };
+  sidebar?: {
+    enabled?: boolean;
+    show?: boolean;
+  };
+}
+```
+
+| Property                            | Type      | Description                                                             |
+| ----------------------------------- | --------- | ----------------------------------------------------------------------- |
+| `navigationBar.enabled`             | `boolean` | Enables or disables the entire navigation bar in the library interface. |
+| `navigationBar.sortAndFilter`       | `boolean` | Controls visibility of sort and filter options.                         |
+| `navigationBar.title`               | `boolean` | Controls visibility of the title element.                               |
+| `navigationBar.searchBar`           | `boolean` | Controls visibility of the search bar.                                  |
+| `navigationBar.createNew.enabled`   | `boolean` | Controls visibility of the "Create New" button.                         |
+| `navigationBar.notification`        | `boolean` | Controls visibility of notification elements.                           |
+| `navigationBar.multiSelect.enabled` | `boolean` | Controls ability to select multiple items.                              |
+| `navigationBar.account.enabled`     | `boolean` | Controls visibility of account-related elements.                        |
+| `navigationBar.user.enabled`        | `boolean` | Controls visibility of user-related elements.                           |
+| `sidebar.enabled`                   | `boolean` | Enables or disables the sidebar.                                        |
+| `sidebar.show`                      | `boolean` | Controls whether the sidebar is initially shown.                        |
+
+### reportConsumption
+
+Configuration options for report consumption interface.
+
+```typescript
+reportConsumption?: {
+  enabled?: boolean;
+  goToLibrary?: boolean;
+  pageBy?: boolean;
+  reset?: boolean;
+  reExecute?: boolean;
+  filter?: boolean;
+  rePrompt?: boolean;
+  account?: {
+    enabled?: boolean;
+  };
+  share?: {
+    enabled?: boolean;
+  };
+}
+```
+
+| Property          | Type      | Description                                                  |
+| ----------------- | --------- | ------------------------------------------------------------ |
+| `enabled`         | `boolean` | Enables or disables the entire report consumption interface. |
+| `goToLibrary`     | `boolean` | Controls visibility of the "Go to Library" option.           |
+| `pageBy`          | `boolean` | Controls visibility of pagination options.                   |
+| `reset`           | `boolean` | Controls visibility of the reset functionality.              |
+| `reExecute`       | `boolean` | Controls visibility of the re-execute functionality.         |
+| `filter`          | `boolean` | Controls visibility of filter options.                       |
+| `rePrompt`        | `boolean` | Controls visibility of re-prompt options.                    |
+| `account.enabled` | `boolean` | Controls visibility of account options.                      |
+| `share.enabled`   | `boolean` | Controls visibility of sharing options.                      |
+
+### dossierConsumption
+
+Configuration options for dossier consumption interface.
+
+```typescript
+dossierConsumption?: {
+  navigationBar?: {
+    enabled?: boolean;
+    goToLibrary?: boolean;
+    title?: boolean;
+    toc?: boolean;
+    reset?: boolean;
+    reprompt?: boolean;
+    share?: boolean;
+    comment?: boolean;
+    notification?: boolean;
+    filter?: boolean;
+    options?: boolean;
+    bookmark?: boolean;
+    undoRedo?: boolean;
+    search?: boolean;
+    edit?: boolean;
+    dockedToc?: {
+      isOpen?: boolean;
+      isDocked?: boolean;
+    };
+  };
+}
+```
+
+| Property                           | Type      | Description                                                    |
+| ---------------------------------- | --------- | -------------------------------------------------------------- |
+| `navigationBar.enabled`            | `boolean` | Enables or disables the navigation bar in dossier consumption. |
+| `navigationBar.goToLibrary`        | `boolean` | Controls visibility of the "Go to Library" option.             |
+| `navigationBar.title`              | `boolean` | Controls visibility of the title element.                      |
+| `navigationBar.toc`                | `boolean` | Controls visibility of the table of contents.                  |
+| `navigationBar.reset`              | `boolean` | Controls visibility of the reset functionality.                |
+| `navigationBar.reprompt`           | `boolean` | Controls visibility of reprompt options.                       |
+| `navigationBar.share`              | `boolean` | Controls visibility of sharing options.                        |
+| `navigationBar.comment`            | `boolean` | Controls visibility of commenting functionality.               |
+| `navigationBar.notification`       | `boolean` | Controls visibility of notification elements.                  |
+| `navigationBar.filter`             | `boolean` | Controls visibility of filter options.                         |
+| `navigationBar.options`            | `boolean` | Controls visibility of options menu.                           |
+| `navigationBar.bookmark`           | `boolean` | Controls visibility of bookmark functionality.                 |
+| `navigationBar.undoRedo`           | `boolean` | Controls visibility of undo/redo functionality.                |
+| `navigationBar.search`             | `boolean` | Controls visibility of search functionality.                   |
+| `navigationBar.edit`               | `boolean` | Controls visibility of edit functionality.                     |
+| `navigationBar.dockedToc.isOpen`   | `boolean` | Controls whether the table of contents is initially open.      |
+| `navigationBar.dockedToc.isDocked` | `boolean` | Controls whether the table of contents is docked.              |
+
+### botConsumption
+
+Configuration options for bot consumption interface.
+
+```typescript
+botConsumption?: {
+  aiBot?: {
+    titleBar?: {
+      enabled?: boolean;
+    };
+    snapshotPanel?: {
+      enabled?: boolean;
+    };
+    topicsPanel?: {
+      enabled?: boolean;
+    };
+    chatPanel?: {
+      showClearHistory?: boolean;
+      showGiveTopics?: boolean;
+      showWelcomePageBotImg?: boolean;
+      showCopyBtn?: boolean;
+      shouldLoadHistory?: boolean;
+      shouldSaveToHistory?: boolean;
+    };
+  };
+  navigationBar?: {
+    enabled?: boolean;
+  };
+}
+```
+
+| Property                                | Type      | Description                                                   |
+| --------------------------------------- | --------- | ------------------------------------------------------------- |
+| `aiBot.titleBar.enabled`                | `boolean` | Controls visibility of the title bar in the AI bot interface. |
+| `aiBot.snapshotPanel.enabled`           | `boolean` | Controls visibility of the snapshot panel.                    |
+| `aiBot.topicsPanel.enabled`             | `boolean` | Controls visibility of the topics panel.                      |
+| `aiBot.chatPanel.showClearHistory`      | `boolean` | Controls visibility of the clear history option in chat.      |
+| `aiBot.chatPanel.showGiveTopics`        | `boolean` | Controls visibility of the give topics option.                |
+| `aiBot.chatPanel.showWelcomePageBotImg` | `boolean` | Controls visibility of the bot image on welcome page.         |
+| `aiBot.chatPanel.showCopyBtn`           | `boolean` | Controls visibility of the copy button in chat.               |
+| `aiBot.chatPanel.shouldLoadHistory`     | `boolean` | Controls whether chat history should be loaded.               |
+| `aiBot.chatPanel.shouldSaveToHistory`   | `boolean` | Controls whether chat should be saved to history.             |
+| `navigationBar.enabled`                 | `boolean` | Controls visibility of the navigation bar in bot consumption. |
+
+### dossierAuthoring
+
+Configuration options for dossier authoring interface.
+
+```typescript
+dossierAuthoring?: {
+  toolbar?: {
+    tableOfContents?: { visible?: boolean; };
+    undo?: { visible?: boolean; };
+    redo?: { visible?: boolean; };
+    refresh?: { visible?: boolean; };
+    save?: { visible?: boolean; };
+    more?: { visible?: boolean; };
+    nlp?: { visible?: boolean; };
+    freeformLayout?: { visible?: boolean; };
+    pauseDataRetrieval?: { visible?: boolean; };
+    dividerLeft?: { visible?: boolean; };
+    dividerRight?: { visible?: boolean; };
+    addData?: { visible?: boolean; };
+    addChapter?: { visible?: boolean; };
+    addPage?: { visible?: boolean; };
+    insertVisualization?: { visible?: boolean; };
+    insertFilter?: { visible?: boolean; };
+    insertText?: { visible?: boolean; };
+    insertImage?: { visible?: boolean; };
+    insertHtml?: { visible?: boolean; };
+    insertShape?: { visible?: boolean; };
+    insertStack?: { visible?: boolean; };
+    insertInfoWindow?: { visible?: boolean; };
+    responsiveViewEditor?: { visible?: boolean; };
+    responsivePreview?: { visible?: boolean; };
+  };
+  menubar?: {
+    library?: { visible?: boolean; };
+  };
+}
+```
+
+| Property                               | Type      | Description                                                        |
+| -------------------------------------- | --------- | ------------------------------------------------------------------ |
+| `toolbar.tableOfContents.visible`      | `boolean` | Controls visibility of the table of contents in the toolbar.       |
+| `toolbar.undo.visible`                 | `boolean` | Controls visibility of the undo button.                            |
+| `toolbar.redo.visible`                 | `boolean` | Controls visibility of the redo button.                            |
+| `toolbar.refresh.visible`              | `boolean` | Controls visibility of the refresh button.                         |
+| `toolbar.save.visible`                 | `boolean` | Controls visibility of the save button.                            |
+| `toolbar.more.visible`                 | `boolean` | Controls visibility of the more options button.                    |
+| `toolbar.nlp.visible`                  | `boolean` | Controls visibility of NLP (Natural Language Processing) features. |
+| `toolbar.freeformLayout.visible`       | `boolean` | Controls visibility of freeform layout options.                    |
+| `toolbar.pauseDataRetrieval.visible`   | `boolean` | Controls visibility of the pause data retrieval option.            |
+| `toolbar.dividerLeft.visible`          | `boolean` | Controls visibility of the left divider.                           |
+| `toolbar.dividerRight.visible`         | `boolean` | Controls visibility of the right divider.                          |
+| `toolbar.addData.visible`              | `boolean` | Controls visibility of the add data option.                        |
+| `toolbar.addChapter.visible`           | `boolean` | Controls visibility of the add chapter option.                     |
+| `toolbar.addPage.visible`              | `boolean` | Controls visibility of the add page option.                        |
+| `toolbar.insertVisualization.visible`  | `boolean` | Controls visibility of the insert visualization option.            |
+| `toolbar.insertFilter.visible`         | `boolean` | Controls visibility of the insert filter option.                   |
+| `toolbar.insertText.visible`           | `boolean` | Controls visibility of the insert text option.                     |
+| `toolbar.insertImage.visible`          | `boolean` | Controls visibility of the insert image option.                    |
+| `toolbar.insertHtml.visible`           | `boolean` | Controls visibility of the insert HTML option.                     |
+| `toolbar.insertShape.visible`          | `boolean` | Controls visibility of the insert shape option.                    |
+| `toolbar.insertStack.visible`          | `boolean` | Controls visibility of the insert stack option.                    |
+| `toolbar.insertInfoWindow.visible`     | `boolean` | Controls visibility of the insert info window option.              |
+| `toolbar.responsiveViewEditor.visible` | `boolean` | Controls visibility of the responsive view editor.                 |
+| `toolbar.responsivePreview.visible`    | `boolean` | Controls visibility of the responsive preview option.              |
+| `menubar.library.visible`              | `boolean` | Controls visibility of the library option in the menubar.          |
+
+## Usage Example
+
+```tsx
+import { useMstrEmbedConfig } from "embed-dossier-mstr-react"
+
+const MyDossierComponent = () => {
+  const config = useMstrEmbedConfig({
+    customUi: {
+      dossierConsumption: {
+        navigationBar: {
+          enabled: true,
+          title: true,
+          toc: true,
+          share: true,
+          filter: false,
+          options: true,
+          dockedToc: {
+            isOpen: true,
+            isDocked: true,
+          },
+        },
+      },
+    },
+  })
+
+  return <div>{/* Your component using the config */}</div>
+}
+```
+
+## Related Interfaces
+
+- [NavigationBar](../navigation-bar)
+- [ShareFeature](../share-feature)
+- [OptionsFeature](../options-feature)

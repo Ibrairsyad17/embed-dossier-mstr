@@ -1,0 +1,221 @@
+---
+title: <BotConsumptionPage />
+description: Learn about the <BotConsumptionPage /> component and how to enhance your embedded MicroStrategy Bot interactions in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    embedding,
+    sdk,
+    functionalities,
+    helper methods,
+    bot,
+    consumption,
+    generative ai,
+    embed-dossier-mstr,
+  ]
+---
+
+## Import
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+```
+
+## Props
+
+| Prop               | Type                                                                                             | Required | Description                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------ | -------- | -------------------------------------------------------------------------------------------------------------- |
+| `serverUrlLibrary` | `string`                                                                                         | Yes      | The base URL of the MicroStrategy Library server (e.g., `https://demo.microstrategy.com/MicroStrategyLibrary`) |
+| `projectId`        | `string`                                                                                         | Yes      | The ID of the MicroStrategy project to connect to                                                              |
+| `objectId`         | `string`                                                                                         | Yes      | The ID of the MicroStrategy bot object to embed                                                                |
+| `config`           | `Omit<EmbedBotConsumptionPageConfig, "placeholder" \| "serverUrl" \| "projectId" \| "objectId">` | Yes      | Configuration options for the bot consumption page                                                             |
+| `className`        | `string`                                                                                         | No       | CSS class names to apply to the container element                                                              |
+| `style`            | `React.CSSProperties`                                                                            | No       | Inline styles to apply to the container element                                                                |
+
+## Basic Usage
+
+Here's a simple example of using the `BotConsumptionPage` component:
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+
+const MyBotPage = () => {
+  return (
+    <BotConsumptionPage
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+      objectId="D9AB3763ED4BAD952F57A586DC888758"
+      config={{
+        containerHeight: "600px",
+        containerWidth: "100%",
+      }}
+      className="my-bot-interface"
+      style={{ border: "1px solid #e5e7eb", borderRadius: "8px" }}
+    />
+  )
+}
+```
+
+## How It Works
+
+The `BotConsumptionPage` component:
+
+1. Uses the `useCreateBotConsumptionPage` hook to initialize and create the bot interface
+2. Renders a div element with the provided styling that serves as the container for the embedded bot
+3. Passes the serverUrlLibrary, projectId, objectId, and configuration to the underlying MicroStrategy SDK
+
+## Advanced Configuration
+
+You can customize the behavior and appearance of your bot interface by providing a `config` object:
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+
+const CustomBotInterface = () => {
+  return (
+    <BotConsumptionPage
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+      objectId="D9AB3763ED4BAD952F57A586DC888758"
+      config={{
+        containerHeight: "700px",
+        containerWidth: "100%",
+        disableNotificationCenter: true,
+        enableResponsive: true,
+        customUi: {
+          logo: false,
+          brandingText: "Data Assistant",
+          primaryColor: "#3182CE",
+        },
+        onBotReady: () => {
+          console.log("Bot interface is ready")
+        },
+        errorHandler: (error) => {
+          console.error("Bot error:", error)
+        },
+      }}
+      style={{
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        borderRadius: "12px",
+      }}
+    />
+  )
+}
+```
+
+## Configuration Options
+
+The `config` prop accepts all MicroStrategy bot consumption page configuration options, except for `placeholder`, `serverUrl`, `projectId`, and `objectId` (which are handled separately). Some common configuration options include:
+
+| Option                      | Type                        | Description                                                |
+| --------------------------- | --------------------------- | ---------------------------------------------------------- |
+| `containerHeight`           | `string \| number`          | Height of the bot container (e.g., "600px" or 600)         |
+| `containerWidth`            | `string \| number`          | Width of the bot container (e.g., "100%" or 1200)          |
+| `enableResponsive`          | `boolean`                   | Enable responsive design for the bot interface             |
+| `disableNotificationCenter` | `boolean`                   | Hide the notification center                               |
+| `customUi`                  | `object`                    | Customize UI elements like logo, branding text, and colors |
+| `errorHandler`              | `(error: any) => void`      | Function to handle bot-related errors                      |
+| `onBotReady`                | `() => void`                | Callback function when bot is ready                        |
+| `onMessageSent`             | `(message: string) => void` | Callback when user sends a message                         |
+
+## Authentication
+
+For connecting to secured environments, you should use the `BotConsumptionPageWithAuth` component which extends this component with authentication capabilities.
+
+## Use Cases
+
+The `BotConsumptionPage` component is ideal for scenarios where you need to:
+
+1. Provide a natural language interface to your data insights
+2. Enable users to ask questions about their data in conversational format
+3. Incorporate AI-powered analytics into your application
+4. Create a user-friendly way to explore complex data
+
+## Styling and Customization
+
+You can customize the appearance of the embedded bot using CSS:
+
+```tsx
+import { BotConsumptionPage } from "embed-dossier-mstr-react"
+
+import "./bot-styles.css" // Custom CSS styles
+
+const StyledBotInterface = () => {
+  return (
+    <div className="bot-wrapper">
+      <h2>Ask Your Data</h2>
+      <BotConsumptionPage
+        serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+        projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+        objectId="D9AB3763ED4BAD952F57A586DC888758"
+        config={{
+          containerHeight: "600px",
+          containerWidth: "100%",
+        }}
+        className="custom-bot-container"
+        style={{
+          height: "600px",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      />
+    </div>
+  )
+}
+```
+
+## Error Handling
+
+The component relies on the underlying `useCreateBotConsumptionPage` hook for error handling. You can check the error state in your component:
+
+```tsx
+import { useRef } from "react"
+import { useCreateBotConsumptionPage } from "embed-dossier-mstr-react"
+
+const BotWithErrorHandling = () => {
+  // Using the hook directly for more control
+  const { botConsumptionPageRef, isSdkLoaded, isBotConsumptionPageError } =
+    useCreateBotConsumptionPage({
+      serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary",
+      projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F",
+      objectId: "D9AB3763ED4BAD952F57A586DC888758",
+      config: {
+        containerHeight: "600px",
+        containerWidth: "100%",
+      },
+    })
+
+  if (!isSdkLoaded) {
+    return <div>Loading MicroStrategy SDK...</div>
+  }
+
+  if (isBotConsumptionPageError) {
+    return (
+      <div className="error-container">
+        <h3>Failed to load Bot Interface</h3>
+        <p>Please check your connection and try again</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    )
+  }
+
+  return <div ref={botConsumptionPageRef} className="bot-container" />
+}
+```
+
+## Best Practices
+
+1. **Provide sufficient space**: Ensure the container has adequate height and width for optimal user experience
+2. **Handle errors gracefully**: Implement proper error handling to guide users when things go wrong
+3. **Consider performance**: The bot interface may require significant resources, so lazy-load it when possible
+4. **Customize the branding**: Use the `customUi` configuration to match your application's look and feel
+5. **Add context**: Provide clear instructions to users about what they can ask the bot
+
+## Related Components
+
+- [`BotConsumptionPageWithAuth`](/docs/api-reference/bot-consumption-page-with-auth) - Version with authentication capabilities
+- [`DashboardEmbed`](/docs/api-reference/dashboard-embed) - For embedding MicroStrategy dashboards
+
+## Related Hooks
+
+- [`useCreateBotConsumptionPage`](/docs/api-reference/use-create-bot-consumption-page) - The hook used internally by this component
+- [`useLoadMstrSDK`](/docs/api-reference/use-load-mstr-sdk) - For loading the MicroStrategy SDK

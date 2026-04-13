@@ -1,0 +1,700 @@
+---
+title: MicroStrategyDossier
+description: API reference for the MicroStrategyDossier interface in the embed-dossier-mstr-react package.
+keywords:
+  [
+    "embedding",
+    "sdk",
+    "types",
+    "interfaces",
+    "API reference",
+    "embed-dossier-mstr",
+    "MicroStrategyDossier",
+    "dashboard",
+    "typescript",
+  ]
+---
+
+## Type Definition
+
+```typescript
+interface MicroStrategyDossier {
+  close: () => void
+  refresh: () => void
+  resize: (width: string, height: string) => void
+
+  getDossierInstanceId: () => Promise<string>
+
+  // Filter methods
+  getFilterList: () => Promise<FilterListType[]>
+  filterSelectAllAttributes: (params: FilterJson) => void
+  filterDeselectAllAttributes: (params: FilterJson) => void
+  filterSelectSingleAttribute: (params: FilterJson) => void
+  filterSelectMultiAttributes: (params: FilterJson) => void
+  filterSearchSingleAttribute: (params: FilterJson) => void
+  filterSearchMultiAttributes: (params: FilterJson) => void
+  filterAttributeSingleSlider: (params: FilterJson) => void
+  filterAttributeMultiSlider: (params: FilterJson) => void
+  filterSetDateRange: (params: FilterJson) => void
+  filterSetMetricQualByValue: (params: FilterJson) => void
+  filterSetMetricQualByRank: (params: FilterJson) => void
+  filterSetMetricSliderByValue: (params: FilterJson) => void
+  filterSetMetricSliderByRank: (params: FilterJson) => void
+  filterClearAll: () => void
+  filterClear: (params: FilterJson) => void
+  filterSetInclude: (params: FilterJson) => void
+  filterSetExclude: (params: FilterJson) => void
+  filterApplyAll: () => void
+
+  // Mode switching
+  switchToMode?: (mode: "consumption" | "authoring") => Promise<void>
+
+  // Navigation methods
+  getTableOfContents: () => TableOfContents
+  goToPrevPage: () => Promise<{ valid: boolean; message: string } | void>
+  goToNextPage: () => Promise<{ valid: boolean; message: string } | void>
+  navigateToPage: (
+    page: DossierPage
+  ) => Promise<{ valid: boolean; message: string } | void>
+  getCurrentChapter: () => DossierChapter
+  getCurrentPage: () => DossierPage
+  getPageByNodeKey: (nodeKey: string) => DossierPage
+  getChapterList: () => DossierChapter[]
+  getCurrentPageVisualizationList: () => Promise<
+    [{ key: string; name: string }]
+  >
+  openFilterSummaryBar: () => void | null
+  closeFilterSummaryBar: () => void | null
+  getPageList: () => DossierPage[]
+
+  // Event handling methods
+  registerEventHandler: (event: EventTypes, handler: EventHandler) => void
+  removeEventHandler: (event: EventTypes, handler: EventHandler) => void
+  registerGraphicsSelectEventHandlerToViz: (
+    vizKey: string,
+    handler: EventHandler
+  ) => void
+  registerFilterUpdateHandler: (handler: EventHandler) => void
+  registerPageSwitchHandler: (handler: EventHandler) => void
+  registerDossierInstanceIDChangeHandler: (handler: EventHandler) => void
+
+  // Error handling methods
+  removeCustomErrorHandler?: (error: ErrorHandlerInterface) => void
+  removeSessionHandler: () => void
+  addCustomErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+  addSessionErrorHandler: (
+    handler: (error: ErrorHandlerInterface) => void,
+    showErrorPopup: boolean
+  ) => void
+}
+```
+
+## Basic Methods
+
+### close
+
+```typescript
+close: () => void
+```
+
+Closes the dossier and cleans up resources.
+
+### refresh
+
+```typescript
+refresh: () => void
+```
+
+Refreshes the dossier, reloading data from the server.
+
+### resize
+
+```typescript
+resize: (width: string, height: string) => void
+```
+
+Resizes the dossier container.
+
+**Parameters:**
+
+- `width`: `string` - The new width (e.g., "800px", "100%").
+- `height`: `string` - The new height (e.g., "600px", "100%").
+
+### getDossierInstanceId
+
+```typescript
+getDossierInstanceId: () => Promise<string>
+```
+
+Gets the unique instance ID of the dossier.
+
+**Returns:**
+
+- `Promise<string>`: A promise that resolves to the dossier instance ID.
+
+## Filter Methods
+
+### getFilterList
+
+```typescript
+getFilterList: () => Promise<FilterListType[]>
+```
+
+Gets the list of available filters in the dossier.
+
+**Returns:**
+
+- `Promise<FilterListType[]>`: A promise that resolves to an array of filter information.
+
+### filterSelectAllAttributes
+
+```typescript
+filterSelectAllAttributes: (params: FilterJson) => void
+```
+
+Selects all attributes in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterDeselectAllAttributes
+
+```typescript
+filterDeselectAllAttributes: (params: FilterJson) => void
+```
+
+Deselects all attributes in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSelectSingleAttribute
+
+```typescript
+filterSelectSingleAttribute: (params: FilterJson) => void
+```
+
+Selects a single attribute in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSelectMultiAttributes
+
+```typescript
+filterSelectMultiAttributes: (params: FilterJson) => void
+```
+
+Selects multiple attributes in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSearchSingleAttribute
+
+```typescript
+filterSearchSingleAttribute: (params: FilterJson) => void
+```
+
+Searches for and selects a single attribute in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSearchMultiAttributes
+
+```typescript
+filterSearchMultiAttributes: (params: FilterJson) => void
+```
+
+Searches for and selects multiple attributes in a filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterAttributeSingleSlider
+
+```typescript
+filterAttributeSingleSlider: (params: FilterJson) => void
+```
+
+Sets a single slider value for an attribute filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterAttributeMultiSlider
+
+```typescript
+filterAttributeMultiSlider: (params: FilterJson) => void
+```
+
+Sets multiple slider values for an attribute filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetDateRange
+
+```typescript
+filterSetDateRange: (params: FilterJson) => void
+```
+
+Sets a date range for a date filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetMetricQualByValue
+
+```typescript
+filterSetMetricQualByValue: (params: FilterJson) => void
+```
+
+Sets a metric qualification filter by value.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetMetricQualByRank
+
+```typescript
+filterSetMetricQualByRank: (params: FilterJson) => void
+```
+
+Sets a metric qualification filter by rank.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetMetricSliderByValue
+
+```typescript
+filterSetMetricSliderByValue: (params: FilterJson) => void
+```
+
+Sets a metric slider filter by value.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetMetricSliderByRank
+
+```typescript
+filterSetMetricSliderByRank: (params: FilterJson) => void
+```
+
+Sets a metric slider filter by rank.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterClearAll
+
+```typescript
+filterClearAll: () => void
+```
+
+Clears all filters in the dossier.
+
+### filterClear
+
+```typescript
+filterClear: (params: FilterJson) => void
+```
+
+Clears a specific filter.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetInclude
+
+```typescript
+filterSetInclude: (params: FilterJson) => void
+```
+
+Sets a filter to include mode.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterSetExclude
+
+```typescript
+filterSetExclude: (params: FilterJson) => void
+```
+
+Sets a filter to exclude mode.
+
+**Parameters:**
+
+- `params`: `FilterJson` - The filter parameters.
+
+### filterApplyAll
+
+```typescript
+filterApplyAll: () => void
+```
+
+Applies all pending filter changes.
+
+## Mode Switching
+
+### switchToMode
+
+```typescript
+switchToMode?: (mode: "consumption" | "authoring") => Promise<void>
+```
+
+Switches the dossier between consumption and authoring modes.
+
+**Parameters:**
+
+- `mode`: `"consumption" | "authoring"` - The mode to switch to.
+
+**Returns:**
+
+- `Promise<void>`: A promise that resolves when the mode switch is complete.
+
+## Navigation Methods
+
+### getTableOfContents
+
+```typescript
+getTableOfContents: () => TableOfContents
+```
+
+Gets the table of contents for the dossier.
+
+**Returns:**
+
+- `TableOfContents`: The table of contents structure.
+
+### goToPrevPage
+
+```typescript
+goToPrevPage: () => Promise<{ valid: boolean; message: string } | void>
+```
+
+Navigates to the previous page in the dossier.
+
+**Returns:**
+
+- `Promise<{ valid: boolean; message: string } | void>`: A promise that resolves with the result of the navigation.
+
+### goToNextPage
+
+```typescript
+goToNextPage: () => Promise<{ valid: boolean; message: string } | void>
+```
+
+Navigates to the next page in the dossier.
+
+**Returns:**
+
+- `Promise<{ valid: boolean; message: string } | void>`: A promise that resolves with the result of the navigation.
+
+### navigateToPage
+
+```typescript
+navigateToPage: (page: DossierPage) =>
+  Promise<{ valid: boolean; message: string } | void>
+```
+
+Navigates to a specific page in the dossier.
+
+**Parameters:**
+
+- `page`: `DossierPage` - The page to navigate to.
+
+**Returns:**
+
+- `Promise<{ valid: boolean; message: string } | void>`: A promise that resolves with the result of the navigation.
+
+### getCurrentChapter
+
+```typescript
+getCurrentChapter: () => DossierChapter
+```
+
+Gets the current chapter in the dossier.
+
+**Returns:**
+
+- `DossierChapter`: The current chapter.
+
+### getCurrentPage
+
+```typescript
+getCurrentPage: () => DossierPage
+```
+
+Gets the current page in the dossier.
+
+**Returns:**
+
+- `DossierPage`: The current page.
+
+### getPageByNodeKey
+
+```typescript
+getPageByNodeKey: (nodeKey: string) => DossierPage
+```
+
+Gets a page by its node key.
+
+**Parameters:**
+
+- `nodeKey`: `string` - The unique key of the page node.
+
+**Returns:**
+
+- `DossierPage`: The requested page.
+
+### getChapterList
+
+```typescript
+getChapterList: () => DossierChapter[]
+```
+
+Gets the list of chapters in the dossier.
+
+**Returns:**
+
+- `DossierChapter[]`: An array of dossier chapters.
+
+### getCurrentPageVisualizationList
+
+```typescript
+getCurrentPageVisualizationList: () => Promise<[{ key: string; name: string }]>
+```
+
+Gets the list of visualizations on the current page.
+
+**Returns:**
+
+- `Promise<[{ key: string; name: string }]>`: A promise that resolves to an array of visualization info.
+
+### openFilterSummaryBar
+
+```typescript
+openFilterSummaryBar: () => void | null
+```
+
+Opens the filter summary bar.
+
+### closeFilterSummaryBar
+
+```typescript
+closeFilterSummaryBar: () => void | null
+```
+
+Closes the filter summary bar.
+
+### getPageList
+
+```typescript
+getPageList: () => DossierPage[]
+```
+
+Gets the list of all pages in the dossier.
+
+**Returns:**
+
+- `DossierPage[]`: An array of dossier pages.
+
+## Event Handling Methods
+
+### registerEventHandler
+
+```typescript
+registerEventHandler: (event: EventTypes, handler: EventHandler) => void
+```
+
+Registers an event handler for a specific event type.
+
+**Parameters:**
+
+- `event`: `EventTypes` - The type of event to listen for.
+- `handler`: `EventHandler` - The handler function to call when the event occurs.
+
+### removeEventHandler
+
+```typescript
+removeEventHandler: (event: EventTypes, handler: EventHandler) => void
+```
+
+Removes an event handler.
+
+**Parameters:**
+
+- `event`: `EventTypes` - The type of event to remove the handler from.
+- `handler`: `EventHandler` - The handler function to remove.
+
+### registerGraphicsSelectEventHandlerToViz
+
+```typescript
+registerGraphicsSelectEventHandlerToViz: (vizKey: string, handler: EventHandler) => void
+```
+
+Registers an event handler for graphics selection events on a specific visualization.
+
+**Parameters:**
+
+- `vizKey`: `string` - The key of the visualization.
+- `handler`: `EventHandler` - The handler function to call when the event occurs.
+
+### registerFilterUpdateHandler
+
+```typescript
+registerFilterUpdateHandler: (handler: EventHandler) => void
+```
+
+Registers an event handler for filter update events.
+
+**Parameters:**
+
+- `handler`: `EventHandler` - The handler function to call when a filter is updated.
+
+### registerPageSwitchHandler
+
+```typescript
+registerPageSwitchHandler: (handler: EventHandler) => void
+```
+
+Registers an event handler for page switch events.
+
+**Parameters:**
+
+- `handler`: `EventHandler` - The handler function to call when the page changes.
+
+### registerDossierInstanceIDChangeHandler
+
+```typescript
+registerDossierInstanceIDChangeHandler: (handler: EventHandler) => void
+```
+
+Registers an event handler for dossier instance ID change events.
+
+**Parameters:**
+
+- `handler`: `EventHandler` - The handler function to call when the instance ID changes.
+
+## Error Handling Methods
+
+### removeCustomErrorHandler
+
+```typescript
+removeCustomErrorHandler?: (error: ErrorHandlerInterface) => void
+```
+
+Removes a custom error handler.
+
+**Parameters:**
+
+- `error`: `ErrorHandlerInterface` - The error handler to remove.
+
+### removeSessionHandler
+
+```typescript
+removeSessionHandler: () => void
+```
+
+Removes the session error handler.
+
+### addCustomErrorHandler
+
+```typescript
+addCustomErrorHandler: (handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean) => void
+```
+
+Adds a custom error handler.
+
+**Parameters:**
+
+- `handler`: `(error: ErrorHandlerInterface) => void` - The handler function to call when an error occurs.
+- `showErrorPopup`: `boolean` - Whether to show the default error popup.
+
+### addSessionErrorHandler
+
+```typescript
+addSessionErrorHandler: (handler: (error: ErrorHandlerInterface) => void, showErrorPopup: boolean) => void
+```
+
+Adds a session error handler.
+
+**Parameters:**
+
+- `handler`: `(error: ErrorHandlerInterface) => void` - The handler function to call when a session error occurs.
+- `showErrorPopup`: `boolean` - Whether to show the default error popup.
+
+## Usage Example
+
+```typescript
+// After creating a dossier instance
+const dossier = await window.microstrategy.dossier.create({
+  placeholder: document.getElementById("dossier-container"),
+  url: "https://your-mstr-server/MicroStrategyLibrary/app/PROJECT_ID/DOSSIER_ID",
+})
+
+// Get current page
+const currentPage = dossier.getCurrentPage()
+console.log("Current page:", currentPage.name)
+
+// Navigate to another page
+const pages = dossier.getPageList()
+if (pages.length > 1) {
+  await dossier.navigateToPage(pages[1])
+}
+
+// Add a page switch handler
+dossier.registerPageSwitchHandler((event) => {
+  console.log("Page switched:", event.data)
+})
+
+// Get and modify filters
+const filters = await dossier.getFilterList()
+if (filters.length > 0) {
+  dossier.filterClear({
+    key: filters[0].key,
+  })
+}
+
+// Switch to authoring mode
+if (dossier.switchToMode) {
+  await dossier.switchToMode("authoring")
+}
+
+// Clean up when done
+dossier.close()
+```
+
+## Related Types
+
+- [FilterListType](/docs/api-reference/types-and-interfaces/filter-list-type)
+- [FilterJson](/docs/api-reference/types-and-interfaces/filter-json)
+- [DossierPage](/docs/api-reference/types-and-interfaces/dossier-page)
+- [DossierChapter](/docs/api-reference/types-and-interfaces/dossier-chapter)
+- [TableOfContents](/docs/api-reference/types-and-interfaces/table-of-contents)
+- [EventTypes](/docs/api-reference/types-and-interfaces/event-types)
+- [EventHandler](/docs/api-reference/types-and-interfaces/event-handler)
+- [ErrorHandlerInterface](/docs/api-reference/types-and-interfaces/error-handler-interface)

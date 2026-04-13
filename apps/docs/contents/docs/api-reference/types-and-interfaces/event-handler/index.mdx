@@ -1,0 +1,255 @@
+---
+title: Event Handler
+description: This page is a reference to the Event Handler used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "event-handler",
+  ]
+---
+
+## Type Definition
+
+```tsx
+export type EventHandler = () => void
+```
+
+The `EventHandler` is defined as a simple function type that takes no arguments and returns no value (void). However, in practice, when the event is triggered, the handler often receives an event object containing relevant data about the event.
+
+## EventHandlers Interface
+
+This type is used throughout the library, notably in the `EventHandlers` interface which provides typed properties for all available event handlers:
+
+```tsx
+export interface EventHandlers {
+  onComponentSelectionChanged?: EventHandler
+  onDossierAuthoringClosed?: EventHandler
+  onDossierAuthoringSaved?: EventHandler
+  onDossierInstanceChanged?: EventHandler
+  onDossierInstanceIDChange?: EventHandler
+  onError?: EventHandler
+  onFilterUpdated?: EventHandler
+  onGraphicsSelected?: EventHandler
+  onLayoutChanged?: EventHandler
+  onLibraryItemSelected?: EventHandler
+  onLibraryItemSelectionCleared?: EventHandler
+  onLibraryMenuSelected?: EventHandler
+  onPageLoaded?: EventHandler
+  onPageRenderFinished?: EventHandler
+  onPageSwitched?: EventHandler
+  onPanelSwitched?: EventHandler
+  onPromptAnswered?: EventHandler
+  onPromptLoaded?: EventHandler
+  onSessionError?: EventHandler
+  onVisualizationResized?: EventHandler
+  onVisualizationElementsChanged?: EventHandler
+  onVizSelectionChanged?: EventHandler
+}
+```
+
+## Usage Examples
+
+### Basic Usage
+
+Here's a simple example of defining and using an `EventHandler`:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierWithEventHandler = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // Authentication and other setup code...
+
+        const dossier = await window.microstrategy.dossier.create({
+          placeholder: containerRef.current,
+          url: `${serverUrl}/app/D3B3BA4411E9AF7761940080EFC55F57/F5929595477EAFE63242EF8985BD8CA5`,
+        })
+
+        // Define an event handler function
+        const pageSwitchHandler: EventHandler = () => {
+          console.log("Page switched in the dossier")
+          // Access current page information or perform other actions
+        }
+
+        // Register the event handler
+        dossier.registerEventHandler(
+          window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+          pageSwitchHandler
+        )
+      } catch (error) {
+        console.error("Error:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />
+}
+
+export default DossierWithEventHandler
+```
+
+### Accessing Event Data
+
+While the `EventHandler` type is defined as taking no arguments, in practice you can define your handlers to accept an event parameter:
+
+```tsx
+// Define handler with event parameter
+const filterUpdateHandler = (event: any) => {
+  console.log("Filter updated with data:", event)
+  // Access event data properties
+  if (event && event.filterInfo) {
+    console.log("Filter name:", event.filterInfo.name)
+    console.log("Filter values:", event.filterInfo.values)
+  }
+}
+
+// Register the handler
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+  filterUpdateHandler
+)
+```
+
+### Multiple Events
+
+You can register the same handler for multiple events or different handlers for different events:
+
+```tsx
+// Same handler for multiple events
+const genericHandler: EventHandler = () => {
+  console.log("An event occurred!")
+}
+
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_PAGE_LOADED,
+  genericHandler
+)
+
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_PAGE_RENDER_FINISHED,
+  genericHandler
+)
+
+// Different handlers for different events
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_ERROR,
+  (error) => {
+    console.error("Error occurred:", error)
+  }
+)
+
+dossier.registerEventHandler(
+  window.microstrategy.dossier.EventType.ON_SESSION_ERROR,
+  (sessionError) => {
+    console.error("Session error:", sessionError)
+    // Redirect to login page or show session expired message
+  }
+)
+```
+
+### Using Event Handlers with Cleanup
+
+It's important to clean up event handlers when your component unmounts:
+
+```tsx
+useEffect(() => {
+  let dossierInstance: any = null
+
+  const embedDossier = async () => {
+    // Create dossier and assign to dossierInstance...
+
+    const pageSwitchHandler = () => {
+      console.log("Page switched")
+    }
+
+    dossierInstance.registerEventHandler(
+      window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+      pageSwitchHandler
+    )
+  }
+
+  embedDossier()
+
+  // Cleanup function
+  return () => {
+    if (dossierInstance) {
+      dossierInstance.removeEventHandler(
+        window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+        pageSwitchHandler
+      )
+    }
+  }
+}, [])
+```
+
+## Best Practices
+
+1. **Define reusable handlers**: For complex applications, consider defining event handlers as standalone functions that can be reused and tested independently.
+
+   ```tsx
+   const handleFilterUpdate = (event: any) => {
+     // Handle filter update logic
+   }
+
+   const handlePageSwitch = (event: any) => {
+     // Handle page switch logic
+   }
+
+   // Register handlers
+   dossier.registerEventHandler(
+     window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+     handleFilterUpdate
+   )
+
+   dossier.registerEventHandler(
+     window.microstrategy.dossier.EventType.ON_PAGE_SWITCHED,
+     handlePageSwitch
+   )
+   ```
+
+2. **Use wrapper functions**: When available, use the specific wrapper functions provided by the MicroStrategy SDK:
+
+   ```tsx
+   // Instead of:
+   dossier.registerEventHandler(
+     window.microstrategy.dossier.EventType.ON_FILTER_UPDATED,
+     handleFilterUpdate
+   )
+
+   // Use:
+   dossier.registerFilterUpdateHandler(handleFilterUpdate)
+   ```
+
+3. **Handle errors gracefully**: Always wrap your event handler logic in try-catch blocks to prevent uncaught exceptions.
+
+   ```tsx
+   const handleFilterUpdate = (event: any) => {
+     try {
+       // Handle filter update logic
+     } catch (error) {
+       console.error("Error in filter update handler:", error)
+     }
+   }
+   ```
+
+4. **Clean up handlers**: Always remove event handlers when components unmount to prevent memory leaks and unexpected behavior.
+
+## Related Types
+
+- `EventTypes`: A type that represents all possible event types that can be handled.
+- `EventHandlers`: An interface that provides typed event handler properties for all available events.
+- `MicroStrategyDossier`: The main interface that exposes event registration methods.

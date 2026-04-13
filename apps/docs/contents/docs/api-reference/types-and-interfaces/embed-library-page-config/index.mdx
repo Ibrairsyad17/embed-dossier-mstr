@@ -1,0 +1,29 @@
+---
+title: EmbedLibraryPageConfig
+description: Interface for configuring the embedded Library page
+---
+
+## Properties
+
+### Required Properties
+
+| Property    | Type                | Description                                         |
+| ----------- | ------------------- | --------------------------------------------------- |
+| placeholder | HTMLElement \| null | DOM element where the library page will be embedded |
+| serverUrl   | string              | Base URL for the MicroStrategy Library server       |
+
+### Optional Properties
+
+| Property                          | Type                                                         | Description                                                        |
+| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| containerHeight                   | string                                                       | Height of the container element (e.g., "600px")                    |
+| containerWidth                    | string                                                       | Width of the container element (e.g., "100%")                      |
+| enableCustomAuthentication        | boolean                                                      | Whether to enable custom authentication                            |
+| customAuthenticationType          | MicroStrategyDossierConfigCustomAuthenticationType \| string | The type of custom authentication to use                           |
+| getLoginToken                     | `() => Promise<string \| void \| null>`                      | Function that returns a promise resolving to the login token       |
+| disableCustomErrorHandlerOnCreate | boolean                                                      | Whether to disable the custom error handler when creating the page |
+| errorHandler                      | (error: ErrorHandlerInterface) => void                       | Function to handle errors                                          |
+| sessionErrorHandler               | (error: ErrorHandlerInterface) => void                       | Function to handle session errors                                  |
+| customUi                          | CustomUi                                                     | Custom UI configuration                                            |
+| libraryItemSelectMode             | "single" \| "multiple"                                       | Mode for selecting library items                                   |
+| currentPage                       | CurrentPage                                                  | Current page configuration                                         |

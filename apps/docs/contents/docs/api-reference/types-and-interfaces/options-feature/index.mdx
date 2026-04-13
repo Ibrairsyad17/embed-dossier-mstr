@@ -1,0 +1,65 @@
+---
+title: OptionsFeature
+description: This page is a reference to the OptionsFeature used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "options-feature",
+  ]
+---
+
+## Interface Definition
+
+```typescript
+export interface OptionsFeature {
+  enabled?: boolean
+  help?: boolean
+  logout?: boolean
+  manage?: boolean
+  showLibraries?: boolean
+  showTutorials?: boolean
+  preferences?: boolean
+}
+```
+
+## Properties
+
+| Property        | Type      | Default     | Description                                                               |
+| --------------- | --------- | ----------- | ------------------------------------------------------------------------- |
+| `enabled`       | `boolean` | `undefined` | Determines whether the options menu is enabled in the navigation bar.     |
+| `help`          | `boolean` | `undefined` | Controls the visibility of the help option in the options menu.           |
+| `logout`        | `boolean` | `undefined` | Controls the visibility of the logout option in the options menu.         |
+| `manage`        | `boolean` | `undefined` | Controls the visibility of the manage option in the options menu.         |
+| `showLibraries` | `boolean` | `undefined` | Controls the visibility of the show libraries option in the options menu. |
+| `showTutorials` | `boolean` | `undefined` | Controls the visibility of the show tutorials option in the options menu. |
+| `preferences`   | `boolean` | `undefined` | Controls the visibility of the preferences option in the options menu.    |
+
+## Usage Example
+
+```tsx
+import { useMstrEmbedConfig } from "embed-dossier-mstr-react"
+
+const MyDossierComponent = () => {
+  const config = useMstrEmbedConfig({
+    optionsFeature: {
+      enabled: true,
+      help: true,
+      logout: false,
+      manage: true,
+      showLibraries: false,
+      showTutorials: false,
+      preferences: true,
+    },
+  })
+
+  return <div>{/* Your component using the config */}</div>
+}
+```
+
+## Related Interfaces
+
+- [CustomUi](../custom-ui)
+- [NavigationBar](../navigation-bar)

@@ -1,0 +1,104 @@
+---
+title: Installation
+description: This guide covers the installation of embed-dossier-mstr-react.
+keywords:
+  [
+    "installation",
+    "node",
+    "guide",
+    "nextjs",
+    "microstrategy",
+    "react",
+    "embed-dossier-mstr-react",
+    "embedding sdk ",
+  ]
+---
+
+To install this `embed-dossier-mstr-react` package, you need to have several prerequisites in place. Here's a list of all the essential pre-requisites you need to have before installing the package:
+
+## Prerequisites
+
+<Step>
+<StepItem title="System Requirements">
+
+- **Node.js:** Make sure you have Node.js installed. The project uses `npm`, which comes with Node.js. Install Node.js from here.
+- **NPM or Yarn:** Since the project uses `npm` commands, ensure that npm is installed with Node.js. Alternatively, you can use Yarn if preferred.
+
+To verify installation, run:
+
+```bash
+node -v
+npm -v
+```
+
+</StepItem>
+<StepItem title="Code Editor">
+You’ll need a code editor to work on the project. Common options include:
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [WebStorm](https://www.jetbrains.com/webstorm/)
+- Any other text editor you prefer.
+
+</StepItem>
+<StepItem title="Required Knowledge">
+- **Next.js:** Since this is a Next.js project, you should be familiar with Next.js basics.
+- **React:** The project uses React, so understanding React's component structure and hooks will help.
+- **TypeScript:** The project is written in TypeScript, so you should have a basic understanding of it.
+
+</StepItem>
+</Step>
+
+## Installation
+
+To install the package, you can use npm or yarn. Run the following command to install the package:
+
+<Tabs defaultValue="npm" className="pb-1 pt-5">
+  <TabsList className="">
+    <TabsTrigger value="npm">npm</TabsTrigger>
+    <TabsTrigger value="yarn">yarn</TabsTrigger>
+    <TabsTrigger value="pnpm">pnpm</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash
+    npm install embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash
+    yarn add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash
+    pnpm add embed-dossier-mstr-react
+    ```
+  </TabsContent>
+</Tabs>
+
+## Simple Usage
+
+To use the package in simply way, you need to import the `DashboardEmbed` component from the package and use it in your project. Here's a simple example of how you can use the package:
+
+```tsx {11} showLineNumbers
+import { DashboardEmbed } from "embed-dossier-mstr-react"
+
+const MinimalTemplateEmbed = () => {
+  return (
+    <>
+      <DashboardEmbed
+        dossierUrl="your-dossier-url"
+        style={{
+          width: "1000px",
+          height: "1200px",
+        }}
+      />
+    </>
+  )
+}
+
+export default MinimalTemplateEmbed
+```
+
+## Important Information
+
+**Configuration:** You need to configure the package with your MicroStrategy environment details. Refer to the package documentation for more information.

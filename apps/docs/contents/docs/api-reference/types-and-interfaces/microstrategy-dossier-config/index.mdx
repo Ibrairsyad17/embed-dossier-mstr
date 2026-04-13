@@ -1,0 +1,536 @@
+---
+title: MicroStrategyDossierConfig
+description: API reference for the MicroStrategyDossierConfig interface in the embed-dossier-mstr-react package.
+keywords:
+  [
+    "embedding",
+    "sdk",
+    "types",
+    "interfaces",
+    "API reference",
+    "embed-dossier-mstr",
+    "MicroStrategyDossierConfig",
+    "configuration",
+    "typescript",
+  ]
+---
+
+## Type Definition
+
+```typescript
+interface MicroStrategyDossierConfig {
+  placeholder: HTMLDivElement | null
+  url: string
+  containerHeight?: string
+  containerWidth?: string
+  customAuthenticationType?:
+    | MicroStrategyDossierConfigCustomAuthenticationType
+    | string
+  disableNotification?: boolean
+  disableErrorPopupWindow?: boolean
+  dockedComment?: DockedCommentAndFilter
+  dockedFilter?: DockedCommentAndFilter
+  dockedTheme?: DockedTheme
+  dockedToc?: {
+    dockedPosition?: "left" | "right"
+    theme?: "light" | "dark"
+    canClose?: boolean
+    dockChangeable?: boolean
+    isDocked?: boolean
+  }
+  dossierFeature?: {
+    readonly?: boolean
+  }
+  enableCollaboration?: boolean
+  enableCustomAuthentication?: boolean
+  enableResponsive?: boolean
+  filterFeature?: {
+    enabled?: boolean
+    edit?: boolean
+    summary?: boolean
+  }
+  filters?: FilterCreation[]
+  getLoginToken?: () => Promise<string | void | null>
+  instance?: {
+    mid?: string
+    id?: string
+    status?: string | number
+    partialManipulation?: boolean
+  }
+  navigationBar?: NavigationBar
+  customUi?: CustomUi
+  optionsFeature?: OptionsFeature
+  shareFeature?: ShareFeature
+  smartBanner?: boolean
+  tocFeature?: {
+    enabled?: boolean
+  }
+  uiMessage?: {
+    enabled?: boolean
+    addToLibrary?: boolean
+  }
+  visibleTutorials?: {
+    library: boolean
+    welcome: boolean
+    dossier: boolean
+    notification: boolean
+  }
+  dossierRenderingMode?: "consumption" | "authoring"
+  authoring?: {
+    menubar?: {
+      library?: {
+        visible?: boolean
+      }
+    }
+    toolbar?: {
+      tableOfContents?: { visible?: boolean }
+      undo?: { visible?: boolean }
+      redo?: { visible?: boolean }
+      refresh?: { visible?: boolean }
+      pauseDataRetrieval?: { visible?: boolean }
+      reprompt?: { visible?: boolean }
+      dividerLeft?: { visible?: boolean }
+      addData?: { visible?: boolean }
+      addChapter?: { visible?: boolean }
+      addPage?: { visible?: boolean }
+      insertVisualization?: { visible?: boolean }
+      insertFilter?: { visible?: boolean }
+      insertText?: { visible?: boolean }
+      insertImage?: { visible?: boolean }
+      insertHtml?: { visible?: boolean }
+      insertShape?: { visible?: boolean }
+      insertPanelStack?: { visible?: boolean }
+      insertInfoWindow?: { visible?: boolean }
+      save?: { visible?: boolean }
+      dividerRight?: { visible?: boolean }
+      more?: { visible?: boolean }
+      freeformLayout?: { visible?: boolean }
+      nlp?: { visible?: boolean }
+      responsiveViewEditor?: { visible?: boolean }
+      responsivePreview?: { visible?: boolean }
+    }
+    panelVisibility?: {
+      contents?: boolean
+      datasets?: boolean
+      editor?: boolean
+      filter?: boolean
+      format?: boolean
+      layers?: boolean
+    }
+  }
+  disableCustomErrorHandlerOnCreate?: boolean
+  sessionErrorHandler?: (error: ErrorHandlerInterface) => void
+  errorHandler?: (error: ErrorHandlerInterface) => void
+}
+```
+
+## Required Properties
+
+### placeholder
+
+```typescript
+placeholder: HTMLDivElement | null
+```
+
+The HTML element where the dossier will be rendered. This is typically a div element that you've created in your UI.
+
+### url
+
+```typescript
+url: string
+```
+
+The URL of the MicroStrategy dossier to embed. This should be in the format `https://your-mstr-server/MicroStrategyLibrary/app/{PROJECT_ID}/{DOSSIER_ID}`.
+
+## Optional Properties
+
+### containerHeight
+
+```typescript
+containerHeight?: string
+```
+
+The height of the container for the embedded dossier. Can be specified in pixels, percentage, or any valid CSS size value (e.g., "600px", "100%").
+
+### containerWidth
+
+```typescript
+containerWidth?: string
+```
+
+The width of the container for the embedded dossier. Can be specified in pixels, percentage, or any valid CSS size value (e.g., "800px", "100%").
+
+### customAuthenticationType
+
+```typescript
+customAuthenticationType?: MicroStrategyDossierConfigCustomAuthenticationType | string
+```
+
+The type of custom authentication to use. Can be either the `AUTH_TOKEN` or `IDENTITY_TOKEN` string constants or an object containing those constants.
+
+### disableNotification
+
+```typescript
+disableNotification?: boolean
+```
+
+If set to `true`, disables notifications in the embedded dossier.
+
+### disableErrorPopupWindow
+
+```typescript
+disableErrorPopupWindow?: boolean
+```
+
+If set to `true`, disables the default error popup window. Errors will still be passed to error handlers if configured.
+
+### dockedComment
+
+```typescript
+dockedComment?: DockedCommentAndFilter
+```
+
+Configuration for docked comments panel.
+
+### dockedFilter
+
+```typescript
+dockedFilter?: DockedCommentAndFilter
+```
+
+Configuration for docked filter panel.
+
+### dockedTheme
+
+```typescript
+dockedTheme?: DockedTheme
+```
+
+Configuration for docked theme panel.
+
+### dockedToc
+
+```typescript
+dockedToc?: {
+  dockedPosition?: "left" | "right";
+  theme?: "light" | "dark";
+  canClose?: boolean;
+  dockChangeable?: boolean;
+  isDocked?: boolean;
+}
+```
+
+Configuration for the docked table of contents panel.
+
+- `dockedPosition`: The position where the TOC is docked ("left" or "right").
+- `theme`: The color theme of the TOC ("light" or "dark").
+- `canClose`: Whether the TOC can be closed by the user.
+- `dockChangeable`: Whether the dock position can be changed by the user.
+- `isDocked`: Whether the TOC is initially docked.
+
+### dossierFeature
+
+```typescript
+dossierFeature?: {
+  readonly?: boolean;
+}
+```
+
+Features of the dossier.
+
+- `readonly`: If `true`, the dossier will be in read-only mode.
+
+### enableCollaboration
+
+```typescript
+enableCollaboration?: boolean
+```
+
+If `true`, enables collaboration features in the dossier.
+
+### enableCustomAuthentication
+
+```typescript
+enableCustomAuthentication?: boolean
+```
+
+If `true`, enables custom authentication, using the token provided by the `getLoginToken` function.
+
+### enableResponsive
+
+```typescript
+enableResponsive?: boolean
+```
+
+If `true`, enables responsive layout features in the dossier.
+
+### filterFeature
+
+```typescript
+filterFeature?: {
+  enabled?: boolean;
+  edit?: boolean;
+  summary?: boolean;
+}
+```
+
+Configuration for filter features.
+
+- `enabled`: Whether filters are enabled.
+- `edit`: Whether filters can be edited.
+- `summary`: Whether the filter summary is available.
+
+### filters
+
+```typescript
+filters?: FilterCreation[]
+```
+
+An array of filter configurations to apply to the dossier when it loads.
+
+### getLoginToken
+
+```typescript
+getLoginToken?: () => Promise<string | void | null>
+```
+
+A function that returns a promise resolving to an authentication token. Used when `enableCustomAuthentication` is `true`.
+
+### instance
+
+```typescript
+instance?: {
+  mid?: string;
+  id?: string;
+  status?: string | number;
+  partialManipulation?: boolean;
+}
+```
+
+Configuration for the dossier instance.
+
+- `mid`: The MicroStrategy ID of the dossier.
+- `id`: The instance ID of the dossier.
+- `status`: The status of the dossier.
+- `partialManipulation`: If `true`, enables partial manipulation of the dossier.
+
+### navigationBar
+
+```typescript
+navigationBar?: NavigationBar
+```
+
+Configuration for the navigation bar in the dossier.
+
+### customUi
+
+```typescript
+customUi?: CustomUi
+```
+
+Configuration for custom UI elements in the dossier.
+
+### optionsFeature
+
+```typescript
+optionsFeature?: OptionsFeature
+```
+
+Configuration for options features in the dossier.
+
+### shareFeature
+
+```typescript
+shareFeature?: ShareFeature
+```
+
+Configuration for sharing features in the dossier.
+
+### smartBanner
+
+```typescript
+smartBanner?: boolean
+```
+
+If `true`, enables the smart banner feature.
+
+### tocFeature
+
+```typescript
+tocFeature?: {
+  enabled?: boolean;
+}
+```
+
+Configuration for table of contents features.
+
+- `enabled`: Whether the table of contents is enabled.
+
+### uiMessage
+
+```typescript
+uiMessage?: {
+  enabled?: boolean;
+  addToLibrary?: boolean;
+}
+```
+
+Configuration for UI messages.
+
+- `enabled`: Whether UI messages are enabled.
+- `addToLibrary`: Whether the "Add to Library" message is enabled.
+
+### visibleTutorials
+
+```typescript
+visibleTutorials?: {
+  library: boolean;
+  welcome: boolean;
+  dossier: boolean;
+  notification: boolean;
+}
+```
+
+Configuration for which tutorials are visible.
+
+- `library`: Whether library tutorials are visible.
+- `welcome`: Whether welcome tutorials are visible.
+- `dossier`: Whether dossier tutorials are visible.
+- `notification`: Whether notification tutorials are visible.
+
+### dossierRenderingMode
+
+```typescript
+dossierRenderingMode?: "consumption" | "authoring"
+```
+
+The rendering mode of the dossier. Can be either "consumption" (for viewing) or "authoring" (for editing).
+
+### authoring
+
+```typescript
+authoring?: {
+  menubar?: { library?: { visible?: boolean; }; };
+  toolbar?: { /* many toolbar options */ };
+  panelVisibility?: { /* panel visibility options */ };
+}
+```
+
+Configuration for authoring mode features. This is a comprehensive configuration object that controls the visibility of various authoring tools.
+
+#### authoring.menubar
+
+Controls the menubar elements in authoring mode.
+
+#### authoring.toolbar
+
+Controls the visibility of toolbar elements in authoring mode. There are many options available including:
+
+- `tableOfContents`: Table of contents button
+- `undo`, `redo`: Undo/redo buttons
+- `refresh`: Refresh button
+- `addData`, `addChapter`, `addPage`: Content addition buttons
+- Various insert buttons for visualizations, filters, text, images, etc.
+- Layout and formatting controls
+
+#### authoring.panelVisibility
+
+Controls the visibility of panels in authoring mode:
+
+- `contents`: Table of contents panel
+- `datasets`: Datasets panel
+- `editor`: Editor panel
+- `filter`: Filter panel
+- `format`: Formatting panel
+- `layers`: Layers panel
+
+### disableCustomErrorHandlerOnCreate
+
+```typescript
+disableCustomErrorHandlerOnCreate?: boolean
+```
+
+If `true`, disables custom error handlers during the creation of the dossier.
+
+### sessionErrorHandler
+
+```typescript
+sessionErrorHandler?: (error: ErrorHandlerInterface) => void
+```
+
+Function to handle session errors.
+
+### errorHandler
+
+```typescript
+errorHandler?: (error: ErrorHandlerInterface) => void
+```
+
+Function to handle general errors.
+
+## Usage Example
+
+```typescript
+import { MicroStrategyDossierConfig } from "embed-dossier-mstr-react"
+
+// Create a dossier configuration
+const config: MicroStrategyDossierConfig = {
+  // Required properties
+  placeholder: document.getElementById("dossier-container"),
+  url: "https://your-mstr-server/MicroStrategyLibrary/app/PROJECT_ID/DOSSIER_ID",
+
+  // Optional properties
+  containerHeight: "600px",
+  containerWidth: "100%",
+
+  // Enable custom authentication
+  enableCustomAuthentication: true,
+  getLoginToken: async () => {
+    // Get your authentication token from your auth service
+    const response = await fetch("https://your-auth-service/api/token")
+    const data = await response.json()
+    return data.token
+  },
+
+  // Configure navigation and UI
+  navigationBar: {
+    enabled: true,
+    gotoLibrary: false,
+    title: "My Embedded Dashboard",
+    toc: true,
+    reset: true,
+  },
+
+  // Configure filters
+  filterFeature: {
+    enabled: true,
+    edit: true,
+    summary: true,
+  },
+
+  // Set rendering mode
+  dossierRenderingMode: "consumption",
+
+  // Configure error handling
+  errorHandler: (error) => {
+    console.error("Dossier error:", error)
+    // Handle error appropriately
+  },
+}
+
+// Create the dossier
+const dossier = await window.microstrategy.dossier.create(config)
+```
+
+## Related Types
+
+- [MicroStrategyDossier](/docs/api-reference/types-and-interfaces/microstrategy-dossier)
+- [MicroStrategyDossierConfigCustomAuthenticationType](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config-custom-authentication-type)
+- [NavigationBar](/docs/api-reference/types-and-interfaces/navigation-bar)
+- [CustomUi](/docs/api-reference/types-and-interfaces/custom-ui)
+- [OptionsFeature](/docs/api-reference/types-and-interfaces/options-feature)
+- [ShareFeature](/docs/api-reference/types-and-interfaces/share-feature)
+- [DockedCommentAndFilter](/docs/api-reference/types-and-interfaces/docked-comment-and-filter)
+- [DockedTheme](/docs/api-reference/types-and-interfaces/docked-theme)
+- [FilterCreation](/docs/api-reference/types-and-interfaces/filter-creation)
+- [ErrorHandlerInterface](/docs/api-reference/types-and-interfaces/error-handler-interface)

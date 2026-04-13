@@ -1,0 +1,40 @@
+---
+title: CurrentPage
+description: This page is a reference to the CurrentPage used in the `embed-dossier-mstr-react` library.
+keywords:
+  [
+    "types",
+    "interfaces",
+    "reference",
+    "embed-dossier-mstr-react",
+    "current-page",
+  ]
+---
+
+## Properties
+
+| Property      | Type                             | Required | Description                                      |
+| ------------- | -------------------------------- | -------- | ------------------------------------------------ |
+| `key`         | string                           | Yes      | The unique key that identifies the specific page |
+| `targetGroup` | `{ id?: string; name?: string }` | No       | Optional target group information for the page   |
+
+## Usage
+
+The `CurrentPage` interface is used to represent the currently active page in a dossier. It provides essential information about the page's identifier and its associated target group (if applicable).
+
+```typescript
+import { CurrentPage } from "embed-dossier-mstr-react"
+
+// Example of creating a CurrentPage object
+const currentPage: CurrentPage = {
+  key: "page123",
+  targetGroup: {
+    id: "group456",
+    name: "Finance Department",
+  },
+}
+```
+
+## Related Interfaces
+
+- `PageInfo` - Contains detailed information about pages within a dossier

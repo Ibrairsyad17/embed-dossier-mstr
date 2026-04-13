@@ -1,0 +1,228 @@
+---
+title: Settings
+description: This page is a reference to the Settings type used in the `embed-dossier-mstr-react` library.
+keywords:
+  ["types", "interfaces", "reference", "embed-dossier-mstr-react", "settings"]
+---
+
+# Settings
+
+`Settings` is an interface that defines configuration options for both dossier consumption and bot consumption pages in MicroStrategy embedded applications. This interface allows you to control various aspects of how users interact with embedded dossiers and bots.
+
+## Interface Definition
+
+```tsx
+export interface Settings {
+  dossierConsumption?: DossierConsumptionSettings
+  botConsumption?: BotConsumptionSettings
+}
+
+export interface DossierConsumptionSettings {
+  componentSelectionMode:
+    | "noSelection"
+    | "singleSelection"
+    | "multipleSelection"
+  disableManipulationsAutoSaving?: boolean
+  enablePageSelection?: boolean
+  disableGroupSelection?: boolean
+}
+
+export interface BotConsumptionSettings {
+  disableManipulationsAutoSaving?: boolean
+}
+```
+
+## Properties
+
+The `Settings` interface has two optional properties, each representing settings for different types of embedded content:
+
+| Property             | Type                         | Required | Description                                              |
+| -------------------- | ---------------------------- | -------- | -------------------------------------------------------- |
+| `dossierConsumption` | `DossierConsumptionSettings` | No       | Settings specific to embedded dossier consumption pages. |
+| `botConsumption`     | `BotConsumptionSettings`     | No       | Settings specific to embedded bot consumption pages.     |
+
+### DossierConsumptionSettings
+
+The `DossierConsumptionSettings` interface controls the behavior of embedded dossier consumption pages:
+
+| Property                         | Type                                                        | Required | Description                                                                                                                                                                                                                                             |
+| -------------------------------- | ----------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `componentSelectionMode`         | `"noSelection" \| "singleSelection" \| "multipleSelection"` | Yes      | Controls how users can select components within the dossier:<br/>- `noSelection`: Users cannot select components<br/>- `singleSelection`: Users can select only one component at a time<br/>- `multipleSelection`: Users can select multiple components |
+| `disableManipulationsAutoSaving` | `boolean`                                                   | No       | When `true`, prevents automatic saving of user manipulations to the dossier.                                                                                                                                                                            |
+| `enablePageSelection`            | `boolean`                                                   | No       | When `true`, allows users to select entire pages within the dossier.                                                                                                                                                                                    |
+| `disableGroupSelection`          | `boolean`                                                   | No       | When `true`, prevents users from selecting groups of components.                                                                                                                                                                                        |
+
+### BotConsumptionSettings
+
+The `BotConsumptionSettings` interface controls the behavior of embedded bot consumption pages:
+
+| Property                         | Type      | Required | Description                                                              |
+| -------------------------------- | --------- | -------- | ------------------------------------------------------------------------ |
+| `disableManipulationsAutoSaving` | `boolean` | No       | When `true`, prevents automatic saving of user manipulations to the bot. |
+
+## Usage Example
+
+Here's an example of how to use the `Settings` interface when configuring an embedded dossier consumption page:
+
+```tsx
+import React, { useEffect, useRef } from "react"
+import { useLoadMstrSDK } from "embed-dossier-mstr-react"
+
+const DossierConsumptionPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const serverUrl = "https://your-microstrategy-server.com/MicroStrategyLibrary"
+  const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary: serverUrl })
+
+  useEffect(() => {
+    if (!isSdkLoaded || !containerRef.current) return
+
+    const embedDossier = async () => {
+      try {
+        // First, authenticate the user (example using a guest login)
+        await fetch(`${serverUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ loginMode: 8 }), // Guest login
+        })
+
+        // Configure and embed the dossier consumption page
+        const config = {
+          placeholder: containerRef.current,
+          serverUrl: serverUrl,
+          projectId: "B19DEDCC11D4E0EFC000EB9495D0F44F", // Example project ID
+          objectId: "8CCD8D9D4051A4C533C719A6590DEED8", // Example dossier ID
+          enableCustomAuthentication: true,
+          customAuthenticationType:
+            window.microstrategy.dossier.CustomAuthenticationType.AUTH_TOKEN,
+          getLoginToken: async () => {
+            const response = await fetch(`${serverUrl}/api/auth/token`, {
+              method: "GET",
+              credentials: "include",
+              mode: "cors",
+              headers: { "content-type": "application/json" },
+            })
+            return response.ok ? response.headers.get("x-mstr-authtoken") : null
+          },
+          // Settings for controlling dossier behavior
+          settings: {
+            dossierConsumption: {
+              componentSelectionMode: "singleSelection",
+              disableManipulationsAutoSaving: true,
+              enablePageSelection: false,
+              disableGroupSelection: true,
+            },
+          },
+        }
+
+        const dossierPage =
+          await window.microstrategy.embeddingContexts.embedDossierConsumptionPage(
+            config
+          )
+        console.log("Dossier embedded successfully:", dossierPage)
+      } catch (error) {
+        console.error("Failed to embed dossier:", error)
+      }
+    }
+
+    embedDossier()
+  }, [isSdkLoaded])
+
+  return (
+    <div>
+      <h1>Embedded Dossier with Custom Settings</h1>
+      <div ref={containerRef} style={{ width: "100%", height: "600px" }}></div>
+    </div>
+  )
+}
+
+export default DossierConsumptionPage
+```
+
+## Bot Settings Example
+
+Here's an example of how to configure settings for an embedded bot:
+
+```tsx
+const botConfig = {
+  // ...other required properties
+  settings: {
+    botConsumption: {
+      disableManipulationsAutoSaving: true,
+    },
+  },
+}
+
+const botPage =
+  await window.microstrategy.embeddingContexts.embedBotConsumptionPage(
+    botConfig
+  )
+```
+
+## Selection Modes
+
+The `componentSelectionMode` property in the `DossierConsumptionSettings` interface controls how users can interact with components in the dossier:
+
+### noSelection
+
+When set to `"noSelection"`, users cannot select any components in the dossier. This is useful for view-only scenarios where you don't want users to be able to interact with individual components.
+
+```tsx
+settings: {
+  dossierConsumption: {
+    componentSelectionMode: "noSelection"
+    // other settings...
+  }
+}
+```
+
+### singleSelection
+
+When set to `"singleSelection"`, users can select only one component at a time. This is useful when you want users to be able to interact with components but not select multiple components simultaneously.
+
+```tsx
+settings: {
+  dossierConsumption: {
+    componentSelectionMode: "singleSelection"
+    // other settings...
+  }
+}
+```
+
+### multipleSelection
+
+When set to `"multipleSelection"`, users can select multiple components at once. This is useful when you want users to be able to interact with and compare multiple components.
+
+```tsx
+settings: {
+  dossierConsumption: {
+    componentSelectionMode: "multipleSelection"
+    // other settings...
+  }
+}
+```
+
+## Auto-Saving Manipulations
+
+Both `DossierConsumptionSettings` and `BotConsumptionSettings` include a `disableManipulationsAutoSaving` property. When set to `true`, this property prevents the automatic saving of user manipulations to the dossier or bot.
+
+This can be useful in scenarios where:
+
+- You want to provide a "sandbox" environment where users can experiment without saving changes
+- You want to implement your own save mechanism
+- You want to prevent users from making permanent changes to the dossier or bot
+
+```tsx
+settings: {
+  dossierConsumption: {
+    disableManipulationsAutoSaving: true
+    // other settings...
+  }
+}
+```
+
+## Related Interfaces
+
+- `EmbedDossierConsumptionPageConfig`: The configuration interface used when embedding a dossier consumption page.
+- `EmbedBotConsumptionPageConfig`: The configuration interface used when embedding a bot consumption page.

@@ -1,0 +1,264 @@
+---
+title: <BotConsumptionPageWithAuth />
+description: Learn about the <BotConsumptionPageWithAuth /> component and how to enhance your embedded MicroStrategy Bot interactions with authentication in your React applications using the `embed-dossier-mstr-react` package.
+keywords:
+  [
+    embedding,
+    sdk,
+    functionalities,
+    authentication,
+    helper methods,
+    bot,
+    consumption,
+    generative ai,
+    embed-dossier-mstr,
+  ]
+---
+
+## Import
+
+```tsx
+import { BotConsumptionPageWithAuth } from "embed-dossier-mstr-react"
+```
+
+## Props
+
+| Prop               | Type                                                                                             | Required                  | Description                                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `serverUrlLibrary` | `string`                                                                                         | Yes                       | The base URL of the MicroStrategy Library server                                                       |
+| `projectId`        | `string`                                                                                         | Yes                       | The ID of the MicroStrategy project to connect to                                                      |
+| `objectId`         | `string`                                                                                         | Yes                       | The ID of the MicroStrategy bot object to embed                                                        |
+| `config`           | `Omit<EmbedBotConsumptionPageConfig, "placeholder" \| "serverUrl" \| "projectId" \| "objectId">` | Yes                       | Configuration options for the bot consumption page                                                     |
+| `loginMode`        | `"guest" \| "standard" \| "saml" \| "oidc" \| "ldap"`                                            | Yes                       | The authentication method to use                                                                       |
+| `username`         | `string`                                                                                         | For 'standard' and 'ldap' | Username for authentication (required for standard and LDAP authentication)                            |
+| `password`         | `string`                                                                                         | For 'standard' and 'ldap' | Password for authentication (required for standard and LDAP authentication)                            |
+| `className`        | `string`                                                                                         | No                        | CSS class names to apply to the container element                                                      |
+| `style`            | `React.CSSProperties`                                                                            | No                        | Inline styles to apply to the container element                                                        |
+| `loadingComponent` | `ReactNode`                                                                                      | No                        | Custom component to show during authentication and loading (defaults to a simple "Loading..." message) |
+| `errorComponent`   | `(error: string) => ReactNode`                                                                   | No                        | Function that returns a custom component for error states (defaults to displaying the error message)   |
+
+## Basic Usage
+
+Here's a simple example of using the `BotConsumptionPageWithAuth` component with standard authentication:
+
+```tsx
+import { BotConsumptionPageWithAuth } from "embed-dossier-mstr-react"
+
+const MyAuthenticatedBotInterface = () => {
+  return (
+    <BotConsumptionPageWithAuth
+      serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+      projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+      objectId="D9AB3763ED4BAD952F57A586DC888758"
+      loginMode="standard"
+      username="jsmith"
+      password="password123"
+      className="my-bot-interface"
+      style={{ height: "700px" }}
+    />
+  )
+}
+```
+
+## Authentication Methods
+
+The component supports multiple authentication methods:
+
+### Guest Authentication
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="guest"
+  config={{
+    containerHeight: "600px",
+    containerWidth: "100%",
+  }}
+/>
+```
+
+### Standard Authentication
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  config={{
+    containerHeight: "600px",
+    containerWidth: "100%",
+  }}
+/>
+```
+
+### LDAP Authentication
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="ldap"
+  username="jsmith"
+  password="password123"
+  config={{
+    containerHeight: "600px",
+    containerWidth: "100%",
+  }}
+/>
+```
+
+### Single Sign-On Methods
+
+For SAML and OIDC, the component will redirect to the identity provider's login page:
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="saml"
+  config={{
+    containerHeight: "600px",
+    containerWidth: "100%",
+  }}
+/>
+```
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="oidc"
+  config={{
+    containerHeight: "600px",
+    containerWidth: "100%",
+  }}
+/>
+```
+
+## Custom Loading and Error States
+
+You can customize the loading and error states using the `loadingComponent` and `errorComponent` props:
+
+### Custom Loading Component
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  loadingComponent={
+    <div className="flex justify-center items-center h-60">
+      <div className="spinner-border" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+      <p className="ml-2">Authenticating and loading your AI assistant...</p>
+    </div>
+  }
+/>
+```
+
+### Custom Error Component
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="standard"
+  username="jsmith"
+  password="password123"
+  errorComponent={(errorMessage) => (
+    <div className="error-container">
+      <h3>Authentication Error</h3>
+      <p>{errorMessage}</p>
+      <button onClick={() => window.location.reload()}>Retry</button>
+    </div>
+  )}
+/>
+```
+
+## Advanced Configuration
+
+Similar to the `BotConsumptionPage` component, you can customize the behavior and appearance using a `config` object:
+
+```tsx
+<BotConsumptionPageWithAuth
+  serverUrlLibrary="https://demo.microstrategy.com/MicroStrategyLibrary"
+  projectId="B19DEDCC11D4E0EFC000EB9495D0F44F"
+  objectId="D9AB3763ED4BAD952F57A586DC888758"
+  loginMode="guest"
+  config={{
+    containerHeight: "700px",
+    containerWidth: "100%",
+    disableNotificationCenter: true,
+    enableResponsive: true,
+    customUi: {
+      logo: false,
+      brandingText: "Enterprise AI Assistant",
+      primaryColor: "#3182CE",
+    },
+    onBotReady: () => {
+      console.log("Bot interface is ready")
+    },
+    errorHandler: (error) => {
+      console.error("Bot error:", error)
+    },
+  }}
+  style={{ height: "800px", width: "100%" }}
+/>
+```
+
+## How It Works
+
+The `BotConsumptionPageWithAuth` component:
+
+1. Uses the `useCreateBotConsumptionPageWithAuth` hook to handle authentication and bot creation
+2. Displays a loading component during authentication
+3. Shows an error component if authentication fails
+4. Renders the bot interface once authentication is successful
+
+## Authentication Flow
+
+1. The component attempts to authenticate with the MicroStrategy server using the provided credentials and login mode
+2. For standard and LDAP authentication, it sends the username and password to the server
+3. For SAML and OIDC, it redirects to the identity provider's login page
+4. For guest authentication, it connects using the guest user credentials
+5. Once authenticated, it creates and renders the bot interface
+
+## Error Handling
+
+The component automatically handles authentication errors and provides ways to customize error states:
+
+1. If authentication fails, it displays the error component with the error message
+2. The error message includes details about what went wrong, such as invalid credentials or server issues
+3. You can provide a custom error rendering function to display errors in a way that matches your application's design
+
+## Security Considerations
+
+When using this component, keep these security best practices in mind:
+
+1. Avoid hardcoding credentials in your code; use environment variables or a secure credential management system
+2. Use HTTPS for all communications with the MicroStrategy server
+3. For production deployments, prefer SAML, OIDC, or backend proxy authentication over storing credentials in the frontend
+4. Consider implementing additional security measures such as IP restrictions or session timeouts
+
+## Related Components
+
+- [`BotConsumptionPage`](/docs/api-reference/bot-consumption-page) - Basic component without authentication handling
+- [`DashboardEmbedWithAuth`](/docs/api-reference/dashboard-embed-with-auth) - For embedding authenticated dashboards
+
+## Related Hooks
+
+- [`useCreateBotConsumptionPageWithAuth`](/docs/api-reference/use-create-bot-consumption-page-with-auth) - The hook used internally by this component
+- [`useCreateBotConsumptionPage`](/docs/api-reference/use-create-bot-consumption-page) - Basic bot creation hook without authentication

@@ -1,0 +1,113 @@
+---
+title: Types and Interfaces
+description: API reference for the MicroStrategy types and interfaces provided by the embed-dossier-mstr-react package.
+keywords:
+  [
+    "embedding",
+    "sdk",
+    "types",
+    "interfaces",
+    "API reference",
+    "embed-dossier-mstr",
+    "typescript",
+  ]
+---
+
+# Types and Interfaces
+
+The `embed-dossier-mstr-react` package provides a comprehensive set of TypeScript types and interfaces that help you work with the MicroStrategy Embedding SDK. These types provide strong typing for all aspects of embedding MicroStrategy content in your React applications.
+
+## Core Types
+
+These are the primary types that you'll work with when embedding MicroStrategy content:
+
+| Type                                                                                                                  | Description                                                                               |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [`MicroStrategySDK`](/docs/api-reference/types-and-interfaces/microstrategy-sdk)                                      | The main interface for the MicroStrategy SDK object available on the global window object |
+| [`MicroStrategyDossier`](/docs/api-reference/types-and-interfaces/microstrategy-dossier)                              | Interface for the dossier (dashboard) object returned when creating an embedded dossier   |
+| [`MicroStrategyDossierConfig`](/docs/api-reference/types-and-interfaces/microstrategy-dossier-config)                 | Configuration options for embedding a dossier                                             |
+| [`EmbedLibraryPage`](/docs/api-reference/types-and-interfaces/embed-library-page)                                     | Interface for the library page object returned when embedding a library page              |
+| [`EmbedLibraryPageConfig`](/docs/api-reference/types-and-interfaces/embed-library-page-config)                        | Configuration options for embedding a library page                                        |
+| [`EmbedDossierConsumptionPage`](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page)              | Interface for the dossier consumption page object                                         |
+| [`EmbedDossierConsumptionPageConfig`](/docs/api-reference/types-and-interfaces/embed-dossier-consumption-page-config) | Configuration options for embedding a dossier consumption page                            |
+| [`EmbedBotConsumptionPage`](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page)                      | Interface for the bot consumption page object                                             |
+| [`EmbedBotConsumptionPageConfig`](/docs/api-reference/types-and-interfaces/embed-bot-consumption-page-config)         | Configuration options for embedding a bot consumption page                                |
+| [`EmbedReportPage`](/docs/api-reference/types-and-interfaces/embed-report-page)                                       | Interface for the report page object                                                      |
+| [`EmbedReportPageConfig`](/docs/api-reference/types-and-interfaces/embed-report-page-config)                          | Configuration options for embedding a report page                                         |
+
+## Navigation and Structure Types
+
+These types help you work with the structure and navigation elements of MicroStrategy content:
+
+| Type                                                                            | Description                                                |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [`TableOfContents`](/docs/api-reference/types-and-interfaces/table-of-contents) | Interface for the table of contents structure of a dossier |
+| [`DossierChapter`](/docs/api-reference/types-and-interfaces/dossier-chapter)    | Interface representing a chapter within a dossier          |
+| [`DossierPage`](/docs/api-reference/types-and-interfaces/dossier-page)          | Interface representing a page within a dossier             |
+| [`PageInfo`](/docs/api-reference/types-and-interfaces/page-info)                | Information about a page for navigation purposes           |
+
+## UI and Configuration Types
+
+These types help you customize the appearance and behavior of embedded content:
+
+| Type                                                                         | Description                                                  |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [`CustomUi`](/docs/api-reference/types-and-interfaces/custom-ui)             | Options for customizing the UI of embedded content           |
+| [`NavigationBar`](/docs/api-reference/types-and-interfaces/navigation-bar)   | Options for configuring the navigation bar                   |
+| [`OptionsFeature`](/docs/api-reference/types-and-interfaces/options-feature) | Options for configuring various features                     |
+| [`ShareFeature`](/docs/api-reference/types-and-interfaces/share-feature)     | Options for configuring sharing capabilities                 |
+| [`Settings`](/docs/api-reference/types-and-interfaces/settings)              | Settings for configuring various aspects of embedded content |
+
+## Event Handling Types
+
+These types help you work with events in the MicroStrategy SDK:
+
+| Type                                                                     | Description                              |
+| ------------------------------------------------------------------------ | ---------------------------------------- |
+| [`EventTypes`](/docs/api-reference/types-and-interfaces/event-types)     | Types of events that can be listened for |
+| [`EventHandler`](/docs/api-reference/types-and-interfaces/event-handler) | Interface for an event handler function  |
+
+## Filter Types
+
+These types help you work with filters in MicroStrategy content:
+
+| Type                                                                          | Description                           |
+| ----------------------------------------------------------------------------- | ------------------------------------- |
+| [`FilterJson`](/docs/api-reference/types-and-interfaces/filter-json)          | JSON structure for filter definitions |
+| [`FilterCreation`](/docs/api-reference/types-and-interfaces/filter-creation)  | Options for creating filters          |
+| [`FilterListType`](/docs/api-reference/types-and-interfaces/filter-list-type) | Structure for lists of filters        |
+
+## Global Declarations
+
+The package extends the global `Window` interface to include MicroStrategy SDK access:
+
+```typescript
+declare global {
+  interface Window {
+    microstrategy: MicroStrategySDK
+  }
+}
+```
+
+This allows you to access the MicroStrategy SDK via `window.microstrategy` after it's loaded.
+
+## Type Import Example
+
+When working with the package, you can import the types you need:
+
+```typescript
+import {
+  EmbedBotConsumptionPageConfig,
+  EmbedLibraryPage,
+  MicroStrategyDossier,
+  MicroStrategyDossierConfig,
+} from "embed-dossier-mstr-react"
+
+// Then use these types in your code
+const config: MicroStrategyDossierConfig = {
+  placeholder: document.getElementById("dossier-container"),
+  url: "https://your-mstr-server/MicroStrategyLibrary/app/[PROJECT_ID]/[DOSSIER_ID]",
+}
+```
+
+For more detailed information about each type, follow the links to their individual reference pages.
