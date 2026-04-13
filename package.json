@@ -1,7 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "preinstall": "corepack enable && corepack prepare pnpm@9.15.4 --activate",
     "build": "turbo build",
     "dev": "turbo dev",
     "test": "turbo test",
