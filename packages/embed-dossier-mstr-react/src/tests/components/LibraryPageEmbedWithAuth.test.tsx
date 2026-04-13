@@ -168,9 +168,8 @@ describe("LibraryPageEmbedWithAuth", () => {
       error: null,
     });
 
-    const { container } = render(
-      <LibraryPageEmbedWithAuth {...defaultProps} />
-    );
+    // const { container } = 
+    render(<LibraryPageEmbedWithAuth {...defaultProps} />);
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 

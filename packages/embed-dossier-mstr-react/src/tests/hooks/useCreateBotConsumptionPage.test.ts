@@ -10,7 +10,7 @@ vi.mock("../../exports", () => ({
 
 describe("useCreateBotConsumptionPage", () => {
   const mockEmbedBotConsumptionPage = vi.fn();
-  const mockRef = document.createElement("div");
+  // const mockRef = document.createElement("div");
 
   beforeEach(() => {
     vi.clearAllMocks();
