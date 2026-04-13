@@ -18,7 +18,7 @@ export default defineConfig({
         "src/**/*.test.{ts,tsx}",
         "src/index.ts",
         "src/exports.ts",
-        "src/vitest.config.ts",
+        "vitest.config.mts"
       ],
       thresholds: {
         branches: 70,
