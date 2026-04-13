@@ -1,4 +1,4 @@
-import { EVENT_TYPE } from "../constants/eventType";
+import { EventTypes } from "./events";
 import { FilterCreation, FilterJson, FilterListType } from "./filter";
 import {
   CurrentPage,
@@ -11,7 +11,7 @@ import {
   PageInfo,
   ShareFeature,
 } from "./utils";
-import { EventTypes, EventHandler } from "./events";
+import type { EventHandler } from "./events";
 import { DossierChapter, DossierPage, TableOfContents } from "./navigation";
 import { Settings } from "./settings";
 
@@ -53,14 +53,14 @@ interface MicroStrategySDK {
       AUTH_TOKEN: string;
       IDENTITY_TOKEN: string;
     };
-    EventType: EVENT_TYPE;
+    EventType: Record<string, EventTypes>;
   };
   auth: {
     oidcLogin: (serverUrl: string) => Promise<string>;
     samlLogin: (serverUrl: string) => Promise<string>;
   };
   embedding: {
-    featureFlags: Record<string, unknown> | unknown;
+    featureFlags: Record<string, unknown>;
   };
   embeddingContexts: {
     embedLibraryPage: (
@@ -561,7 +561,6 @@ interface EmbedDossierConsumptionPageConfig {
     | Pick<Settings, "botConsumption">;
 }
 
-// TODO: DO MORE RESEARCH ON THIS
 interface EmbedDossierConsumptionPage {
   addCustomErrorHandler: (
     handler: (error: ErrorHandlerInterface) => void,
@@ -601,7 +600,7 @@ interface EmbedBotConsumptionPageConfig
  *
  */
 
-// TODO: DO MORE RESEARCH ON THIS
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface EmbedBotConsumptionPage {}
 
 /**
@@ -623,7 +622,7 @@ interface EmbedReportPageConfig extends EmbedDossierConsumptionPageConfig {}
  *
  */
 
-// TODO: DO MORE RESEARCH ON THIS
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface EmbedReportPage {}
 
 export {

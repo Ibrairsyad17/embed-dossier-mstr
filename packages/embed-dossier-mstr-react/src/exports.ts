@@ -1,16 +1,15 @@
 /**
- * This file is use for exporting all the types and components from the package.
+ * embed-dossier-mstr-react
+ *
+ * A production-ready React library for embedding MicroStrategy Dossiers,
+ * Reports, and Bot Consumption pages.
+ *
+ * @packageDocumentation
  */
 
-/**
- * Types from MicroStrategy Embedding SDK
- *
- * These are the Types from MicroStrategy Embedding SDK that is exported from the package.
- *
- * @see https://microstrategy.github.io/embedding-sdk-docs/
- */
+// ─── Types ───────────────────────────────────────────────────────────────────
 
-export {
+export type {
   MicroStrategySDK,
   MicroStrategyDossierConfig,
   MicroStrategyDossierConfigCustomAuthenticationType,
@@ -24,8 +23,9 @@ export {
   EmbedReportPage,
   EmbedDossierConsumptionPage,
   EmbedBotConsumptionPage,
-  Settings,
 } from "./types";
+
+export { Settings } from "./types";
 
 export type {
   DossierConsumptionSettings,
@@ -33,8 +33,6 @@ export type {
 } from "./types/settings";
 
 export type { EventTypes, EventHandler, EventHandlers } from "./types/events";
-
-export { EVENT_TYPE } from "./constants/eventType";
 
 export type {
   FilterTypeInfoCalendar,
@@ -58,33 +56,42 @@ export type {
   PageInfo,
 } from "./types/utils";
 
-/**
- * Components
- *
- * This is all the components that are exported from the package.
- */
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+export { EVENT_TYPE } from "./constants/eventType";
+export type { EventTypeValue } from "./constants/eventType";
+
+// ─── Components ──────────────────────────────────────────────────────────────
 
 export { DashboardEmbed } from "./components/DashboardEmbed";
-export { LibraryPageEmbed } from "./components/LibraryPageEmbed";
-export { BotConsumptionPage } from "./components/BotConsumptionPage";
-export { DashboardEmbedWithAuth } from "./components/DashboardEmbedWithAuth";
+export type { DashboardEmbedProps } from "./components/DashboardEmbed";
 
-/**
- * Hooks
- *
- * This is all the hooks that are exported from the package.
- */
+export { DashboardEmbedWithAuth } from "./components/DashboardEmbedWithAuth";
+export type { DashboardEmbedWithAuthProps } from "./components/DashboardEmbedWithAuth";
+
+export { LibraryPageEmbed } from "./components/LibraryPageEmbed";
+export type { LibraryPageEmbedProps } from "./components/LibraryPageEmbed";
+
+export { LibraryPageEmbedWithAuth } from "./components/LibraryPageEmbedWithAuth";
+export type { LibraryPageEmbedWithAuthProps } from "./components/LibraryPageEmbedWithAuth";
+
+export { BotConsumptionPage } from "./components/BotConsumptionPage";
+export type { BotConsumptionPageProps } from "./components/BotConsumptionPage";
+
+export { BotConsumptionPageWithAuth } from "./components/BotConsumptionPageWithAuth";
+export type { BotConsumptionPageWithAuthProps } from "./components/BotConsumptionPageWithAuth";
+
+// ─── Hooks ───────────────────────────────────────────────────────────────────
 
 export { useLoadMstrSDK } from "./hooks/useLoadMstrSDK";
 export { useCreateDashboard } from "./hooks/useCreateDashboard";
-export { useCreateLibraryPage } from "./hooks/useCreateLibraryPage";
-export { useCreateBotConsumptionPage } from "./hooks/useCreateBotConsumptionPage";
+export type { UseCreateDashboardProps } from "./hooks/useCreateDashboard";
 export { useCreateDashboardWithAuth } from "./hooks/useCreateDashboardWithAuth";
+export { useCreateLibraryPage } from "./hooks/useCreateLibraryPage";
+export { useCreateLibraryPageWithAuth } from "./hooks/useCreateLibraryPageWithAuth";
+export { useCreateBotConsumptionPage } from "./hooks/useCreateBotConsumptionPage";
+export { useCreateBotConsumptionPageWithAuth } from "./hooks/useCreateBotConsumptionPageWithAuth";
 
-/**
- * Utils
- *
- * This is all the utils that are exported from the package.
- */
+// ─── Utilities ───────────────────────────────────────────────────────────────
 
 export { getServerUrl, getAuthToken, getInfoFromUrl } from "./utils";

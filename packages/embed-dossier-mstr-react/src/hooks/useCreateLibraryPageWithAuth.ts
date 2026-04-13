@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { EmbedLibraryPage, EmbedLibraryPageConfig } from "../types";
 import { useLoadMstrSDK } from "./useLoadMstrSDK";
 
@@ -26,7 +26,7 @@ const useCreateLibraryPageWithAuth = ({
   });
 
   const { isSdkLoaded } = useLoadMstrSDK({ serverUrlLibrary });
-  const prevConfigRef = useRef(config);
+
 
   useEffect(() => {
     if (!isSdkLoaded || !placeholder) return;

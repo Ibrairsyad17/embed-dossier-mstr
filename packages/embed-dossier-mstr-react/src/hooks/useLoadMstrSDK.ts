@@ -1,65 +1,67 @@
 import { useEffect, useState } from "react";
 
 /**
- * Hook Information
- * useLoadMstrSDK({serverUrlLibrary: ''})
+ * Custom hook to load the MicroStrategy Embedding SDK.
  *
- * This hook is used to load the MicroStrategy SDK based on the server URL Library provided.
+ * Dynamically injects the MicroStrategy `embeddinglib.js` script into the page.
+ * Handles the case where the SDK is already loaded, and cleans up on unmount.
  *
- * Usage:
- * const { isSdkLoaded, isSdkError } = useLoadMstrSDK({serverUrlLibrary: ''})
+ * @param serverUrlLibrary - Base URL of the MicroStrategy Library server
+ * @returns `isSdkLoaded` - Whether the SDK script has loaded successfully
+ * @returns `isSdkError` - Error state with `isError` flag and `message`
  *
- * @param serverUrlLibrary - The URL of the MicroStrategy library
- * @returns isSdkLoaded - Whether the SDK is loaded
- * @returns isSdkError - Whether there was an error loading the SDK
- *
- * Use this hook to check if the SDK is loaded and if there was an error loading the SDK.
+ * @example
+ * ```ts
+ * const { isSdkLoaded, isSdkError } = useLoadMstrSDK({
+ *   serverUrlLibrary: "https://demo.microstrategy.com/MicroStrategyLibrary"
+ * });
+ * ```
  */
-
 const useLoadMstrSDK = ({ serverUrlLibrary }: { serverUrlLibrary: string }) => {
-  /**
-   * State Information
-   * isSdkLoaded - Whether the SDK is loaded
-   * isSdkError - Whether there was an error loading the SDK
-   */
-
   const [isSdkLoaded, setIsSdkLoaded] = useState(false);
   const [isSdkError, setIsSdkError] = useState({
     isError: false,
     message: "",
   });
 
-  /**
-   * Effect Information
-   * useEffect - Load the SDK
-   */
-
   useEffect(() => {
-    const loadSdk = () => {
-      if (!window.microstrategy) {
-        const script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = serverUrlLibrary + "/javascript/embeddinglib.js";
-        script.onload = () => {
-          setIsSdkLoaded(true);
-        };
-        script.onerror = () => {
-          setIsSdkError({
-            isError: true,
-            message: "Error loading the SDK",
-          });
-        };
-        document.head.appendChild(script);
-      }
+    // If SDK is already available on the page, skip loading
+    if (window.microstrategy) {
+      setIsSdkLoaded(true);
+      return;
+    }
+
+    if (!serverUrlLibrary) {
+      setIsSdkError({
+        isError: true,
+        message: "serverUrlLibrary is required to load the MicroStrategy SDK",
+      });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = `${serverUrlLibrary}/javascript/embeddinglib.js`;
+
+    script.onload = () => {
+      setIsSdkLoaded(true);
     };
-    loadSdk();
+
+    script.onerror = () => {
+      setIsSdkError({
+        isError: true,
+        message: `Failed to load MicroStrategy SDK from ${serverUrlLibrary}`,
+      });
+    };
+
+    document.head.appendChild(script);
+
+    // Cleanup: remove the script tag on unmount
+    return () => {
+      script.remove();
+    };
   }, [serverUrlLibrary]);
 
-  /**
-   * Return Values
-   * isSdkLoaded - Whether the SDK is loaded
-   * isSdkError - Whether there was an error loading the SDK
-   */
   return { isSdkLoaded, isSdkError };
 };
 

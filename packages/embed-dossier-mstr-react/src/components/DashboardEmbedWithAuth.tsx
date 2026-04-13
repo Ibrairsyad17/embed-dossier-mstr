@@ -1,63 +1,48 @@
 import { useCreateDashboardWithAuth } from "../hooks/useCreateDashboardWithAuth";
 import { getInfoFromUrl } from "../utils";
-import cn from "classnames";
+import { clsx } from "clsx";
 import { MicroStrategyDossierConfig } from "../types";
 import { ReactNode, useRef } from "react";
 
-/**
- * Props interface for the DashboardEmbedWithAuth component
- *
- * @property dossierUrl - The full URL of the MicroStrategy dossier to embed
- *                        Format: https://{env-url}/{libraryName}/app/{projectId}/{dossierId}
- * @property className - Optional CSS class names to apply to the container
- * @property style - Optional inline styles to apply to the container
- * @property config - Dashboard configuration options excluding placeholder and URL
- * @property loginMode - Authentication method to use (guest/standard/saml/oidc/ldap)
- * @property username - Username for standard/LDAP authentication
- * @property password - Password for standard/LDAP authentication
- * @property loadingComponent - Custom component to show during authentication/loading
- * @property errorComponent - Custom component or function to render error states
- */
 interface DashboardEmbedWithAuthProps {
+  /** Full MicroStrategy dossier URL */
   dossierUrl: string;
+  /** Optional CSS class names */
   className?: string;
+  /** Optional inline styles */
   style?: React.CSSProperties;
+  /** Dashboard configuration options */
   config?: Omit<MicroStrategyDossierConfig, "placeholder" | "url">;
+  /** Authentication method */
   loginMode: "guest" | "standard" | "saml" | "oidc" | "ldap";
+  /** Username for standard/LDAP authentication */
   username?: string;
+  /** Password for standard/LDAP authentication */
   password?: string;
+  /** Custom loading component shown during authentication */
   loadingComponent?: ReactNode;
+  /** Custom error component — receives the error message string */
   errorComponent?: ReactNode | ((error: string) => ReactNode);
 }
 
 /**
- * DashboardEmbedWithAuth Component
+ * Embeds a MicroStrategy Dashboard with built-in authentication.
  *
- * A React component that handles authentication and embedding of MicroStrategy dashboards.
- * This component supports multiple authentication methods and provides customizable
- * loading and error states.
+ * Supports Guest, Standard, LDAP, SAML, and OIDC authentication methods.
+ * Provides customizable loading and error states.
  *
- * Features:
- * - Multiple authentication methods (Guest, Standard, SAML, OIDC, LDAP)
- * - Customizable loading and error states
- * - Responsive design support
- * - Custom styling options
- *
- * Usage example:
+ * @example
  * ```tsx
  * <DashboardEmbedWithAuth
- *   dossierUrl="https://your-mstr-server/MicroStrategyLibrary/app/..."
+ *   dossierUrl="https://your-server.com/MicroStrategyLibrary/app/{projectId}/{dossierId}"
  *   loginMode="standard"
  *   username="user"
  *   password="pass"
- *   className="dashboard-container"
+ *   style={{ width: "100%", height: "800px" }}
  *   loadingComponent={<Spinner />}
- *   errorComponent={(error) => <ErrorAlert message={error} />}
+ *   errorComponent={(error) => <Alert message={error} />}
  * />
  * ```
- *
- * @param props - Component props of type DashboardEmbedWithAuthProps
- * @returns React component that renders the authenticated dashboard
  */
 const DashboardEmbedWithAuth = ({
   dossierUrl,
@@ -69,19 +54,24 @@ const DashboardEmbedWithAuth = ({
   password,
   loadingComponent = <div>Loading...</div>,
   errorComponent = (error: string) => (
-    <div className="text-center text-red-500 p-4 max-w-md">
-      <h3 className="text-lg font-semibold mb-2">Authentication Error</h3>
+    <div
+      style={{
+        textAlign: "center",
+        color: "#ef4444",
+        padding: "16px",
+        maxWidth: "448px",
+      }}
+    >
+      <h3 style={{ fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>
+        Authentication Error
+      </h3>
       <p>{error}</p>
     </div>
   ),
 }: DashboardEmbedWithAuthProps) => {
-  // Extract server URL from the full dossier URL
   const { serverUrlLibrary } = getInfoFromUrl(dossierUrl);
-
-  // Create a ref for the dashboard container
   const divRef = useRef<HTMLDivElement>(null);
 
-  // Initialize dashboard with authentication
   const { isAuthenticating, error } = useCreateDashboardWithAuth({
     serverUrlLibrary,
     placeholder: divRef.current,
@@ -98,12 +88,10 @@ const DashboardEmbedWithAuth = ({
     password,
   });
 
-  // Show loading state while authenticating
   if (isAuthenticating) {
     return <>{loadingComponent}</>;
   }
 
-  // Show error state if authentication failed
   if (error) {
     return (
       <>
@@ -114,14 +102,14 @@ const DashboardEmbedWithAuth = ({
     );
   }
 
-  // Render the dashboard container
   return (
     <div
       ref={divRef}
-      className={cn("w-full h-[600px]", className)}
-      style={style}
+      className={clsx(className)}
+      style={{ width: "100%", height: "600px", ...style }}
     />
   );
 };
 
 export { DashboardEmbedWithAuth };
+export type { DashboardEmbedWithAuthProps };

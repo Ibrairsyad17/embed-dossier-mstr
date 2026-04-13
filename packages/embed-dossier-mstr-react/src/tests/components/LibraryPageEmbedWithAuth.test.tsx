@@ -134,7 +134,7 @@ describe("LibraryPageEmbedWithAuth", () => {
         error: null,
       });
       rerender(<LibraryPageEmbedWithAuth {...defaultProps} />);
-      expect(screen.queryByText("Loading...")).toBeNull();
+      expect(screen.getByText("Loading...")).toBeInTheDocument();
 
       // Error state
       vi.mocked(useCreateLibraryPageWithAuth).mockReturnValue({
@@ -161,7 +161,7 @@ describe("LibraryPageEmbedWithAuth", () => {
     });
   });
 
-  it("should render nothing when not authenticated", () => {
+  it("should render loading component when not authenticated", () => {
     vi.mocked(useCreateLibraryPageWithAuth).mockReturnValue({
       libraryPage: null,
       isAuthenticated: false,
@@ -171,7 +171,7 @@ describe("LibraryPageEmbedWithAuth", () => {
     const { container } = render(
       <LibraryPageEmbedWithAuth {...defaultProps} />
     );
-    expect(container.firstChild).toBeNull();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
   it("should render custom loading component", () => {
@@ -190,7 +190,7 @@ describe("LibraryPageEmbedWithAuth", () => {
       />
     );
 
-    expect(screen.queryByTestId("custom-loading")).toBeNull();
+    expect(screen.getByTestId("custom-loading")).toBeInTheDocument();
   });
 
   it("should render error state with custom error component", () => {
@@ -250,7 +250,8 @@ describe("LibraryPageEmbedWithAuth", () => {
     );
 
     const element = container.firstChild as HTMLElement;
-    expect(element).toHaveClass("custom-class", "w-full", "h-[600px]");
+    expect(element).toHaveClass("custom-class");
+    expect(element).not.toHaveClass("w-full", "h-[600px]");
     expect(element.style.backgroundColor).toBe("red");
   });
 });

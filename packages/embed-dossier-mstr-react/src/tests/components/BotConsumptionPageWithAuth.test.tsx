@@ -258,7 +258,8 @@ describe("BotConsumptionPageWithAuth", () => {
     );
 
     const element = container.firstChild as HTMLElement;
-    expect(element).toHaveClass("custom-class", "w-full", "h-[600px]");
+    expect(element).toHaveClass("custom-class");
+    expect(element).not.toHaveClass("w-full", "h-[600px]");
     expect(element.style.backgroundColor).toBe("red");
   });
 
@@ -273,6 +274,6 @@ describe("BotConsumptionPageWithAuth", () => {
     const { container } = render(
       <BotConsumptionPageWithAuth {...defaultProps} />
     );
-    expect(container.firstChild).toBeNull();
+    expect(container.firstChild).toBeInstanceOf(HTMLDivElement);
   });
 });
