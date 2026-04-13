@@ -69,6 +69,7 @@
     "react-dom": "^18.2.0",
     "tsup": "^8.0.2",
     "typescript": "5.5.4",
+    "vite": "^8.0.8",
     "vitest": "^3.0.6"
   },
   "repository": {
