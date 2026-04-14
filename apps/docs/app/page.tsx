@@ -28,38 +28,37 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="flex flex-col justify-center space-y-4"
             >
-              <div className="space-y-2">
-                <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400">
-                  <span className="flex h-2 w-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span>
-                  Production Ready
-                </div>
-                <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-                  Embed MicroStrategy <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                    in React beautifully.
-                  </span>
+              <div className="space-y-4">
+                <p className="text-sm font-semibold tracking-widest text-primary uppercase">
+                  Open Source • React • MicroStrategy
+                </p>
+                <h1 className="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl text-foreground">
+                  MicroStrategy Embedding, <br />
+                  <span className="italic font-light text-primary">Simplified.</span>
                 </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed pt-2">
-                  A fully type-safe, production-ready React wrapper for the MicroStrategy Embedding SDK. Zero configuration, auto-cleanup, and 5 built-in auth methods.
+                <p className="max-w-[600px] text-muted-foreground md:text-xl leading-relaxed pt-4">
+                  A beautiful, type-safe wrapper for the MicroStrategy SDK. No global mutations. No messy scripts. Just clean, idiomatic React.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 min-[400px]:flex-row pt-4">
+              <div className="flex flex-col gap-4 min-[400px]:flex-row pt-8">
+                <Button
+                  onClick={() => router.push("/docs/introduction/installation")}
+                  size="lg"
+                  className="rounded-full h-14 px-8 font-medium shadow-sm transition-transform hover:-translate-y-1"
+                >
+                  Read the Docs
+                </Button>
                 <Button
                   onClick={() => {
-                    navigator.clipboard.writeText(
-                      "npm install embed-dossier-mstr-react"
-                    )
+                    navigator.clipboard.writeText("npm install embed-dossier-mstr-react")
                   }}
                   size="lg"
+                  variant="secondary"
+                  className="rounded-full h-14 px-8 font-medium transition-transform hover:-translate-y-1"
                 >
                   <Copy className="mr-2 h-4 w-4" />
                   <span>npm install embed-dossier-mstr-react</span>
                 </Button>
-                <Link href="/docs/introduction/installation">
-                  <Button size="lg" variant="outline">
-                    View Documentation
-                  </Button>
-                </Link>
               </div>
             </motion.div>
             <motion.div
@@ -75,28 +74,27 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-32 bg-secondary/30">
         <div className="container px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="flex flex-col items-center justify-center space-y-4 text-center"
+            className="flex flex-col items-center justify-center space-y-6 text-center"
           >
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Ready to Get Started?
+            <div className="space-y-4">
+              <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl text-foreground">
+                Start embedding today.
               </h2>
-              <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                Make your embedding experience seamless and efficient with
-                EmbedYourDossier.
+              <p className="max-w-[600px] text-muted-foreground md:text-xl leading-relaxed mx-auto">
+                Stop fighting with vanilla JavaScript configurations. Get your dashboard running in under 5 minutes.
               </p>
             </div>
-            <div className="flex flex-col gap-2 min-[400px]:flex-row">
+            <div className="flex flex-col gap-4 min-[400px]:flex-row pt-4">
               <Button
                 size="lg"
-                className="h-12 px-8 shadow-md hover:scale-105 transition-all"
+                className="rounded-full h-14 px-10 shadow-sm hover:-translate-y-1 transition-transform"
                 onClick={() => router.push("/docs/introduction/installation")}
               >
                 Get Started
@@ -105,10 +103,10 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="h-12 px-8"
+                className="rounded-full h-14 px-10 hover:-translate-y-1 transition-transform bg-transparent"
                 onClick={() => window.open("https://github.com/Ibrairsyad17/embed-dossier-mstr", "_blank")}
               >
-                GitHub
+                View on GitHub
               </Button>
             </div>
           </motion.div>
