@@ -29,24 +29,21 @@ export default function Home() {
               className="flex flex-col justify-center space-y-4"
             >
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-blue-500/10 px-3 py-1 text-sm text-blue-500">
-                  Simple Integration
+                <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-600 dark:text-blue-400">
+                  <span className="flex h-2 w-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span>
+                  Production Ready
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  EmbedYourDossier x React
-                </h2>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                  Integrate your MicroStrategy Embedding SDK into your React app
-                  with just a few lines of code. No complex setup or
-                  configuration required. Just copy and paste the code below to
-                  get started.
-                </p>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                  Introduce `embed-dossier-mstr-react` by EmbedYourDossier to
-                  your project and you are ready to go.
+                <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                  Embed MicroStrategy <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                    in React beautifully.
+                  </span>
+                </h1>
+                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed pt-2">
+                  A fully type-safe, production-ready React wrapper for the MicroStrategy Embedding SDK. Zero configuration, auto-cleanup, and 5 built-in auth methods.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+              <div className="flex flex-col gap-3 min-[400px]:flex-row pt-4">
                 <Button
                   onClick={() => {
                     navigator.clipboard.writeText(
@@ -99,7 +96,7 @@ export default function Home() {
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Button
                 size="lg"
-                className="h-12"
+                className="h-12 px-8 shadow-md hover:scale-105 transition-all"
                 onClick={() => router.push("/docs/introduction/installation")}
               >
                 Get Started
@@ -108,10 +105,10 @@ export default function Home() {
               <Button
                 size="lg"
                 variant="outline"
-                className="h-12"
-                onClick={() => router.push("/docs/introduction/installation")}
+                className="h-12 px-8"
+                onClick={() => window.open("https://github.com/Ibrairsyad17/embed-dossier-mstr", "_blank")}
               >
-                View Documentation
+                GitHub
               </Button>
             </div>
           </motion.div>
